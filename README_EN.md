@@ -93,7 +93,7 @@ npm run dev
 
 ## 📖 Usage
 
-Development
+### Development
 ```bash
 Copy
 npm run dev      # Development server
