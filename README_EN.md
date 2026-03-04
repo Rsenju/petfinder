@@ -1,15 +1,15 @@
 # 🐾 PetFinder
 
-&lt;p align="center"&gt;
-  &lt;img src="https://img.shields.io/badge/React-18-blue?logo=react" alt="React" /&gt;
-  &lt;img src="https://img.shields.io/badge/Tailwind-3-06B6D4?logo=tailwindcss" alt="Tailwind" /&gt;
-  &lt;img src="https://img.shields.io/badge/Vite-5-646CFF?logo=vite" alt="Vite" /&gt;
-  &lt;img src="https://img.shields.io/badge/License-MIT-green" alt="License" /&gt;
-&lt;/p&gt;
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18-blue?logo=react" alt="React" />
+  <img src="https://img.shields.io/badge/Tailwind-3-06B6D4?logo=tailwindcss" alt="Tailwind" />
+  <img src="https://img.shields.io/badge/Vite-5-646CFF?logo=vite" alt="Vite" />
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License" />
+</p>
 
-&lt;p align="center"&gt;
+<p align="center">
   Conscious pet adoption platform connecting NGOs, pets, and families in Salvador and Lauro de Freitas, Brazil.
-&lt;/p&gt;
+</p>
 
 ---
 
