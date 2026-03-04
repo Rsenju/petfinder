@@ -85,6 +85,7 @@ npm run dev
 ```
 
 ## 📖 Uso
+
 Desenvolvimento
 ```bash
 npm run dev      # Servidor de desenvolvimento
@@ -99,22 +100,21 @@ Estrutura de branches
 
 ## 📁 Estrutura
 
-petfinder-react/
-├── src/
-│   ├── components/      # Componentes reutilizáveis
-│   │   ├── features/    # Funcionalidades específicas
-│   │   ├── layout/      # Header, Footer, etc
-│   │   └── ui/          # Botões, inputs, cards
-│   ├── context/         # Context API (tema, auth)
-│   ├── hooks/           # Custom hooks
-│   ├── pages/           # Páginas da aplicação
-│   ├── data/            # Dados mockados
-│   ├── App.jsx          # Componente principal
-│   └── main.jsx         # Entry point
-├── public/              # Assets estáticos
-└── ...
+| Diretório | Descrição |
+|-----------|-----------|
+| `src/components/features/` | Componentes específicos de funcionalidades |
+| `src/components/layout/` | Estrutura da página (Header, Footer) |
+| `src/components/ui/` | Elementos reutilizáveis (botões, inputs) |
+| `src/context/` | Context API (tema, autenticação) |
+| `src/hooks/` | Custom hooks |
+| `src/pages/` | Páginas da aplicação |
+| `src/data/` | Dados mockados para desenvolvimento |
+| `public/` | Assets estáticos (imagens, favicon) |
+
+---
 
 ## 🤝 Contribuição
+
 Contribuições são bem-vindas! Siga os passos:
 Fork o projeto
 Crie uma branch (git checkout -b feature/nova-funcionalidade)
@@ -134,9 +134,9 @@ test: - Testes
 ## 👩‍💻 Autora
 
 Rebeca Machado - Desenvolvedora Front-end
-https://www.linkedin.com/in/rebeca-sena-rms2007
-https://github.com/Rsenju
-https://rebeca-machado-portfolio.vercel.app
+- https://www.linkedin.com/in/rebeca-sena-rms2007
+- https://github.com/Rsenju
+- https://rebeca-machado-portfolio.vercel.app
 
 ---
 
