@@ -81,3 +81,68 @@ npm install
 
 # Inicie o servidor de desenvolvimento
 npm run dev
+
+```
+
+## 📖 Uso
+Desenvolvimento
+```bash
+npm run dev      # Servidor de desenvolvimento
+npm run build    # Build para produção
+npm run preview  # Preview do build
+```
+
+Estrutura de branches
+- main - Código em produção
+- develop - Desenvolvimento
+- feature/* - Novas funcionalidades
+
+## 📁 Estrutura
+
+petfinder-react/
+├── src/
+│   ├── components/      # Componentes reutilizáveis
+│   │   ├── features/    # Funcionalidades específicas
+│   │   ├── layout/      # Header, Footer, etc
+│   │   └── ui/          # Botões, inputs, cards
+│   ├── context/         # Context API (tema, auth)
+│   ├── hooks/           # Custom hooks
+│   ├── pages/           # Páginas da aplicação
+│   ├── data/            # Dados mockados
+│   ├── App.jsx          # Componente principal
+│   └── main.jsx         # Entry point
+├── public/              # Assets estáticos
+└── ...
+
+## 🤝 Contribuição
+Contribuições são bem-vindas! Siga os passos:
+Fork o projeto
+Crie uma branch (git checkout -b feature/nova-funcionalidade)
+Commit suas mudanças (git commit -m 'feat: adiciona nova funcionalidade')
+Push para a branch (git push origin feature/nova-funcionalidade)
+Abra um Pull Request
+Padrão de commits
+feat: - Nova funcionalidade
+fix: - Correção de bug
+docs: - Documentação
+style: - Formatação, sem mudança de código
+refactor: - Refatoração
+test: - Testes
+
+---
+
+## 👩‍💻 Autora
+
+Rebeca Machado - Desenvolvedora Front-end
+https://www.linkedin.com/in/rebeca-sena-rms2007
+https://github.com/Rsenju
+https://rebeca-machado-portfolio.vercel.app
+
+---
+
+## 📄 Licença
+
+Este projeto está licenciado sob a licença MIT - veja o arquivo LICENSE para detalhes.
+<p align="center">
+  Feito com ❤️ e 🐾 para ajudar animais a encontrarem um lar
+</p>
