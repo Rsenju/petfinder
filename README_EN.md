@@ -1,3 +1,9 @@
+<p align="right">
+  <a href="README.md">🇧🇷 PT</a> | 
+  <a href="README_EN.md">🇺🇸 EN</a> | 
+  <a href="README_DE.md">🇩🇪 DE</a>
+</p>
+
 # 🐾 PetFinder
 
 <p align="center">
@@ -88,7 +94,7 @@ npm run dev
 ## 📖 Usage
 
 Development
-bash
+```bash
 Copy
 npm run dev      # Development server
 npm run build    # Production build
@@ -97,7 +103,7 @@ Branch structure
 main - Production code
 develop - Development
 feature/* - New features
-
+```
 ---
 
 ## 📁 Project Structure
