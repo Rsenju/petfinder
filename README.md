@@ -89,10 +89,11 @@ npm install
 npm run dev
 
 ```
+---
 
 ## 📖 Uso
 
-Desenvolvimento
+### Desenvolvimento
 ```bash
 npm run dev      # Servidor de desenvolvimento
 npm run build    # Build para produção
@@ -103,6 +104,8 @@ Estrutura de branches
 - main - Código em produção
 - develop - Desenvolvimento
 - feature/* - Novas funcionalidades
+
+---
 
 ## 📁 Estrutura
 
