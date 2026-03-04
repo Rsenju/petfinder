@@ -4,8 +4,6 @@
   <a href="README_DE.md">🇩🇪 DE</a>
 </p>
 
----
-
 # 🐾 PetFinder
 
 <p align="center">
@@ -86,6 +84,9 @@ cd petfinder-react
 
 # Abhängigkeiten installieren
 npm install
+
+# Entwicklungsserver starten
+npm run dev
 ```
 
 ---
@@ -93,22 +94,16 @@ npm install
 ## 📖 Verwendung
 
 Entwicklung
-
 ```bash
 Copy
 npm run dev      # Entwicklungsserver
 npm run build    # Produktions-Build
 npm run preview  # Build-Vorschau
-```
-
 Branch-Struktur
 main - Produktionscode
 develop - Entwicklung
 feature/* - Neue Funktionen
-
-# Entwicklungsserver starten
-npm run dev
-
+```
 ---
 
 ## 📁 Projektstruktur
@@ -152,9 +147,9 @@ Beiträge sind willkommen! Folgen Sie diesen Schritten:
 ## 👩‍💻 Autorin
 
 Rebeca Machado - Front-end Entwicklerin
-https://www.linkedin.com/in/rebeca-sena-rms2007
-https://github.com/Rsenju
-https://rebeca-machado-portfolio.vercel.app
+- https://www.linkedin.com/in/rebeca-sena-rms2007
+- https://github.com/Rsenju
+- https://rebeca-machado-portfolio.vercel.app
 
 ---
 
