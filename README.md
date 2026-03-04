@@ -115,19 +115,24 @@ Estrutura de branches
 
 ## 🤝 Contribuição
 
-Contribuições são bem-vindas! Siga os passos:
-Fork o projeto
-Crie uma branch (git checkout -b feature/nova-funcionalidade)
-Commit suas mudanças (git commit -m 'feat: adiciona nova funcionalidade')
-Push para a branch (git push origin feature/nova-funcionalidade)
-Abra um Pull Request
-Padrão de commits
-feat: - Nova funcionalidade
-fix: - Correção de bug
-docs: - Documentação
-style: - Formatação, sem mudança de código
-refactor: - Refatoração
-test: - Testes
+Contribuições são bem-vindas! Siga estes passos:
+
+1. **Fork** o projeto
+2. Crie uma **branch** (`git checkout -b feature/nova-funcionalidade`)
+3. **Commit** suas mudanças (`git commit -m 'feat: adiciona nova funcionalidade'`)
+4. **Push** para a branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um **Pull Request**
+
+### Padrão de commits
+
+| Prefixo | Descrição |
+|---------|-----------|
+| `feat:` | Nova funcionalidade |
+| `fix:` | Correção de bug |
+| `docs:` | Documentação |
+| `style:` | Formatação, sem mudança de código |
+| `refactor:` | Refatoração |
+| `test:` | Testes |
 
 ---
 
