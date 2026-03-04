@@ -1,3 +1,9 @@
+<p align="right">
+  <a href="README.md">🇧🇷 PT</a> | 
+  <a href="README_EN.md">🇺🇸 EN</a> | 
+  <a href="README_DE.md">🇩🇪 DE</a>
+</p>
+
 #  🐾 PetFinder
 
 <p align="center">
