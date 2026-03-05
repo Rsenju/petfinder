@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';  // ← sem BrowserRouter
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -8,7 +8,7 @@ import Pets from './pages/Pets';
 import PetDetail from './pages/PetDetail';
 import Ongs from './pages/Ongs';
 import Login from './pages/Login';
-import Register from './pages/Register';  // ← VERIFIQUE ESTA LINHA
+import Register from './pages/Register';
 
 function AppContent() {
   const { theme } = useTheme();
@@ -23,11 +23,12 @@ function AppContent() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
+          
           <Route path="/pets" element={<Pets />} />
           <Route path="/pet/:id" element={<PetDetail />} />
           <Route path="/ongs" element={<Ongs />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/registro" element={<Register />} />  //
+          <Route path="/registro" element={<Register />} />
         </Routes>
       </main>
       <Footer />
@@ -38,9 +39,7 @@ function AppContent() {
 function App() {
   return (
     <ThemeProvider>
-      <Router>
-        <AppContent />
-      </Router>
+      <AppContent />
     </ThemeProvider>
   );
 }
