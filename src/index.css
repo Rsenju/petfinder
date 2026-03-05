@@ -41,3 +41,17 @@
     @apply bg-gray-800 border-gray-700;
   }
 }
+
+/* Garante fundo branco por padrão */
+html {
+  background-color: white;
+}
+
+html.dark {
+  background-color: #111827; /* gray-900 */
+}
+
+body {
+  background-color: inherit;
+  min-height: 100vh;
+}
