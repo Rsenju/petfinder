@@ -10,10 +10,6 @@
   body {
     @apply bg-white text-gray-900 antialiased;
   }
-  
-  .dark body {
-    @apply bg-gray-900 text-gray-100;
-  }
 }
 
 @layer components {
@@ -47,11 +43,11 @@ html {
   background-color: white;
 }
 
-html.dark {
-  background-color: #111827; /* gray-900 */
-}
-
 body {
   background-color: inherit;
   min-height: 100vh;
+}
+
+.swiper-pagination {
+  display: none !important;
 }

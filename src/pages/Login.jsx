@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, ChevronLeft, PawPrint, AlertCircle } from 'lucide-react';
 import { loginSchema } from '../utils/validations';
+import Logo from "../components/ui/Logo";     // ✅ Certo
+
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -78,14 +80,15 @@ export default function Login() {
         {/* Lado esquerdo - Branding */}
         <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-between relative">
           <div className="mb-8">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring' }}
-              className="w-20 h-20 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg mb-6"
-            >
-              <PawPrint className="w-10 h-10 text-white" />
-            </motion.div>
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: 'spring' }}
+            className="mb-6"
+          >
+            <Logo size="xl" />
+          </motion.div>
+
             
             <motion.h1
               initial={{ opacity: 0, y: 20 }}

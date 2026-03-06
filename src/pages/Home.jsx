@@ -6,6 +6,7 @@ import { featuredPets, stats, testimonials, features } from '../data/mockData';
 import PetCard from '../components/features/PetCard';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import ScrollReveal from '../components/ui/ScrollReveal';
+import TestimonialsSlider from '../components/features/TestimonialsSlider';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -288,10 +289,10 @@ export default function Home() {
       </section>
 
       {/* Depoimentos */}
-      <section className="py-24 bg-white dark:bg-gray-900">
+      <section className="py-24 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-900 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal>
-            <div className="text-center mb-16">
+            <div className="text-center mb-8">
               <h2 className="font-display text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
                 Histórias de Amor
               </h2>
@@ -301,36 +302,7 @@ export default function Home() {
             </div>
           </ScrollReveal>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <ScrollReveal key={testimonial.id} delay={index * 0.1}>
-                <div className="card p-8 relative">
-                  <div className="flex items-start gap-4 mb-6">
-                    <img
-                      src={testimonial.image}
-                      alt={testimonial.name}
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
-                    <div>
-                      <h4 className="font-bold text-gray-900 dark:text-white text-lg">
-                        {testimonial.name}
-                      </h4>
-                      <p className="text-gray-500 dark:text-gray-400">{testimonial.role}</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 dark:text-gray-300 text-lg italic leading-relaxed">
-                    "{testimonial.text}"
-                  </p>
-                  {testimonial.pet && (
-                    <div className="mt-4 flex items-center gap-2 text-blue-600 dark:text-blue-400">
-                      <PawPrint className="w-4 h-4" />
-                      <span className="text-sm font-medium">Adotou {testimonial.pet}</span>
-                    </div>
-                  )}
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
+          <TestimonialsSlider />
         </div>
       </section>
 

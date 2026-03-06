@@ -136,7 +136,9 @@ function generatePet(id) {
     sex,
     city,
     description: faker.lorem.sentence(),
-    imageUrl: faker.image.urlLoremFlickr({ category: 'animals', width: 400, height: 300 }),
+
+    imageUrl: `https://loremflickr.com/400/300/${species === 'cachorro' ? 'dog' : 'cat'}?random=${id}`,
+
     createdAt: faker.date.recent({ days: 60 }).toISOString()
   };
 }
@@ -180,7 +182,7 @@ function SkeletonCard({ layout }) {
   return (
     <div
       className={cn(
-        'animate-pulse rounded-2xl border border-slate-200 bg-white/60 shadow-sm backdrop-blur-sm',
+        'animate-pulse rounded-2xl border border-slate-200 dark:border-gray-700 bg-white/60 dark:bg-gray-800/60 shadow-sm backdrop-blur-sm',
         layout === 'grid' ? 'flex flex-col' : 'flex flex-row gap-4'
       )}
     >
@@ -220,7 +222,7 @@ function PetCard({ pet, layout }) {
       animate="visible"
       transition={{ duration: 0.35 }}
       className={cn(
-        'group overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:shadow-lg',
+        'group overflow-hidden rounded-2xl border border-slate-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 shadow-sm backdrop-blur-sm transition hover:-translate-y-1 hover:shadow-lg',
         layout === 'grid' ? 'flex flex-col' : 'flex flex-row gap-4'
       )}
     >
@@ -246,7 +248,7 @@ function PetCard({ pet, layout }) {
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h3 className="text-base font-semibold text-slate-900">{pet.name}</h3>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-white">{pet.name}</h3>
             <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
               <span className="inline-flex items-center gap-1 capitalize">
                 <MapPin className="h-3 w-3" />
@@ -262,7 +264,7 @@ function PetCard({ pet, layout }) {
           </div>
         </div>
 
-        <p className="line-clamp-2 text-xs text-slate-600">{pet.description}</p>
+        <p className="line-clamp-2 text-xs text-slate-600 dark:text-gray-400">{pet.description}</p>
 
         <div className="mt-2 flex items-center justify-between gap-2">
           <span className="text-[11px] uppercase tracking-wide text-slate-400">
@@ -365,7 +367,7 @@ export default function PetsPage() {
               <Dog className="h-3.5 w-3.5" />
               <span>Encontre seu novo amigo</span>
             </div>
-            <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
               Pets disponíveis para adoção
             </h1>
             <p className="mt-1 text-sm text-slate-500 sm:text-base">
@@ -382,7 +384,7 @@ export default function PetsPage() {
           </div>
         </header>
 
-        <section className="sticky top-0 z-10 mb-5 -mx-4 border-b border-slate-200 bg-slate-50/90 px-4 pb-3 pt-3 backdrop-blur-md sm:mb-6 sm:border-x sm:rounded-2xl sm:px-5 sm:pb-4">
+        <section className="sticky top-0 z-10 mb-5 -mx-4 border-b border-slate-200 dark:border-gray-700 bg-slate-50/90 dark:bg-gray-900/90 px-4 pb-3 pt-3 backdrop-blur-md sm:mb-6 sm:border-x sm:rounded-2xl sm:px-5 sm:pb-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1">
               <div className="relative">
@@ -395,7 +397,7 @@ export default function PetsPage() {
                     setVisibleCount(24);
                   }}
                   placeholder="Buscar por nome do pet..."
-                  className="block w-full rounded-full border border-slate-200 bg-white/90 py-2.5 pl-9 pr-10 text-sm text-slate-900 shadow-xs outline-none ring-emerald-100 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-2"
+                  className="block w-full rounded-full border border-slate-200 dark:border-gray-600 bg-white/90 dark:bg-gray-800/90 py-2.5 pl-9 pr-10 text-sm text-slate-900 dark:text-white shadow-xs outline-none ring-emerald-100 placeholder:text-slate-400 focus:border-emerald-400 focus:ring-2"
                 />
                 {searchInput && (
                   <button
@@ -572,14 +574,14 @@ export default function PetsPage() {
               ))}
             </motion.div>
           ) : isEmpty ? (
-            <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-white/70 px-6 py-12 text-center shadow-sm">
+            <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 dark:border-gray-700 bg-white/70 dark:bg-gray-800/70 px-6 py-12 text-center shadow-sm">
               <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-amber-50 text-amber-500">
                 <AlertCircle className="h-6 w-6" />
               </div>
-              <h2 className="text-base font-semibold text-slate-900 sm:text-lg">
+              <h2 className="text-base font-semibold text-slate-900 dark:text-white sm:text-lg">
                 Não encontramos pets com esses filtros
               </h2>
-              <p className="mt-1 max-w-md text-sm text-slate-500">
+              <p className="mt-1 max-w-md text-sm text-slate-500 dark:text-gray-400">
                 Tente remover alguns filtros ou buscar por outra cidade, porte ou espécie. Existem
                 muitos outros pets esperando por você.
               </p>

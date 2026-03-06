@@ -14,12 +14,12 @@ import {
   Users
 } from 'lucide-react';
 
-import useOngs from '../hooks/useOngs';
-import usePets from '../hooks/usePets';
+import { usePets } from '../hooks/usePets';
 import PetCard from '../components/features/PetCard';
-import Badge from '../components/ui/Badge';
+import { Badge } from '../components/ui/Badge';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import ScrollReveal from '../components/ui/ScrollReveal';
+import { useOngs } from '../hooks/useOngs';
 
 const cn = (...inputs) => twMerge(clsx(inputs));
 

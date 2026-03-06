@@ -9,6 +9,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { faker } from '@faker-js/faker';
+import { AdoptionForm } from '../components/features/AdoptionForm';
 import {
   AlertTriangle,
   ArrowRight,
@@ -399,7 +400,7 @@ function MatchSimulator({ pet }) {
   );
 }
 
-function AdoptionForm({ pet }) {
+function AdoptionFormLocal({ pet }) {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
 
@@ -1361,7 +1362,7 @@ export default function PetDetailPage() {
 
                 <MatchSimulator pet={pet} />
 
-                <AdoptionForm pet={pet} />
+                <AdoptionFormLocal pet={pet} />
 
                 <section
                   aria-label="Compartilhar pet"

@@ -79,8 +79,9 @@ export default function PetCard({ pet, index }) {
           ))}
         </div>
 
+        {/* ✅ CORRIGIDO: /pets/ em vez de /pet/ */}
         <Link
-          to={`/pet/${pet.id}`}
+          to={`/pets/${pet.id}`}
           className="block w-full text-center py-2.5 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400 rounded-lg font-medium hover:bg-blue-600 hover:text-white dark:hover:bg-blue-400 dark:hover:text-gray-900 transition-all duration-200"
         >
           Quero adotar
