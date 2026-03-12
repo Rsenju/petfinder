@@ -9,7 +9,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { faker } from '@faker-js/faker';
-import { AdoptionForm } from '../components/features/AdoptionForm';
 import {
   AlertTriangle,
   ArrowRight,
@@ -210,9 +209,9 @@ const fetchSimilarPets = async (pet) => {
 const badgeClass =
   'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium tracking-tight';
 
-const badgePositive = 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100';
-const badgeNeutral = 'bg-slate-100 text-slate-700 ring-1 ring-slate-200';
-const badgeWarning = 'bg-amber-50 text-amber-700 ring-1 ring-amber-100';
+const badgePositive = 'bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30';
+const badgeNeutral = 'bg-slate-700 text-slate-300 ring-1 ring-slate-600';
+const badgeWarning = 'bg-amber-500/20 text-amber-400 ring-1 ring-amber-500/30';
 
 const stepTitles = ['Dados pessoais', 'Moradia', 'Experiência com pets'];
 
@@ -264,23 +263,23 @@ function MatchSimulator({ pet }) {
   return (
     <section
       aria-labelledby="match-simulator-title"
-      className="rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm"
+      className="rounded-3xl border border-slate-700 bg-slate-800/90 p-5 shadow-sm"
     >
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
           <h2
             id="match-simulator-title"
-            className="text-sm font-semibold text-slate-900 sm:text-base"
+            className="text-sm font-semibold text-white sm:text-base"
           >
             Simulador de Match
           </h2>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-slate-400">
             Descubra o quão compatível você é com {pet.nome}.
           </p>
         </div>
       </div>
 
-      <div className="grid gap-3 text-xs text-slate-700 sm:grid-cols-2">
+      <div className="grid gap-3 text-xs text-slate-300 sm:grid-cols-2">
         <div className="space-y-2">
           <label className="block text-[11px] font-medium text-slate-500">
             Você já tem outros pets?
@@ -294,8 +293,8 @@ function MatchSimulator({ pet }) {
                 className={cn(
                   'flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition',
                   formValues.temOutrosPets === value
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                    : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                    ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
+                    : 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500'
                 )}
               >
                 {value === 'sim' ? 'Sim' : 'Não'}
@@ -311,7 +310,7 @@ function MatchSimulator({ pet }) {
           <select
             value={formValues.tempoEmCasa}
             onChange={(event) => handleChange('tempoEmCasa', event.target.value)}
-            className="h-9 w-full rounded-full border border-slate-200 bg-white px-3 text-xs text-slate-800 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
+            className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
           >
             <option value="pouco">Pouco (até 4h)</option>
             <option value="medio">Médio (4h a 8h)</option>
@@ -326,7 +325,7 @@ function MatchSimulator({ pet }) {
           <select
             value={formValues.espaco}
             onChange={(event) => handleChange('espaco', event.target.value)}
-            className="h-9 w-full rounded-full border border-slate-200 bg-white px-3 text-xs text-slate-800 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
+            className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
           >
             <option value="pequeno">Pequeno</option>
             <option value="medio">Médio</option>
@@ -341,7 +340,7 @@ function MatchSimulator({ pet }) {
           <select
             value={formValues.experiencia}
             onChange={(event) => handleChange('experiencia', event.target.value)}
-            className="h-9 w-full rounded-full border border-slate-200 bg-white px-3 text-xs text-slate-800 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
+            className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
           >
             <option value="iniciante">Iniciante</option>
             <option value="intermediario">Intermediário</option>
@@ -365,12 +364,12 @@ function MatchSimulator({ pet }) {
             key={matchResult.value}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex items-center gap-2 text-xs text-slate-700"
+            className="flex items-center gap-2 text-xs text-slate-300"
           >
             <div className="relative h-10 w-10">
               <svg className="h-10 w-10 -rotate-90" viewBox="0 0 36 36" aria-hidden="true">
                 <path
-                  className="text-slate-200"
+                  className="text-slate-700"
                   stroke="currentColor"
                   strokeWidth="3"
                   fill="none"
@@ -388,11 +387,11 @@ function MatchSimulator({ pet }) {
                   transition={{ duration: 0.8, ease: 'easeOut' }}
                 />
               </svg>
-              <div className="absolute inset-0 flex items-center justify-center text-[11px] font-semibold text-slate-800">
+              <div className="absolute inset-0 flex items-center justify-center text-[11px] font-semibold text-white">
                 {matchResult.value}%
               </div>
             </div>
-            <p className="max-w-[220px] text-[11px] text-slate-600">{matchResult.status}</p>
+            <p className="max-w-[220px] text-[11px] text-slate-400">{matchResult.status}</p>
           </Motion.div>
         )}
       </div>
@@ -440,30 +439,30 @@ function AdoptionFormLocal({ pet }) {
   return (
     <section
       aria-labelledby="adoption-form-title"
-      className="rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm"
+      className="rounded-3xl border border-slate-700 bg-slate-800/90 p-5 shadow-sm"
     >
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
           <h2
             id="adoption-form-title"
-            className="text-sm font-semibold text-slate-900 sm:text-base"
+            className="text-sm font-semibold text-white sm:text-base"
           >
             Formulário de pré-adoção
           </h2>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-slate-400">
             Preencha as etapas para que a ONG possa conhecer melhor você.
           </p>
         </div>
       </div>
 
       <div className="mb-4">
-        <div className="mb-1 flex items-center justify-between text-[11px] text-slate-500">
+        <div className="mb-1 flex items-center justify-between text-[11px] text-slate-400">
           <span>
             Etapa {step + 1} de {stepTitles.length}
           </span>
           <span>{stepTitles[step]}</span>
         </div>
-        <div className="relative h-1.5 overflow-hidden rounded-full bg-slate-100">
+        <div className="relative h-1.5 overflow-hidden rounded-full bg-slate-700">
           <Motion.div
             className="h-full rounded-full bg-emerald-500"
             initial={{ width: '0%' }}
@@ -479,13 +478,13 @@ function AdoptionFormLocal({ pet }) {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center justify-center py-6 text-center"
         >
-          <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+          <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400">
             <CheckCircle2 className="h-6 w-6" />
           </div>
-          <h3 className="text-sm font-semibold text-slate-900 sm:text-base">
+          <h3 className="text-sm font-semibold text-white sm:text-base">
             Pré-adoção enviada com sucesso!
           </h3>
-          <p className="mt-1 max-w-xs text-xs text-slate-500">
+          <p className="mt-1 max-w-xs text-xs text-slate-400">
             A equipe da ONG {pet.ong.nome} entrará em contato com você em breve para continuar o
             processo.
           </p>
@@ -494,7 +493,7 @@ function AdoptionFormLocal({ pet }) {
         <FormProvider {...methods}>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-4 text-xs text-slate-700"
+            className="space-y-4 text-xs text-slate-300"
             noValidate
           >
             <AnimatePresence mode="wait">
@@ -515,14 +514,14 @@ function AdoptionFormLocal({ pet }) {
                       type="text"
                       {...register('nome')}
                       className={cn(
-                        'h-9 w-full rounded-full border bg-white px-3 text-xs outline-none',
+                        'h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none',
                         errors.nome
-                          ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-200'
-                          : 'border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200'
+                          ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30'
+                          : 'border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30'
                       )}
                     />
                     {errors.nome && (
-                      <p className="text-[11px] text-rose-500">{errors.nome.message}</p>
+                      <p className="text-[11px] text-rose-400">{errors.nome.message}</p>
                     )}
                   </div>
 
@@ -532,14 +531,14 @@ function AdoptionFormLocal({ pet }) {
                       type="email"
                       {...register('email')}
                       className={cn(
-                        'h-9 w-full rounded-full border bg-white px-3 text-xs outline-none',
+                        'h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none',
                         errors.email
-                          ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-200'
-                          : 'border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200'
+                          ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30'
+                          : 'border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30'
                       )}
                     />
                     {errors.email && (
-                      <p className="text-[11px] text-rose-500">{errors.email.message}</p>
+                      <p className="text-[11px] text-rose-400">{errors.email.message}</p>
                     )}
                   </div>
 
@@ -551,14 +550,14 @@ function AdoptionFormLocal({ pet }) {
                       type="tel"
                       {...register('telefone')}
                       className={cn(
-                        'h-9 w-full rounded-full border bg-white px-3 text-xs outline-none',
+                        'h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none',
                         errors.telefone
-                          ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-200'
-                          : 'border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200'
+                          ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30'
+                          : 'border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30'
                       )}
                     />
                     {errors.telefone && (
-                      <p className="text-[11px] text-rose-500">{errors.telefone.message}</p>
+                      <p className="text-[11px] text-rose-400">{errors.telefone.message}</p>
                     )}
                   </div>
 
@@ -568,14 +567,14 @@ function AdoptionFormLocal({ pet }) {
                       type="text"
                       {...register('cidade')}
                       className={cn(
-                        'h-9 w-full rounded-full border bg-white px-3 text-xs outline-none',
+                        'h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none',
                         errors.cidade
-                          ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-200'
-                          : 'border-slate-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200'
+                          ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30'
+                          : 'border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30'
                       )}
                     />
                     {errors.cidade && (
-                      <p className="text-[11px] text-rose-500">{errors.cidade.message}</p>
+                      <p className="text-[11px] text-rose-400">{errors.cidade.message}</p>
                     )}
                   </div>
                 </Motion.div>
@@ -596,7 +595,7 @@ function AdoptionFormLocal({ pet }) {
                     </label>
                     <select
                       {...register('tipoMoradia')}
-                      className="h-9 w-full rounded-full border border-slate-200 bg-white px-3 text-xs text-slate-800 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
+                      className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
                     >
                       <option value="apartamento">Apartamento</option>
                       <option value="casa">Casa</option>
@@ -617,8 +616,8 @@ function AdoptionFormLocal({ pet }) {
                           className={cn(
                             'flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition',
                             methods.watch('possuiQuintal') === value
-                              ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                              : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                              ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
+                              : 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500'
                           )}
                         >
                           {value === 'sim' ? 'Sim' : 'Não'}
@@ -640,8 +639,8 @@ function AdoptionFormLocal({ pet }) {
                           className={cn(
                             'flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition',
                             methods.watch('permiteInterior') === value
-                              ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                              : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                              ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
+                              : 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500'
                           )}
                         >
                           {value === 'sim' ? 'Sim' : 'Não'}
@@ -674,8 +673,8 @@ function AdoptionFormLocal({ pet }) {
                           className={cn(
                             'flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition',
                             methods.watch('jaTevePets') === value
-                              ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                              : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                              ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
+                              : 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500'
                           )}
                         >
                           {value === 'sim' ? 'Sim' : 'Não'}
@@ -697,8 +696,8 @@ function AdoptionFormLocal({ pet }) {
                           className={cn(
                             'flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition',
                             methods.watch('possuiPetsAtuais') === value
-                              ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                              : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                              ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
+                              : 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500'
                           )}
                         >
                           {value === 'sim' ? 'Sim' : 'Não'}
@@ -713,7 +712,7 @@ function AdoptionFormLocal({ pet }) {
                     </label>
                     <select
                       {...register('tempoDisponivel')}
-                      className="h-9 w-full rounded-full border border-slate-200 bg-white px-3 text-xs text-slate-800 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200"
+                      className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
                     >
                       <option value="pouco">Pouco (até 2h)</option>
                       <option value="medio">Médio (2h a 4h)</option>
@@ -732,8 +731,8 @@ function AdoptionFormLocal({ pet }) {
                 className={cn(
                   'inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-medium transition',
                   step === 0
-                    ? 'cursor-not-allowed text-slate-300'
-                    : 'text-slate-600 hover:bg-slate-100'
+                    ? 'cursor-not-allowed text-slate-600'
+                    : 'text-slate-400 hover:bg-slate-700'
                 )}
               >
                 <ChevronLeft className="h-3 w-3" />
@@ -744,7 +743,7 @@ function AdoptionFormLocal({ pet }) {
                 <button
                   type="button"
                   onClick={nextStep}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-4 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:bg-slate-800 active:scale-[0.98]"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-4 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98]"
                 >
                   Próxima etapa
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -810,8 +809,8 @@ function MediaGallery({ pet }) {
               className={cn(
                 'group relative overflow-hidden rounded-2xl border transition',
                 activeIndex === index
-                  ? 'border-emerald-500 ring-2 ring-emerald-200'
-                  : 'border-transparent hover:border-slate-300'
+                  ? 'border-emerald-500 ring-2 ring-emerald-500/30'
+                  : 'border-transparent hover:border-slate-500'
               )}
             >
               <img
@@ -834,7 +833,7 @@ function MediaGallery({ pet }) {
           ))}
         </div>
 
-        <div className="order-1 relative w-full overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 md:order-2">
+        <div className="order-1 relative w-full overflow-hidden rounded-3xl border border-slate-700 bg-slate-800 md:order-2">
           <Motion.div
             key={mainMedia.id}
             initial={{ opacity: 0.6, scale: 1.02 }}
@@ -881,13 +880,13 @@ function MediaGallery({ pet }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/80"
+            className="fixed inset-0 z-50 bg-black/90"
             role="dialog"
             aria-modal="true"
             aria-label={`Galeria em tela cheia do pet ${pet.nome}`}
           >
             <div className="flex h-full flex-col">
-              <header className="flex items-center justify-between px-4 py-3 text-xs text-slate-100">
+              <header className="flex items-center justify-between px-4 py-3 text-xs text-slate-200">
                 <div className="flex items-center gap-2">
                   <Dog className="h-4 w-4" />
                   <span>
@@ -897,7 +896,7 @@ function MediaGallery({ pet }) {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="inline-flex items-center justify-center rounded-full bg-white/10 p-1.5 text-slate-50 hover:bg-white/20"
+                  className="inline-flex items-center justify-center rounded-full bg-white/10 p-1.5 text-slate-200 hover:bg-white/20"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -927,7 +926,7 @@ function MediaGallery({ pet }) {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.25 }}
-                  className="max-h-[80vh] max-w-5xl overflow-hidden rounded-3xl border border-white/10 bg-black/60 p-2"
+                  className="max-h-[80vh] max-w-5xl overflow-hidden rounded-3xl border border-slate-700 bg-slate-900/60 p-2"
                 >
                   <img
                     src={mainMedia.fullUrl}
@@ -959,11 +958,11 @@ function SimilarPets({ basePet }) {
       <div className="mb-3 flex items-center justify-between gap-2">
         <h2
           id="similar-pets-title"
-          className="text-sm font-semibold text-slate-900 sm:text-base"
+          className="text-sm font-semibold text-white sm:text-base"
         >
           Pets similares
         </h2>
-        <p className="text-[11px] text-slate-500">
+        <p className="text-[11px] text-slate-400">
           Mesma ONG ou perfil parecido com {basePet.nome}.
         </p>
       </div>
@@ -973,11 +972,11 @@ function SimilarPets({ basePet }) {
           {Array.from({ length: 4 }).map((_, index) => (
             <div
               key={index}
-              className="animate-pulse rounded-2xl border border-slate-200 bg-white/60 p-3"
+              className="animate-pulse rounded-2xl border border-slate-700 bg-slate-800/60 p-3"
             >
-              <div className="mb-3 h-28 rounded-xl bg-slate-200" />
-              <div className="mb-1 h-4 w-2/3 rounded bg-slate-200" />
-              <div className="h-3 w-1/2 rounded bg-slate-200" />
+              <div className="mb-3 h-28 rounded-xl bg-slate-700" />
+              <div className="mb-1 h-4 w-2/3 rounded bg-slate-700" />
+              <div className="h-3 w-1/2 rounded bg-slate-700" />
             </div>
           ))}
         </div>
@@ -986,9 +985,9 @@ function SimilarPets({ basePet }) {
           {similarPets.map((pet) => (
             <article
               key={pet.id}
-              className="group overflow-hidden rounded-2xl border border-slate-200 bg-white/90 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="group overflow-hidden rounded-2xl border border-slate-700 bg-slate-800/90 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div className="relative h-28 w-full overflow-hidden bg-slate-100">
+              <div className="relative h-28 w-full overflow-hidden bg-slate-900">
                 <img
                   src={pet.gallery[0].thumbUrl}
                   alt={pet.gallery[0].alt}
@@ -999,9 +998,9 @@ function SimilarPets({ basePet }) {
                   {pet.porte} · {pet.sexo === 'femea' ? 'Fêmea' : 'Macho'}
                 </div>
               </div>
-              <div className="px-3 pb-3 pt-2 text-xs text-slate-700">
-                <h3 className="text-sm font-semibold text-slate-900">{pet.nome}</h3>
-                <p className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-500">
+              <div className="px-3 pb-3 pt-2 text-xs text-slate-300">
+                <h3 className="text-sm font-semibold text-white">{pet.nome}</h3>
+                <p className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-400">
                   <MapPin className="h-3 w-3" />
                   {pet.ong.cidade}
                 </p>
@@ -1078,10 +1077,10 @@ export default function PetDetailPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-900">
       <a
         href="#pet-detail-main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-slate-900 focus:px-4 focus:py-2 focus:text-xs focus:font-semibold focus:text-white focus:shadow-lg"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-blue-600 focus:px-4 focus:py-2 focus:text-xs focus:font-semibold focus:text-white focus:shadow-lg"
       >
         Pular para conteúdo principal
       </a>
@@ -1089,26 +1088,26 @@ export default function PetDetailPage() {
       <div className="mx-auto flex w-full max-w-6xl flex-col px-4 pb-12 pt-6 sm:px-6 lg:px-8">
         {isLoading ? (
           <div className="space-y-6">
-            <div className="h-6 w-2/3 rounded bg-slate-200" />
+            <div className="h-6 w-2/3 rounded bg-slate-800" />
             <div className="grid gap-5 md:grid-cols-[minmax(0,2fr)_minmax(0,1.3fr)]">
-              <div className="h-80 rounded-3xl bg-slate-200" />
+              <div className="h-80 rounded-3xl bg-slate-800" />
               <div className="space-y-3">
-                <div className="h-5 w-3/4 rounded bg-slate-200" />
-                <div className="h-4 w-2/3 rounded bg-slate-200" />
-                <div className="h-4 w-1/2 rounded bg-slate-200" />
-                <div className="mt-4 h-10 w-full rounded-2xl bg-slate-200" />
+                <div className="h-5 w-3/4 rounded bg-slate-800" />
+                <div className="h-4 w-2/3 rounded bg-slate-800" />
+                <div className="h-4 w-1/2 rounded bg-slate-800" />
+                <div className="mt-4 h-10 w-full rounded-2xl bg-slate-800" />
               </div>
             </div>
           </div>
         ) : isError || !pet ? (
           <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
-            <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-rose-50 text-rose-500">
+            <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-rose-500/20 text-rose-400">
               <AlertTriangle className="h-6 w-6" />
             </div>
-            <h1 className="text-lg font-semibold text-slate-900">
+            <h1 className="text-lg font-semibold text-white">
               Não foi possível carregar os detalhes do pet
             </h1>
-            <p className="mt-1 max-w-md text-sm text-slate-500">
+            <p className="mt-1 max-w-md text-sm text-slate-400">
               Tente atualizar a página ou voltar para a lista de pets para escolher outro amigo.
             </p>
           </div>
@@ -1116,25 +1115,25 @@ export default function PetDetailPage() {
           <>
             <header className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-600">
+                <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-400">
                   <Dog className="h-3.5 w-3.5" />
                   <span>Detalhes do pet</span>
                 </div>
-                <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                <h1 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">
                   {pet.nome}
                 </h1>
-                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-400">
                   <span className="inline-flex items-center gap-1">
-                    <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                    <MapPin className="h-3.5 w-3.5 text-slate-500" />
                     {pet.ong.cidade}
                   </span>
-                  <span className="h-1 w-1 rounded-full bg-slate-300" />
+                  <span className="h-1 w-1 rounded-full bg-slate-600" />
                   <span className="capitalize">{pet.especie}</span>
-                  <span className="h-1 w-1 rounded-full bg-slate-300" />
+                  <span className="h-1 w-1 rounded-full bg-slate-600" />
                   <span className="capitalize">{pet.porte}</span>
-                  <span className="h-1 w-1 rounded-full bg-slate-300" />
+                  <span className="h-1 w-1 rounded-full bg-slate-600" />
                   <span>{ageLabel(pet.idade)}</span>
-                  <span className="h-1 w-1 rounded-full bg-slate-300" />
+                  <span className="h-1 w-1 rounded-full bg-slate-600" />
                   <span className="capitalize">{pet.sexo === 'femea' ? 'Fêmea' : 'Macho'}</span>
                 </div>
               </div>
@@ -1146,8 +1145,8 @@ export default function PetDetailPage() {
                   className={cn(
                     'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium shadow-sm transition',
                     isFavorite
-                      ? 'border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100'
-                      : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'
+                      ? 'border-rose-500/30 bg-rose-500/20 text-rose-400 hover:bg-rose-500/30'
+                      : 'border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700'
                   )}
                   aria-pressed={isFavorite}
                   aria-label={
@@ -1159,13 +1158,13 @@ export default function PetDetailPage() {
                   <Heart
                     className={cn(
                       'h-4 w-4',
-                      isFavorite ? 'fill-rose-500 text-rose-500' : 'text-slate-500'
+                      isFavorite ? 'fill-rose-500 text-rose-500' : 'text-slate-400'
                     )}
                   />
                   <span>{isFavorite ? 'Favoritado' : 'Favoritar'}</span>
                 </button>
 
-                <div className="inline-flex items-center gap-1 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-medium text-white shadow-sm">
+                <div className="inline-flex items-center gap-1 rounded-full bg-slate-800 px-3 py-1.5 text-xs font-medium text-white shadow-sm border border-slate-700">
                   <ShieldCheck className="h-4 w-4 text-emerald-400" />
                   Adoção responsável
                 </div>
@@ -1181,48 +1180,48 @@ export default function PetDetailPage() {
 
                 <section
                   aria-labelledby="pet-info-title"
-                  className="mt-4 rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-sm"
+                  className="mt-4 rounded-3xl border border-slate-700 bg-slate-800/90 p-5 shadow-sm"
                 >
                   <div className="mb-3 flex items-center justify-between gap-2">
                     <h2
                       id="pet-info-title"
-                      className="text-sm font-semibold text-slate-900 sm:text-base"
+                      className="text-sm font-semibold text-white sm:text-base"
                     >
                       Informações sobre {pet.nome}
                     </h2>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-700">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2.5 py-1 text-[11px] font-medium text-emerald-400">
                       <Info className="h-3.5 w-3.5" />
                       Perfil verificado pela ONG
                     </span>
                   </div>
 
-                  <div className="grid gap-4 text-xs text-slate-700 sm:grid-cols-2">
+                  <div className="grid gap-4 text-xs text-slate-300 sm:grid-cols-2">
                     <div className="space-y-2">
-                      <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+                      <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                         Dados gerais
                       </h3>
                       <dl className="grid grid-cols-2 gap-y-1.5 gap-x-3">
                         <div>
                           <dt className="text-[11px] text-slate-500">Espécie</dt>
-                          <dd className="font-medium capitalize text-slate-900">{pet.especie}</dd>
+                          <dd className="font-medium capitalize text-white">{pet.especie}</dd>
                         </div>
                         <div>
                           <dt className="text-[11px] text-slate-500">Raça</dt>
-                          <dd className="font-medium text-slate-900">{pet.raca}</dd>
+                          <dd className="font-medium text-white">{pet.raca}</dd>
                         </div>
                         <div>
                           <dt className="text-[11px] text-slate-500">Porte</dt>
-                          <dd className="font-medium capitalize text-slate-900">{pet.porte}</dd>
+                          <dd className="font-medium capitalize text-white">{pet.porte}</dd>
                         </div>
                         <div>
                           <dt className="text-[11px] text-slate-500">Idade</dt>
-                          <dd className="font-medium text-slate-900">{ageLabel(pet.idade)}</dd>
+                          <dd className="font-medium text-white">{ageLabel(pet.idade)}</dd>
                         </div>
                       </dl>
                     </div>
 
                     <div className="space-y-2">
-                      <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+                      <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                         Saúde
                       </h3>
                       <div className="flex flex-wrap gap-1.5">
@@ -1247,7 +1246,7 @@ export default function PetDetailPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+                      <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                         Temperamento
                       </h3>
                       <div className="flex flex-wrap gap-1.5">
@@ -1256,7 +1255,7 @@ export default function PetDetailPage() {
                             key={label}
                             className={cn(
                               badgeClass,
-                              'bg-slate-100 text-slate-700 ring-1 ring-slate-200'
+                              'bg-slate-700 text-slate-300 ring-1 ring-slate-600'
                             )}
                           >
                             {label}
@@ -1267,7 +1266,7 @@ export default function PetDetailPage() {
 
                     {structuredCondicoes.length > 0 && (
                       <div className="space-y-2">
-                        <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+                        <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                           Condições especiais
                         </h3>
                         <div className="flex flex-wrap gap-1.5">
@@ -1281,7 +1280,7 @@ export default function PetDetailPage() {
                             </span>
                           ))}
                         </div>
-                        <p className="text-[11px] text-slate-500">
+                        <p className="text-[11px] text-slate-400">
                           Pets com condições especiais também merecem um lar. A ONG dará todo apoio
                           necessário.
                         </p>
@@ -1289,11 +1288,11 @@ export default function PetDetailPage() {
                     )}
                   </div>
 
-                  <div className="mt-4 space-y-2 text-xs text-slate-700">
-                    <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
+                  <div className="mt-4 space-y-2 text-xs text-slate-300">
+                    <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                       História
                     </h3>
-                    <p className="leading-relaxed text-slate-700">{pet.historia}</p>
+                    <p className="leading-relaxed text-slate-300">{pet.historia}</p>
                   </div>
                 </section>
               </div>
@@ -1301,10 +1300,10 @@ export default function PetDetailPage() {
               <aside className="space-y-4 md:space-y-5">
                 <section
                   aria-labelledby="ong-section-title"
-                  className="rounded-3xl border border-slate-200 bg-slate-900 px-5 py-4 text-slate-50 shadow-sm"
+                  className="rounded-3xl border border-slate-700 bg-slate-800 px-5 py-4 text-slate-200 shadow-sm"
                 >
                   <div className="mb-3 flex items-start gap-3">
-                    <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400">
+                    <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-400">
                       <Home className="h-4 w-4" />
                     </div>
                     <div>
@@ -1314,24 +1313,24 @@ export default function PetDetailPage() {
                       >
                         ONG {pet.ong.nome}
                       </h2>
-                      <p className="mt-1 text-xs text-slate-300">
+                      <p className="mt-1 text-xs text-slate-400">
                         Organização parceira verificada. Todas as adoções passam por entrevista e
                         termo de responsabilidade.
                       </p>
                     </div>
                   </div>
 
-                  <dl className="space-y-1.5 text-xs text-slate-200">
+                  <dl className="space-y-1.5 text-xs text-slate-300">
                     <div className="flex items-center gap-2">
-                      <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                      <MapPin className="h-3.5 w-3.5 text-slate-500" />
                       <span>{pet.ong.cidade}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <MessageCircle className="h-3.5 w-3.5 text-slate-400" />
+                      <MessageCircle className="h-3.5 w-3.5 text-slate-500" />
                       <span>WhatsApp: {pet.ong.whatsapp}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Info className="h-3.5 w-3.5 text-slate-400" />
+                      <Info className="h-3.5 w-3.5 text-slate-500" />
                       <span>E-mail: {pet.ong.email}</span>
                     </div>
                   </dl>
@@ -1340,7 +1339,7 @@ export default function PetDetailPage() {
                     <button
                       type="button"
                       onClick={handleShareWhatsApp}
-                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-emerald-500 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-600 active:scale-[0.97]"
+                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-700 active:scale-[0.97]"
                     >
                       <MessageCircle className="h-4 w-4" />
                       Falar com a ONG
@@ -1348,14 +1347,14 @@ export default function PetDetailPage() {
                     <button
                       type="button"
                       onClick={handleShareInstagram}
-                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-600 bg-slate-900 px-4 py-2 text-xs font-semibold text-slate-50 shadow-sm transition hover:bg-slate-800 active:scale-[0.97]"
+                      className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border border-slate-600 bg-slate-800 px-4 py-2 text-xs font-semibold text-slate-200 shadow-sm transition hover:bg-slate-700 active:scale-[0.97]"
                     >
                       <Share2 className="h-4 w-4" />
                       Compartilhar perfil
                     </button>
                   </div>
 
-                  <p className="mt-2 text-[11px] text-slate-400">
+                  <p className="mt-2 text-[11px] text-slate-500">
                     Seus dados serão compartilhados apenas com a ONG responsável por este pet.
                   </p>
                 </section>
@@ -1366,15 +1365,15 @@ export default function PetDetailPage() {
 
                 <section
                   aria-label="Compartilhar pet"
-                  className="rounded-3xl border border-dashed border-slate-300 bg-slate-100/80 p-4 text-xs text-slate-700"
+                  className="rounded-3xl border border-dashed border-slate-700 bg-slate-800/50 p-4 text-xs text-slate-300"
                 >
                   <div className="mb-2 flex items-center gap-2">
                     <Share2 className="h-4 w-4 text-slate-500" />
-                    <h2 className="text-xs font-semibold text-slate-900">
+                    <h2 className="text-xs font-semibold text-white">
                       Compartilhe {pet.nome} com seus amigos
                     </h2>
                   </div>
-                  <p className="mb-3 text-[11px] text-slate-500">
+                  <p className="mb-3 text-[11px] text-slate-400">
                     Quanto mais pessoas conhecerem {pet.nome}, maiores as chances de encontrar um
                     lar.
                   </p>
@@ -1382,7 +1381,7 @@ export default function PetDetailPage() {
                     <button
                       type="button"
                       onClick={handleShareWhatsApp}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500 px-3 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:bg-emerald-600"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:bg-emerald-700"
                     >
                       <MessageCircle className="h-3.5 w-3.5" />
                       WhatsApp
@@ -1418,10 +1417,10 @@ export default function PetDetailPage() {
                 'pointer-events-auto flex items-center gap-2 rounded-2xl px-3 py-2 text-xs shadow-lg',
                 toast.variant === 'success'
                   ? 'bg-emerald-600 text-emerald-50'
-                  : 'bg-slate-900 text-slate-50'
+                  : 'bg-slate-800 text-slate-200 border border-slate-700'
               )}
             >
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-black/10">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-black/20">
                 {toast.variant === 'success' ? (
                   <Heart className="h-3.5 w-3.5" />
                 ) : (

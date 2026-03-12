@@ -1,285 +1,214 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { motion as Motion } from 'framer-motion';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { MapPin, ShieldCheck, SlidersHorizontal } from 'lucide-react';
+import { useState } from 'react';
+import { Search, MapPin, Filter, Building2, Phone, Mail, Globe, CheckCircle } from 'lucide-react';
 
-import { useOngs } from '../hooks/useOngs';
-import { useGeolocation } from '../hooks/useGeolocation';
-import { SearchBar } from '../components/features/SearchBar';
-import { FilterSection } from '../components/features/FilterSection';
-import { OngCard } from '../components/features/OngCard';
-import { Button } from '../components/ui/Button';
-
-const cn = (...inputs) => twMerge(clsx(inputs));
-
-const initialFilters = {
-  city: '',
-  verified: '',
-  query: '',
-  nearMe: false
-};
-
-function parseFiltersFromSearchParams(searchParams) {
-  return {
-    city: searchParams.get('cidade') || '',
-    verified: searchParams.get('verificada') || '',
-    query: searchParams.get('q') || '',
-    nearMe: searchParams.get('perto') === '1'
-  };
-}
-
-function serializeFiltersToSearchParams(filters) {
-  const params = new URLSearchParams();
-
-  if (filters.city) params.set('cidade', filters.city);
-  if (filters.verified) params.set('verificada', filters.verified);
-  if (filters.query) params.set('q', filters.query);
-  if (filters.nearMe) params.set('perto', '1');
-
-  return params;
-}
-
-function OngsMap({ ongs }) {
-  if (!ongs || !ongs.length) {
-    return (
-      <div className="flex h-48 items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-slate-50/80 text-xs text-slate-500">
-        Mapa será carregado assim que houver ONGs.
-      </div>
-    );
+const mockOngs = [
+  {
+    id: 1,
+    name: "ONG Kilback - Schuster",
+    city: "Salvador",
+    state: "BA",
+    neighborhood: "Johannaland",
+    verified: true,
+    phone: "(71) 99999-1111",
+    email: "contato@kilback.org",
+    website: "www.kilback.org",
+    description: "Especializada em resgate e adoção de cães e gatos em situação de vulnerabilidade.",
+    petsCount: 24,
+    image: "https://images.unsplash.com/photo-1601758124096-1fd661873b95?w=400"
+  },
+  {
+    id: 2,
+    name: "Amigo Animal",
+    city: "Lauro de Freitas",
+    state: "BA",
+    neighborhood: "Centro",
+    verified: true,
+    phone: "(71) 99999-2222",
+    email: "contato@amigoanimal.org",
+    description: "Trabalhamos com castração gratuita e adoção responsável há mais de 10 anos.",
+    petsCount: 18,
+    image: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400"
+  },
+  {
+    id: 3,
+    name: "Lar dos Peludos",
+    city: "Salvador",
+    state: "BA",
+    neighborhood: "Pituba",
+    verified: false,
+    phone: "(71) 99999-3333",
+    email: "lar@peludos.org",
+    description: "Abrigo temporário para pets abandonados. Adoção e apadrinhamento.",
+    petsCount: 32,
+    image: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400"
   }
+];
 
-  const cityGroups = ongs.reduce((acc, ong) => {
-    const city = ong.city || ong.cidade || 'Outras cidades';
-    if (!acc[city]) acc[city] = 0;
-    acc[city] += 1;
-    return acc;
-  }, {});
+const cities = ["Todas", "Salvador", "Lauro de Freitas"];
+
+export default function Ongs() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCity, setSelectedCity] = useState('Todas');
+  const [showFilters, setShowFilters] = useState(false);
+
+  const filteredOngs = mockOngs.filter(ong => {
+    const matchesSearch = ong.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         ong.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCity = selectedCity === 'Todas' || ong.city === selectedCity;
+    return matchesSearch && matchesCity;
+  });
 
   return (
-    <section
-      aria-label="Mapa aproximado das ONGs"
-      className="rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800 p-4 text-slate-50 shadow-sm"
-    >
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-xs">
-          <span className="inline-flex h-7 w-7 items-center justify-center rounded-2xl bg-emerald-500/10 text-emerald-400">
-            <MapPin className="h-4 w-4" />
-          </span>
+    <div className="min-h-screen bg-slate-900 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="flex items-center gap-2 text-sm text-emerald-400 mb-4">
+          <Building2 className="w-4 h-4" />
+          <span className="uppercase tracking-wider">Encontre ONGs confiáveis</span>
+        </div>
+
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
-            <h2 className="text-xs font-semibold text-slate-50 sm:text-sm">Mapa das ONGs</h2>
-            <p className="text-[11px] text-slate-400">
-              Visualização aproximada por cidade, para dar uma noção de concentração.
+            <h1 className="text-4xl font-bold text-white mb-2">ONGs de adoção parceiras</h1>
+            <p className="text-slate-400 max-w-2xl">
+              Explore ONGs especializadas em adoção responsável. Use os filtros para encontrar organizações na sua cidade ou próximas de você.
             </p>
+          </div>
+          <div className="flex items-center gap-2 text-slate-400 bg-slate-800 px-4 py-2 rounded-full">
+            <MapPin className="w-4 h-4" />
+            <span>{filteredOngs.length} ONGs encontradas</span>
           </div>
         </div>
-      </div>
 
-      <div className="mt-2 grid gap-2 text-[11px] sm:grid-cols-3">
-        {Object.entries(cityGroups).map(([city, count]) => (
-          <div
-            key={city}
-            className="flex items-center justify-between rounded-2xl bg-white/5 px-3 py-2 text-slate-100"
-          >
-            <div className="flex items-center gap-1.5">
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-400">
-                <MapPin className="h-3.5 w-3.5" />
-              </span>
-              <span className="max-w-[130px] truncate">{city}</span>
+        {/* Search Bar */}
+        <div className="bg-slate-800 rounded-2xl p-4 border border-slate-700 mb-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Buscar por cidade ou bairro..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-xl text-white placeholder-slate-400 focus:border-blue-500 focus:outline-none"
+              />
             </div>
-            <span className="rounded-full bg-slate-900/50 px-2 py-0.5 text-[10px] font-medium">
-              {count} ONG{count > 1 ? 's' : ''}
-            </span>
+            <button className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium transition-colors">
+              <Search className="w-5 h-5" />
+              Buscar
+            </button>
           </div>
-        ))}
-      </div>
 
-      <p className="mt-2 text-[10px] text-slate-500">
-        Dados apenas ilustrativos. O mapa real poderá ser integrado futuramente com um provedor de
-        mapas.
-      </p>
-    </section>
-  );
-}
+          {/* Filtros */}
+          <div className="mt-4 pt-4 border-t border-slate-700">
+            <button 
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors"
+            >
+              <Filter className="w-4 h-4" />
+              Filtros
+            </button>
+            
+            {showFilters && (
+              <div className="mt-4 flex flex-wrap gap-4">
+                <div>
+                  <label className="text-sm text-slate-400 block mb-2">Cidade</label>
+                  <select 
+                    value={selectedCity}
+                    onChange={(e) => setSelectedCity(e.target.value)}
+                    className="bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:border-blue-500 focus:outline-none"
+                  >
+                    {cities.map(city => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
 
-export default function OngsPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [filters, setFilters] = useState(initialFilters);
-  const [searchValue, setSearchValue] = useState('');
+        {/* Lista de ONGs */}
+        {filteredOngs.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredOngs.map(ong => (
+              <div 
+                key={ong.id}
+                className="bg-slate-800 rounded-2xl overflow-hidden border border-slate-700 hover:border-blue-500/50 transition-all hover:shadow-xl group"
+              >
+                {/* Imagem */}
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={ong.image} 
+                    alt={ong.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h3 className="text-xl font-bold text-white mb-1">{ong.name}</h3>
+                    <div className="flex items-center gap-2 text-slate-300 text-sm">
+                      <MapPin className="w-4 h-4" />
+                      {ong.neighborhood}, {ong.city} - {ong.state}
+                    </div>
+                  </div>
+                  {ong.verified && (
+                    <div className="absolute top-4 right-4 bg-blue-500/20 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1">
+                      <CheckCircle className="w-4 h-4 text-blue-400" />
+                      <span className="text-xs text-blue-300 font-medium">Verificada</span>
+                    </div>
+                  )}
+                </div>
 
-  const { location, isLocating, requestLocation } = useGeolocation?.() || {
-    location: null,
-    isLocating: false,
-    requestLocation: () => {}
-  };
+                {/* Conteúdo */}
+                <div className="p-5">
+                  <p className="text-slate-400 text-sm mb-4 line-clamp-2">
+                    {ong.description}
+                  </p>
 
-  useEffect(() => {
-    const stored = window.localStorage.getItem('ongFilters');
-    const storedFilters = stored ? JSON.parse(stored) : null;
+                  <div className="space-y-2 text-sm mb-4">
+                    <div className="flex items-center gap-2 text-slate-300">
+                      <Phone className="w-4 h-4 text-slate-500" />
+                      {ong.phone}
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-300">
+                      <Mail className="w-4 h-4 text-slate-500" />
+                      {ong.email}
+                    </div>
+                    {ong.website && (
+                      <div className="flex items-center gap-2 text-slate-300">
+                        <Globe className="w-4 h-4 text-slate-500" />
+                        {ong.website}
+                      </div>
+                    )}
+                  </div>
 
-    const urlFilters = parseFiltersFromSearchParams(searchParams);
-    const hasUrlFilters = Object.values(urlFilters).some(Boolean);
-    const hasStoredFilters = storedFilters && Object.values(storedFilters).some(Boolean);
-
-    if (hasUrlFilters) {
-      setFilters((prev) => ({ ...prev, ...urlFilters }));
-      setSearchValue(urlFilters.query || '');
-      return;
-    }
-
-    if (hasStoredFilters) {
-      setFilters((prev) => ({ ...prev, ...storedFilters }));
-      setSearchValue(storedFilters.query || '');
-    }
-  }, [searchParams]);
-
-  useEffect(() => {
-    const params = serializeFiltersToSearchParams(filters);
-    setSearchParams(params, { replace: true });
-    window.localStorage.setItem('ongFilters', JSON.stringify(filters));
-  }, [filters, setSearchParams]);
-
-  const { data: ongs = [], isLoading, isFetching } = useOngs(filters, location);
-
-  const cities = useMemo(() => {
-    const set = new Set();
-    ongs.forEach((ong) => {
-      if (ong.city || ong.cidade) {
-        set.add(ong.city || ong.cidade);
-      }
-    });
-    return Array.from(set).sort();
-  }, [ongs]);
-
-  const handleSearchChange = (value) => {
-    setSearchValue(value);
-    setFilters((prev) => ({
-      ...prev,
-      query: value
-    }));
-  };
-
-  const handleFilterChange = (partial) => {
-    setFilters((prev) => ({
-      ...prev,
-      ...partial
-    }));
-  };
-
-  const handleToggleNearMe = () => {
-    const next = !filters.nearMe;
-    setFilters((prev) => ({
-      ...prev,
-      nearMe: next
-    }));
-    if (next && requestLocation) {
-      requestLocation();
-    }
-  };
-
-  const handleResetFilters = () => {
-    setFilters(initialFilters);
-    setSearchValue('');
-  };
-
-  const isEmpty = !isLoading && !isFetching && ongs.length === 0;
-
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="mx-auto flex w-full max-w-6xl flex-col px-4 pb-12 pt-6 sm:px-6 lg:px-8">
-        <header className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-emerald-600">
-              <ShieldCheck className="h-3.5 w-3.5" />
-              <span>Encontre ONGs confiáveis</span>
-            </div>
-            <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-              ONGs de adoção parceiras
-            </h1>
-            <p className="mt-1 text-sm text-slate-500 sm:text-base">
-              Explore ONGs especializadas em adoção responsável. Use os filtros para encontrar
-              organizações na sua cidade ou próximas de você.
+                  <div className="flex items-center justify-between pt-4 border-t border-slate-700">
+                    <span className="text-slate-400 text-sm">
+                      <span className="text-white font-bold">{ong.petsCount}</span> pets disponíveis
+                    </span>
+                    <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors">
+                      Ver perfil
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16 bg-slate-800 rounded-2xl border border-slate-700">
+            <MapPin className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-white mb-2">Nenhuma ONG encontrada com esses filtros</h3>
+            <p className="text-slate-400 max-w-md mx-auto">
+              Tente remover alguns filtros ou buscar por outra cidade. Novas ONGs podem ser adicionadas ao sistema em breve.
             </p>
           </div>
+        )}
 
-          <div className="flex items-center gap-2 text-[11px] text-slate-500">
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 font-medium text-slate-700">
-              <MapPin className="h-3.5 w-3.5 text-emerald-500" />
-              {ongs.length.toLocaleString('pt-BR')} ONG
-              {ongs.length === 1 ? '' : 's'} encontradas
-            </span>
-          </div>
-        </header>
-
-        <section className="mb-5 space-y-3 sm:mb-6">
-          <SearchBar
-            value={searchValue}
-            onChange={handleSearchChange}
-            placeholder="Buscar por nome da ONG..."
-          />
-
-          <div className="rounded-3xl border border-slate-200 bg-white/90 p-3 shadow-sm sm:p-4">
-            <div className="mb-2 flex items-center justify-between gap-2 text-[11px] text-slate-500">
-              <div className="inline-flex items-center gap-1 font-medium">
-                <SlidersHorizontal className="h-3.5 w-3.5" />
-                <span>Filtros</span>
-              </div>
-            </div>
-
-            <FilterSection
-              cities={cities}
-              filters={filters}
-              onChange={handleFilterChange}
-              onToggleNearMe={handleToggleNearMe}
-              onReset={handleResetFilters}
-              isLocating={isLocating}
-            />
-          </div>
-        </section>
-
-        <section aria-label="Mapa de ONGs" className="mb-6">
-          <OngsMap ongs={ongs} />
-        </section>
-
-        <main>
-          {isLoading ? (
-            <Motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25 }}
-              className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-            >
-              {Array.from({ length: 6 }).map((_, index) => (
-                <SkeletonCard key={index} />
-              ))}
-            </Motion.div>
-          ) : isEmpty ? (
-            <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-white/80 px-6 py-12 text-center shadow-sm">
-              <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500">
-                <MapPin className="h-5 w-5" />
-              </div>
-              <h2 className="text-base font-semibold text-slate-900 sm:text-lg">
-                Nenhuma ONG encontrada com esses filtros
-              </h2>
-              <p className="mt-1 max-w-md text-sm text-slate-500">
-                Tente remover alguns filtros ou buscar por outra cidade. Novas ONGs podem ser
-                adicionadas ao sistema em breve.
-              </p>
-            </div>
-          ) : (
-            <Motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.25 }}
-              className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-            >
-              {ongs.map((ong) => (
-                <OngCard key={ong.id} ong={ong} />
-              ))}
-            </Motion.div>
-          )}
-        </main>
+        {/* Map placeholder */}
+        <div className="mt-8 bg-slate-800 rounded-2xl p-8 border border-slate-700 text-center">
+          <MapPin className="w-12 h-12 text-slate-600 mx-auto mb-4" />
+          <p className="text-slate-400">Mapa será carregado assim que houver ONGs.</p>
+        </div>
       </div>
     </div>
   );
