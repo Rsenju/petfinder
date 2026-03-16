@@ -1,14 +1,14 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { create } from 'zustand';
-import { motion as Motion, AnimatePresence } from 'framer-motion';
-import { useForm, FormProvider } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { faker } from '@faker-js/faker';
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { create } from "zustand";
+import { motion as Motion, AnimatePresence } from "framer-motion";
+import { useForm, FormProvider } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { faker } from "@faker-js/faker";
 import {
   AlertTriangle,
   ArrowRight,
@@ -26,65 +26,65 @@ import {
   Play,
   Share2,
   ShieldCheck,
-  X
-} from 'lucide-react';
+  X,
+} from "lucide-react";
 
 const cn = (...inputs) => twMerge(clsx(inputs));
 
 const ageLabel = (idade) => {
-  if (!idade) return '';
+  if (!idade) return "";
   const valor = idade.valor ?? idade.value ?? idade.amount;
-  const tipo = idade.tipo ?? idade.unit ?? 'anos';
+  const tipo = idade.tipo ?? idade.unit ?? "anos";
 
-  if (!valor) return '';
-  if (tipo === 'meses') {
-    return `${valor} ${valor === 1 ? 'mês' : 'meses'}`;
+  if (!valor) return "";
+  if (tipo === "meses") {
+    return `${valor} ${valor === 1 ? "mês" : "meses"}`;
   }
-  return `${valor} ${valor === 1 ? 'ano' : 'anos'}`;
+  return `${valor} ${valor === 1 ? "ano" : "anos"}`;
 };
 
 const temperamentoLabel = (value) => {
   const map = {
-    docil: 'Dócil',
-    brincalhao: 'Brincalhão',
-    calmo: 'Calmo',
-    ativo: 'Ativo',
-    protetor: 'Protetor',
-    sociavel: 'Sociável',
-    timido: 'Tímido'
+    docil: "Dócil",
+    brincalhao: "Brincalhão",
+    calmo: "Calmo",
+    ativo: "Ativo",
+    protetor: "Protetor",
+    sociavel: "Sociável",
+    timido: "Tímido",
   };
   return map[value] ?? value;
 };
 
 const condicaoLabel = (value) => {
   const map = {
-    cegueira: 'Cegueira',
-    sem_pata: 'Amputação',
-    cardiopatia: 'Cardiopatia',
-    surdez: 'Surdez',
-    cuidados_continuos: 'Cuidados contínuos'
+    cegueira: "Cegueira",
+    sem_pata: "Amputação",
+    cardiopatia: "Cardiopatia",
+    surdez: "Surdez",
+    cuidados_continuos: "Cuidados contínuos",
   };
   return map[value] ?? value;
 };
 
 const matchSchema = z.object({
-  temOutrosPets: z.enum(['sim', 'nao']),
-  tempoEmCasa: z.enum(['pouco', 'medio', 'muito']),
-  espaco: z.enum(['pequeno', 'medio', 'grande']),
-  experiencia: z.enum(['iniciante', 'intermediario', 'avancado'])
+  temOutrosPets: z.enum(["sim", "nao"]),
+  tempoEmCasa: z.enum(["pouco", "medio", "muito"]),
+  espaco: z.enum(["pequeno", "medio", "grande"]),
+  experiencia: z.enum(["iniciante", "intermediario", "avancado"]),
 });
 
 const adoptionSchema = z.object({
-  nome: z.string().min(2, 'Informe seu nome completo'),
-  email: z.string().email('Informe um e-mail válido'),
-  telefone: z.string().min(8, 'Informe um telefone válido'),
-  cidade: z.string().min(2, 'Informe sua cidade'),
-  tipoMoradia: z.enum(['casa', 'apartamento', 'sitio']),
-  possuiQuintal: z.enum(['sim', 'nao']),
-  permiteInterior: z.enum(['sim', 'nao']),
-  jaTevePets: z.enum(['sim', 'nao']),
-  possuiPetsAtuais: z.enum(['sim', 'nao']),
-  tempoDisponivel: z.enum(['pouco', 'medio', 'muito'])
+  nome: z.string().min(2, "Informe seu nome completo"),
+  email: z.string().email("Informe um e-mail válido"),
+  telefone: z.string().min(8, "Informe um telefone válido"),
+  cidade: z.string().min(2, "Informe sua cidade"),
+  tipoMoradia: z.enum(["casa", "apartamento", "sitio"]),
+  possuiQuintal: z.enum(["sim", "nao"]),
+  permiteInterior: z.enum(["sim", "nao"]),
+  jaTevePets: z.enum(["sim", "nao"]),
+  possuiPetsAtuais: z.enum(["sim", "nao"]),
+  tempoDisponivel: z.enum(["pouco", "medio", "muito"]),
 });
 
 const useFavoritesStore = create((set) => ({
@@ -99,30 +99,51 @@ const useFavoritesStore = create((set) => ({
         next[id] = true;
       }
       return { favorites: next };
-    })
+    }),
 }));
 
 const createMockPet = (id) => {
-  const especie = faker.helpers.arrayElement(['cachorro', 'gato']);
-  const porte = faker.helpers.arrayElement(['pequeno', 'medio', 'grande']);
-  const sexo = faker.helpers.arrayElement(['macho', 'femea']);
+  const especie = faker.helpers.arrayElement(["cachorro", "gato"]);
+  const porte = faker.helpers.arrayElement(["pequeno", "medio", "grande"]);
+  const sexo = faker.helpers.arrayElement(["macho", "femea"]);
 
   const nome = faker.person.firstName();
   const cidade = faker.location.city();
 
-  const baseImage = faker.image.urlLoremFlickr({ category: 'animals', width: 1200, height: 800 });
-  const thumbImage = faker.image.urlLoremFlickr({ category: 'animals', width: 400, height: 300 });
+  const baseImage = faker.image.urlLoremFlickr({
+    category: "animals",
+    width: 1200,
+    height: 800,
+  });
+  const thumbImage = faker.image.urlLoremFlickr({
+    category: "animals",
+    width: 400,
+    height: 300,
+  });
 
-  const condicoesPool = ['cegueira', 'sem_pata', 'cardiopatia', 'surdez', 'cuidados_continuos'];
-  const temperamentoPool = ['docil', 'brincalhao', 'calmo', 'ativo', 'protetor', 'sociavel'];
+  const condicoesPool = [
+    "cegueira",
+    "sem_pata",
+    "cardiopatia",
+    "surdez",
+    "cuidados_continuos",
+  ];
+  const temperamentoPool = [
+    "docil",
+    "brincalhao",
+    "calmo",
+    "ativo",
+    "protetor",
+    "sociavel",
+  ];
 
   const condicoesEspeciais = faker.helpers.arrayElements(condicoesPool, {
     min: 0,
-    max: 2
+    max: 2,
   });
   const temperamento = faker.helpers.arrayElements(temperamentoPool, {
     min: 2,
-    max: 4
+    max: 4,
   });
 
   const hasVideo = faker.datatype.boolean(0.4);
@@ -131,34 +152,60 @@ const createMockPet = (id) => {
   const gallery = [
     {
       id: `${id}-main`,
-      type: 'image',
+      type: "image",
       thumbUrl: thumbImage,
       fullUrl: baseImage,
-      alt: `Foto de ${nome}, ${especie} para adoção em ${cidade}`
+      alt: `Foto de ${nome}, ${especie} para adoção em ${cidade}`,
     },
     {
       id: `${id}-2`,
-      type: 'image',
-      thumbUrl: faker.image.urlLoremFlickr({ category: 'animals', width: 400, height: 300 }),
-      fullUrl: faker.image.urlLoremFlickr({ category: 'animals', width: 1200, height: 800 }),
-      alt: `Outra foto de ${nome}`
+      type: "image",
+      thumbUrl: faker.image.urlLoremFlickr({
+        category: "animals",
+        width: 400,
+        height: 300,
+      }),
+      fullUrl: faker.image.urlLoremFlickr({
+        category: "animals",
+        width: 1200,
+        height: 800,
+      }),
+      alt: `Outra foto de ${nome}`,
     },
     {
       id: `${id}-3`,
-      type: hasPanorama ? 'panorama' : 'image',
-      thumbUrl: faker.image.urlLoremFlickr({ category: 'nature', width: 400, height: 300 }),
-      fullUrl: faker.image.urlLoremFlickr({ category: 'nature', width: 1600, height: 900 }),
-      alt: hasPanorama ? `Foto panorâmica do espaço do pet ${nome}` : `Ambiente onde ${nome} vive`
-    }
+      type: hasPanorama ? "panorama" : "image",
+      thumbUrl: faker.image.urlLoremFlickr({
+        category: "nature",
+        width: 400,
+        height: 300,
+      }),
+      fullUrl: faker.image.urlLoremFlickr({
+        category: "nature",
+        width: 1600,
+        height: 900,
+      }),
+      alt: hasPanorama
+        ? `Foto panorâmica do espaço do pet ${nome}`
+        : `Ambiente onde ${nome} vive`,
+    },
   ];
 
   if (hasVideo) {
     gallery.push({
       id: `${id}-video`,
-      type: 'video',
-      thumbUrl: faker.image.urlLoremFlickr({ category: 'animals', width: 400, height: 300 }),
-      fullUrl: faker.image.urlLoremFlickr({ category: 'animals', width: 1200, height: 800 }),
-      alt: `Vídeo do pet ${nome}`
+      type: "video",
+      thumbUrl: faker.image.urlLoremFlickr({
+        category: "animals",
+        width: 400,
+        height: 300,
+      }),
+      fullUrl: faker.image.urlLoremFlickr({
+        category: "animals",
+        width: 1200,
+        height: 800,
+      }),
+      alt: `Vídeo do pet ${nome}`,
     });
   }
 
@@ -167,7 +214,7 @@ const createMockPet = (id) => {
     nome,
     especie,
     raca: faker.animal.dog(),
-    idade: { valor: faker.number.int({ min: 1, max: 14 }), tipo: 'anos' },
+    idade: { valor: faker.number.int({ min: 1, max: 14 }), tipo: "anos" },
     porte,
     sexo,
     vacinado: faker.datatype.boolean(0.8),
@@ -181,9 +228,9 @@ const createMockPet = (id) => {
       contato: faker.phone.number(),
       cidade,
       email: faker.internet.email(),
-      whatsapp: faker.phone.number('###########')
+      whatsapp: faker.phone.number("###########"),
     },
-    gallery
+    gallery,
   };
 };
 
@@ -200,62 +247,70 @@ const fetchSimilarPets = async (pet) => {
       ...base,
       especie: pet.especie,
       porte: pet.porte,
-      ong: { ...base.ong, nome: pet.ong.nome }
+      ong: { ...base.ong, nome: pet.ong.nome },
     };
   });
   return similar;
 };
 
 const badgeClass =
-  'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium tracking-tight';
+  "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium tracking-tight";
 
-const badgePositive = 'bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30';
-const badgeNeutral = 'bg-slate-700 text-slate-300 ring-1 ring-slate-600';
-const badgeWarning = 'bg-amber-500/20 text-amber-400 ring-1 ring-amber-500/30';
+const badgePositive =
+  "bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30";
+const badgeNeutral = "bg-slate-700 text-slate-300 ring-1 ring-slate-600";
+const badgeWarning = "bg-amber-500/20 text-amber-400 ring-1 ring-amber-500/30";
 
-const stepTitles = ['Dados pessoais', 'Moradia', 'Experiência com pets'];
+const stepTitles = ["Dados pessoais", "Moradia", "Experiência com pets"];
 
 function MatchSimulator({ pet }) {
   const [formValues, setFormValues] = useState({
-    temOutrosPets: 'nao',
-    tempoEmCasa: 'medio',
-    espaco: 'medio',
-    experiencia: 'intermediario'
+    temOutrosPets: "nao",
+    tempoEmCasa: "medio",
+    espaco: "medio",
+    experiencia: "intermediario",
   });
   const [matchResult, setMatchResult] = useState(null);
 
   const handleChange = (field, value) => {
     setFormValues((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
   const handleCalculate = () => {
     const parsed = matchSchema.safeParse(formValues);
     if (!parsed.success) {
-      setMatchResult({ value: 40, status: 'Ajuste alguns pontos para um match melhor.' });
+      setMatchResult({
+        value: 40,
+        status: "Ajuste alguns pontos para um match melhor.",
+      });
       return;
     }
 
     let score = 60;
 
-    if (formValues.tempoEmCasa === 'muito') score += 15;
-    if (formValues.espaco === 'grande') score += 10;
-    if (formValues.experiencia === 'avancado') score += 10;
-    if (formValues.temOutrosPets === 'sim') score += 5;
+    if (formValues.tempoEmCasa === "muito") score += 15;
+    if (formValues.espaco === "grande") score += 10;
+    if (formValues.experiencia === "avancado") score += 10;
+    if (formValues.temOutrosPets === "sim") score += 5;
 
-    if (pet.porte === 'grande' && formValues.espaco === 'pequeno') score -= 15;
-    if (pet.temperamento?.includes('ativo') && formValues.tempoEmCasa === 'pouco') score -= 10;
+    if (pet.porte === "grande" && formValues.espaco === "pequeno") score -= 15;
+    if (
+      pet.temperamento?.includes("ativo") &&
+      formValues.tempoEmCasa === "pouco"
+    )
+      score -= 10;
 
     const value = Math.max(20, Math.min(100, score));
 
     const status =
       value >= 85
-        ? 'Match perfeito! Vocês têm tudo para dar muito certo.'
+        ? "Match perfeito! Vocês têm tudo para dar muito certo."
         : value >= 70
-          ? 'Ótimo match! Com alguns cuidados extras, será uma ótima adoção.'
-          : 'Talvez seja melhor conversar com a ONG para entender melhor as necessidades do pet.';
+          ? "Ótimo match! Com alguns cuidados extras, será uma ótima adoção."
+          : "Talvez seja melhor conversar com a ONG para entender melhor as necessidades do pet.";
 
     setMatchResult({ value, status });
   };
@@ -285,19 +340,19 @@ function MatchSimulator({ pet }) {
             Você já tem outros pets?
           </label>
           <div className="flex gap-1.5">
-            {['sim', 'nao'].map((value) => (
+            {["sim", "nao"].map((value) => (
               <button
                 key={value}
                 type="button"
-                onClick={() => handleChange('temOutrosPets', value)}
+                onClick={() => handleChange("temOutrosPets", value)}
                 className={cn(
-                  'flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition',
+                  "flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition",
                   formValues.temOutrosPets === value
-                    ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
-                    : 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500'
+                    ? "border-emerald-500 bg-emerald-500/20 text-emerald-400"
+                    : "border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500",
                 )}
               >
-                {value === 'sim' ? 'Sim' : 'Não'}
+                {value === "sim" ? "Sim" : "Não"}
               </button>
             ))}
           </div>
@@ -309,7 +364,9 @@ function MatchSimulator({ pet }) {
           </label>
           <select
             value={formValues.tempoEmCasa}
-            onChange={(event) => handleChange('tempoEmCasa', event.target.value)}
+            onChange={(event) =>
+              handleChange("tempoEmCasa", event.target.value)
+            }
             className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
           >
             <option value="pouco">Pouco (até 4h)</option>
@@ -324,7 +381,7 @@ function MatchSimulator({ pet }) {
           </label>
           <select
             value={formValues.espaco}
-            onChange={(event) => handleChange('espaco', event.target.value)}
+            onChange={(event) => handleChange("espaco", event.target.value)}
             className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
           >
             <option value="pequeno">Pequeno</option>
@@ -339,7 +396,9 @@ function MatchSimulator({ pet }) {
           </label>
           <select
             value={formValues.experiencia}
-            onChange={(event) => handleChange('experiencia', event.target.value)}
+            onChange={(event) =>
+              handleChange("experiencia", event.target.value)
+            }
             className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
           >
             <option value="iniciante">Iniciante</option>
@@ -367,7 +426,11 @@ function MatchSimulator({ pet }) {
             className="flex items-center gap-2 text-xs text-slate-300"
           >
             <div className="relative h-10 w-10">
-              <svg className="h-10 w-10 -rotate-90" viewBox="0 0 36 36" aria-hidden="true">
+              <svg
+                className="h-10 w-10 -rotate-90"
+                viewBox="0 0 36 36"
+                aria-hidden="true"
+              >
                 <path
                   className="text-slate-700"
                   stroke="currentColor"
@@ -384,14 +447,16 @@ function MatchSimulator({ pet }) {
                   d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: matchResult.value / 100 }}
-                  transition={{ duration: 0.8, ease: 'easeOut' }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center text-[11px] font-semibold text-white">
                 {matchResult.value}%
               </div>
             </div>
-            <p className="max-w-[220px] text-[11px] text-slate-400">{matchResult.status}</p>
+            <p className="max-w-[220px] text-[11px] text-slate-400">
+              {matchResult.status}
+            </p>
           </Motion.div>
         )}
       </div>
@@ -406,24 +471,24 @@ function AdoptionFormLocal({ pet }) {
   const methods = useForm({
     resolver: zodResolver(adoptionSchema),
     defaultValues: {
-      nome: '',
-      email: '',
-      telefone: '',
-      cidade: '',
-      tipoMoradia: 'apartamento',
-      possuiQuintal: 'nao',
-      permiteInterior: 'sim',
-      jaTevePets: 'nao',
-      possuiPetsAtuais: 'nao',
-      tempoDisponivel: 'medio'
+      nome: "",
+      email: "",
+      telefone: "",
+      cidade: "",
+      tipoMoradia: "apartamento",
+      possuiQuintal: "nao",
+      permiteInterior: "sim",
+      jaTevePets: "nao",
+      possuiPetsAtuais: "nao",
+      tempoDisponivel: "medio",
     },
-    mode: 'onBlur'
+    mode: "onBlur",
   });
 
   const {
     handleSubmit,
     register,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = methods;
 
   const onSubmit = async () => {
@@ -431,7 +496,8 @@ function AdoptionFormLocal({ pet }) {
     setSubmitted(true);
   };
 
-  const nextStep = () => setStep((prev) => Math.min(prev + 1, stepTitles.length - 1));
+  const nextStep = () =>
+    setStep((prev) => Math.min(prev + 1, stepTitles.length - 1));
   const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
   const progress = ((step + 1) / stepTitles.length) * 100;
@@ -465,9 +531,9 @@ function AdoptionFormLocal({ pet }) {
         <div className="relative h-1.5 overflow-hidden rounded-full bg-slate-700">
           <Motion.div
             className="h-full rounded-full bg-emerald-500"
-            initial={{ width: '0%' }}
+            initial={{ width: "0%" }}
             animate={{ width: `${progress}%` }}
-            transition={{ type: 'spring', stiffness: 120, damping: 20 }}
+            transition={{ type: "spring", stiffness: 120, damping: 20 }}
           />
         </div>
       </div>
@@ -485,8 +551,8 @@ function AdoptionFormLocal({ pet }) {
             Pré-adoção enviada com sucesso!
           </h3>
           <p className="mt-1 max-w-xs text-xs text-slate-400">
-            A equipe da ONG {pet.ong.nome} entrará em contato com você em breve para continuar o
-            processo.
+            A equipe da ONG {pet.ong.nome} entrará em contato com você em breve
+            para continuar o processo.
           </p>
         </Motion.div>
       ) : (
@@ -512,33 +578,39 @@ function AdoptionFormLocal({ pet }) {
                     </label>
                     <input
                       type="text"
-                      {...register('nome')}
+                      {...register("nome")}
                       className={cn(
-                        'h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none',
+                        "h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none",
                         errors.nome
-                          ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30'
-                          : 'border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30'
+                          ? "border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30"
+                          : "border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30",
                       )}
                     />
                     {errors.nome && (
-                      <p className="text-[11px] text-rose-400">{errors.nome.message}</p>
+                      <p className="text-[11px] text-rose-400">
+                        {errors.nome.message}
+                      </p>
                     )}
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="block text-[11px] font-medium text-slate-500">E-mail</label>
+                    <label className="block text-[11px] font-medium text-slate-500">
+                      E-mail
+                    </label>
                     <input
                       type="email"
-                      {...register('email')}
+                      {...register("email")}
                       className={cn(
-                        'h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none',
+                        "h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none",
                         errors.email
-                          ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30'
-                          : 'border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30'
+                          ? "border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30"
+                          : "border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30",
                       )}
                     />
                     {errors.email && (
-                      <p className="text-[11px] text-rose-400">{errors.email.message}</p>
+                      <p className="text-[11px] text-rose-400">
+                        {errors.email.message}
+                      </p>
                     )}
                   </div>
 
@@ -548,33 +620,39 @@ function AdoptionFormLocal({ pet }) {
                     </label>
                     <input
                       type="tel"
-                      {...register('telefone')}
+                      {...register("telefone")}
                       className={cn(
-                        'h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none',
+                        "h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none",
                         errors.telefone
-                          ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30'
-                          : 'border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30'
+                          ? "border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30"
+                          : "border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30",
                       )}
                     />
                     {errors.telefone && (
-                      <p className="text-[11px] text-rose-400">{errors.telefone.message}</p>
+                      <p className="text-[11px] text-rose-400">
+                        {errors.telefone.message}
+                      </p>
                     )}
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="block text-[11px] font-medium text-slate-500">Cidade</label>
+                    <label className="block text-[11px] font-medium text-slate-500">
+                      Cidade
+                    </label>
                     <input
                       type="text"
-                      {...register('cidade')}
+                      {...register("cidade")}
                       className={cn(
-                        'h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none',
+                        "h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none",
                         errors.cidade
-                          ? 'border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30'
-                          : 'border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30'
+                          ? "border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30"
+                          : "border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30",
                       )}
                     />
                     {errors.cidade && (
-                      <p className="text-[11px] text-rose-400">{errors.cidade.message}</p>
+                      <p className="text-[11px] text-rose-400">
+                        {errors.cidade.message}
+                      </p>
                     )}
                   </div>
                 </Motion.div>
@@ -594,7 +672,7 @@ function AdoptionFormLocal({ pet }) {
                       Tipo de moradia
                     </label>
                     <select
-                      {...register('tipoMoradia')}
+                      {...register("tipoMoradia")}
                       className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
                     >
                       <option value="apartamento">Apartamento</option>
@@ -608,19 +686,21 @@ function AdoptionFormLocal({ pet }) {
                       Possui quintal?
                     </label>
                     <div className="flex gap-1.5">
-                      {['sim', 'nao'].map((value) => (
+                      {["sim", "nao"].map((value) => (
                         <button
                           key={value}
                           type="button"
-                          onClick={() => methods.setValue('possuiQuintal', value)}
+                          onClick={() =>
+                            methods.setValue("possuiQuintal", value)
+                          }
                           className={cn(
-                            'flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition',
-                            methods.watch('possuiQuintal') === value
-                              ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
-                              : 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500'
+                            "flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition",
+                            methods.watch("possuiQuintal") === value
+                              ? "border-emerald-500 bg-emerald-500/20 text-emerald-400"
+                              : "border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500",
                           )}
                         >
-                          {value === 'sim' ? 'Sim' : 'Não'}
+                          {value === "sim" ? "Sim" : "Não"}
                         </button>
                       ))}
                     </div>
@@ -631,19 +711,21 @@ function AdoptionFormLocal({ pet }) {
                       O pet poderá ficar dentro de casa?
                     </label>
                     <div className="flex gap-1.5">
-                      {['sim', 'nao'].map((value) => (
+                      {["sim", "nao"].map((value) => (
                         <button
                           key={value}
                           type="button"
-                          onClick={() => methods.setValue('permiteInterior', value)}
+                          onClick={() =>
+                            methods.setValue("permiteInterior", value)
+                          }
                           className={cn(
-                            'flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition',
-                            methods.watch('permiteInterior') === value
-                              ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
-                              : 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500'
+                            "flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition",
+                            methods.watch("permiteInterior") === value
+                              ? "border-emerald-500 bg-emerald-500/20 text-emerald-400"
+                              : "border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500",
                           )}
                         >
-                          {value === 'sim' ? 'Sim' : 'Não'}
+                          {value === "sim" ? "Sim" : "Não"}
                         </button>
                       ))}
                     </div>
@@ -665,19 +747,19 @@ function AdoptionFormLocal({ pet }) {
                       Já teve pets antes?
                     </label>
                     <div className="flex gap-1.5">
-                      {['sim', 'nao'].map((value) => (
+                      {["sim", "nao"].map((value) => (
                         <button
                           key={value}
                           type="button"
-                          onClick={() => methods.setValue('jaTevePets', value)}
+                          onClick={() => methods.setValue("jaTevePets", value)}
                           className={cn(
-                            'flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition',
-                            methods.watch('jaTevePets') === value
-                              ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
-                              : 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500'
+                            "flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition",
+                            methods.watch("jaTevePets") === value
+                              ? "border-emerald-500 bg-emerald-500/20 text-emerald-400"
+                              : "border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500",
                           )}
                         >
-                          {value === 'sim' ? 'Sim' : 'Não'}
+                          {value === "sim" ? "Sim" : "Não"}
                         </button>
                       ))}
                     </div>
@@ -688,19 +770,21 @@ function AdoptionFormLocal({ pet }) {
                       Possui pets atualmente?
                     </label>
                     <div className="flex gap-1.5">
-                      {['sim', 'nao'].map((value) => (
+                      {["sim", "nao"].map((value) => (
                         <button
                           key={value}
                           type="button"
-                          onClick={() => methods.setValue('possuiPetsAtuais', value)}
+                          onClick={() =>
+                            methods.setValue("possuiPetsAtuais", value)
+                          }
                           className={cn(
-                            'flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition',
-                            methods.watch('possuiPetsAtuais') === value
-                              ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
-                              : 'border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500'
+                            "flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition",
+                            methods.watch("possuiPetsAtuais") === value
+                              ? "border-emerald-500 bg-emerald-500/20 text-emerald-400"
+                              : "border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500",
                           )}
                         >
-                          {value === 'sim' ? 'Sim' : 'Não'}
+                          {value === "sim" ? "Sim" : "Não"}
                         </button>
                       ))}
                     </div>
@@ -711,7 +795,7 @@ function AdoptionFormLocal({ pet }) {
                       Tempo disponível por dia para o pet
                     </label>
                     <select
-                      {...register('tempoDisponivel')}
+                      {...register("tempoDisponivel")}
                       className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
                     >
                       <option value="pouco">Pouco (até 2h)</option>
@@ -729,10 +813,10 @@ function AdoptionFormLocal({ pet }) {
                 onClick={prevStep}
                 disabled={step === 0}
                 className={cn(
-                  'inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-medium transition',
+                  "inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-medium transition",
                   step === 0
-                    ? 'cursor-not-allowed text-slate-600'
-                    : 'text-slate-400 hover:bg-slate-700'
+                    ? "cursor-not-allowed text-slate-600"
+                    : "text-slate-400 hover:bg-slate-700",
                 )}
               >
                 <ChevronLeft className="h-3 w-3" />
@@ -777,28 +861,33 @@ function MediaGallery({ pet }) {
   };
 
   const handlePrev = () => {
-    setActiveIndex((prev) => (prev - 1 + pet.gallery.length) % pet.gallery.length);
+    setActiveIndex(
+      (prev) => (prev - 1 + pet.gallery.length) % pet.gallery.length,
+    );
   };
 
   useEffect(() => {
     if (!isModalOpen) return;
 
     const handleKeyDown = (event) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         setIsModalOpen(false);
-      } else if (event.key === 'ArrowRight') {
+      } else if (event.key === "ArrowRight") {
         handleNext();
-      } else if (event.key === 'ArrowLeft') {
+      } else if (event.key === "ArrowLeft") {
         handlePrev();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isModalOpen, pet.gallery.length]);
 
   return (
-    <section aria-label={`Galeria de mídia do pet ${pet.nome}`} className="space-y-3">
+    <section
+      aria-label={`Galeria de mídia do pet ${pet.nome}`}
+      className="space-y-3"
+    >
       <div className="flex flex-col gap-3 md:flex-row">
         <div className="order-2 flex w-full gap-2 md:order-1 md:w-28 md:flex-col">
           {pet.gallery.map((media, index) => (
@@ -807,10 +896,10 @@ function MediaGallery({ pet }) {
               type="button"
               onClick={() => setActiveIndex(index)}
               className={cn(
-                'group relative overflow-hidden rounded-2xl border transition',
+                "group relative overflow-hidden rounded-2xl border transition",
                 activeIndex === index
-                  ? 'border-emerald-500 ring-2 ring-emerald-500/30'
-                  : 'border-transparent hover:border-slate-500'
+                  ? "border-emerald-500 ring-2 ring-emerald-500/30"
+                  : "border-transparent hover:border-slate-500",
               )}
             >
               <img
@@ -819,12 +908,12 @@ function MediaGallery({ pet }) {
                 loading="lazy"
                 className="h-20 w-full object-cover md:h-20"
               />
-              {media.type === 'video' && (
+              {media.type === "video" && (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/30 text-white">
                   <Play className="h-5 w-5 drop-shadow" />
                 </div>
               )}
-              {media.type === 'panorama' && (
+              {media.type === "panorama" && (
                 <div className="pointer-events-none absolute bottom-1 right-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white">
                   360°
                 </div>
@@ -945,10 +1034,10 @@ function MediaGallery({ pet }) {
 
 function SimilarPets({ basePet }) {
   const { data: similarPets = [], isLoading } = useQuery({
-    queryKey: ['similarPets', basePet.id],
+    queryKey: ["similarPets", basePet.id],
     queryFn: () => fetchSimilarPets(basePet),
     enabled: !!basePet,
-    staleTime: 5 * 60 * 1000
+    staleTime: 5 * 60 * 1000,
   });
 
   if (!basePet) return null;
@@ -995,7 +1084,7 @@ function SimilarPets({ basePet }) {
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                 />
                 <div className="absolute left-2 top-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-medium text-white">
-                  {pet.porte} · {pet.sexo === 'femea' ? 'Fêmea' : 'Macho'}
+                  {pet.porte} · {pet.sexo === "femea" ? "Fêmea" : "Macho"}
                 </div>
               </div>
               <div className="px-3 pb-3 pt-2 text-xs text-slate-300">
@@ -1014,13 +1103,21 @@ function SimilarPets({ basePet }) {
 }
 
 export default function PetDetailPage() {
-  const { id } = useParams();
-  const petId = id ?? '1';
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
-  const { data: pet, isLoading, isError } = useQuery({
-    queryKey: ['pet', petId],
+  const { id } = useParams();
+  const petId = id ?? "1";
+
+  const {
+    data: pet,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["pet", petId],
     queryFn: () => fetchPetById(petId),
-    staleTime: 5 * 60 * 1000
+    staleTime: 5 * 60 * 1000,
   });
 
   const isFavorite = useFavoritesStore((state) => !!state.favorites[petId]);
@@ -1029,7 +1126,7 @@ export default function PetDetailPage() {
   const toastTimeoutRef = useRef(null);
   const [toast, setToast] = useState(null);
 
-  const showToast = (message, variant = 'success') => {
+  const showToast = (message, variant = "success") => {
     setToast({ message, variant });
     if (toastTimeoutRef.current) {
       window.clearTimeout(toastTimeoutRef.current);
@@ -1043,9 +1140,9 @@ export default function PetDetailPage() {
     toggleFavorite(petId);
     showToast(
       isFavorite
-        ? `${pet?.nome ?? 'Pet'} removido dos favoritos.`
-        : `${pet?.nome ?? 'Pet'} adicionado aos favoritos!`,
-      isFavorite ? 'neutral' : 'success'
+        ? `${pet?.nome ?? "Pet"} removido dos favoritos.`
+        : `${pet?.nome ?? "Pet"} adicionado aos favoritos!`,
+      isFavorite ? "neutral" : "success",
     );
   };
 
@@ -1054,26 +1151,26 @@ export default function PetDetailPage() {
     const url = window.location.href;
     const text = `Olha este pet para adoção: ${pet.nome} · ${pet.especie} · ${url}`;
     const link = `https://wa.me/?text=${encodeURIComponent(text)}`;
-    window.open(link, '_blank', 'noopener,noreferrer');
+    window.open(link, "_blank", "noopener,noreferrer");
   };
 
   const handleShareInstagram = () => {
     if (!pet) return;
     showToast(
-      'Abrindo câmera do Instagram (simulação). Use o link do pet na sua story.',
-      'neutral'
+      "Abrindo câmera do Instagram (simulação). Use o link do pet na sua story.",
+      "neutral",
     );
-    window.open('https://www.instagram.com/', '_blank', 'noopener,noreferrer');
+    window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
   };
 
   const structuredTemperamento = useMemo(
     () => pet?.temperamento?.map((value) => temperamentoLabel(value)) ?? [],
-    [pet?.temperamento]
+    [pet?.temperamento],
   );
 
   const structuredCondicoes = useMemo(
     () => pet?.condicoesEspeciais?.map((value) => condicaoLabel(value)) ?? [],
-    [pet?.condicoesEspeciais]
+    [pet?.condicoesEspeciais],
   );
 
   return (
@@ -1108,7 +1205,8 @@ export default function PetDetailPage() {
               Não foi possível carregar os detalhes do pet
             </h1>
             <p className="mt-1 max-w-md text-sm text-slate-400">
-              Tente atualizar a página ou voltar para a lista de pets para escolher outro amigo.
+              Tente atualizar a página ou voltar para a lista de pets para
+              escolher outro amigo.
             </p>
           </div>
         ) : (
@@ -1134,7 +1232,9 @@ export default function PetDetailPage() {
                   <span className="h-1 w-1 rounded-full bg-slate-600" />
                   <span>{ageLabel(pet.idade)}</span>
                   <span className="h-1 w-1 rounded-full bg-slate-600" />
-                  <span className="capitalize">{pet.sexo === 'femea' ? 'Fêmea' : 'Macho'}</span>
+                  <span className="capitalize">
+                    {pet.sexo === "femea" ? "Fêmea" : "Macho"}
+                  </span>
                 </div>
               </div>
 
@@ -1143,25 +1243,27 @@ export default function PetDetailPage() {
                   type="button"
                   onClick={handleFavoriteClick}
                   className={cn(
-                    'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium shadow-sm transition',
+                    "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium shadow-sm transition",
                     isFavorite
-                      ? 'border-rose-500/30 bg-rose-500/20 text-rose-400 hover:bg-rose-500/30'
-                      : 'border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700'
+                      ? "border-rose-500/30 bg-rose-500/20 text-rose-400 hover:bg-rose-500/30"
+                      : "border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700",
                   )}
                   aria-pressed={isFavorite}
                   aria-label={
                     isFavorite
-                      ? 'Remover pet dos favoritos'
-                      : 'Adicionar pet aos favoritos para acompanhar depois'
+                      ? "Remover pet dos favoritos"
+                      : "Adicionar pet aos favoritos para acompanhar depois"
                   }
                 >
                   <Heart
                     className={cn(
-                      'h-4 w-4',
-                      isFavorite ? 'fill-rose-500 text-rose-500' : 'text-slate-400'
+                      "h-4 w-4",
+                      isFavorite
+                        ? "fill-rose-500 text-rose-500"
+                        : "text-slate-400",
                     )}
                   />
-                  <span>{isFavorite ? 'Favoritado' : 'Favoritar'}</span>
+                  <span>{isFavorite ? "Favoritado" : "Favoritar"}</span>
                 </button>
 
                 <div className="inline-flex items-center gap-1 rounded-full bg-slate-800 px-3 py-1.5 text-xs font-medium text-white shadow-sm border border-slate-700">
@@ -1202,8 +1304,12 @@ export default function PetDetailPage() {
                       </h3>
                       <dl className="grid grid-cols-2 gap-y-1.5 gap-x-3">
                         <div>
-                          <dt className="text-[11px] text-slate-500">Espécie</dt>
-                          <dd className="font-medium capitalize text-white">{pet.especie}</dd>
+                          <dt className="text-[11px] text-slate-500">
+                            Espécie
+                          </dt>
+                          <dd className="font-medium capitalize text-white">
+                            {pet.especie}
+                          </dd>
                         </div>
                         <div>
                           <dt className="text-[11px] text-slate-500">Raça</dt>
@@ -1211,11 +1317,15 @@ export default function PetDetailPage() {
                         </div>
                         <div>
                           <dt className="text-[11px] text-slate-500">Porte</dt>
-                          <dd className="font-medium capitalize text-white">{pet.porte}</dd>
+                          <dd className="font-medium capitalize text-white">
+                            {pet.porte}
+                          </dd>
                         </div>
                         <div>
                           <dt className="text-[11px] text-slate-500">Idade</dt>
-                          <dd className="font-medium text-white">{ageLabel(pet.idade)}</dd>
+                          <dd className="font-medium text-white">
+                            {ageLabel(pet.idade)}
+                          </dd>
                         </div>
                       </dl>
                     </div>
@@ -1225,22 +1335,32 @@ export default function PetDetailPage() {
                         Saúde
                       </h3>
                       <div className="flex flex-wrap gap-1.5">
-                        <span className={cn(badgeClass, pet.vacinado ? badgePositive : badgeNeutral)}>
+                        <span
+                          className={cn(
+                            badgeClass,
+                            pet.vacinado ? badgePositive : badgeNeutral,
+                          )}
+                        >
                           <ShieldCheck className="h-3.5 w-3.5" />
-                          {pet.vacinado ? 'Vacinado' : 'Não vacinado'}
-                        </span>
-                        <span className={cn(badgeClass, pet.castrado ? badgePositive : badgeNeutral)}>
-                          <ShieldCheck className="h-3.5 w-3.5" />
-                          {pet.castrado ? 'Castrado' : 'Não castrado'}
+                          {pet.vacinado ? "Vacinado" : "Não vacinado"}
                         </span>
                         <span
                           className={cn(
                             badgeClass,
-                            pet.vermifugado ? badgePositive : badgeNeutral
+                            pet.castrado ? badgePositive : badgeNeutral,
                           )}
                         >
                           <ShieldCheck className="h-3.5 w-3.5" />
-                          {pet.vermifugado ? 'Vermifugado' : 'Não vermifugado'}
+                          {pet.castrado ? "Castrado" : "Não castrado"}
+                        </span>
+                        <span
+                          className={cn(
+                            badgeClass,
+                            pet.vermifugado ? badgePositive : badgeNeutral,
+                          )}
+                        >
+                          <ShieldCheck className="h-3.5 w-3.5" />
+                          {pet.vermifugado ? "Vermifugado" : "Não vermifugado"}
                         </span>
                       </div>
                     </div>
@@ -1255,7 +1375,7 @@ export default function PetDetailPage() {
                             key={label}
                             className={cn(
                               badgeClass,
-                              'bg-slate-700 text-slate-300 ring-1 ring-slate-600'
+                              "bg-slate-700 text-slate-300 ring-1 ring-slate-600",
                             )}
                           >
                             {label}
@@ -1273,7 +1393,11 @@ export default function PetDetailPage() {
                           {structuredCondicoes.map((label) => (
                             <span
                               key={label}
-                              className={cn(badgeClass, badgeWarning, 'flex items-center gap-1')}
+                              className={cn(
+                                badgeClass,
+                                badgeWarning,
+                                "flex items-center gap-1",
+                              )}
                             >
                               <AlertTriangle className="h-3.5 w-3.5" />
                               {label}
@@ -1281,8 +1405,8 @@ export default function PetDetailPage() {
                           ))}
                         </div>
                         <p className="text-[11px] text-slate-400">
-                          Pets com condições especiais também merecem um lar. A ONG dará todo apoio
-                          necessário.
+                          Pets com condições especiais também merecem um lar. A
+                          ONG dará todo apoio necessário.
                         </p>
                       </div>
                     )}
@@ -1292,7 +1416,9 @@ export default function PetDetailPage() {
                     <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
                       História
                     </h3>
-                    <p className="leading-relaxed text-slate-300">{pet.historia}</p>
+                    <p className="leading-relaxed text-slate-300">
+                      {pet.historia}
+                    </p>
                   </div>
                 </section>
               </div>
@@ -1314,8 +1440,8 @@ export default function PetDetailPage() {
                         ONG {pet.ong.nome}
                       </h2>
                       <p className="mt-1 text-xs text-slate-400">
-                        Organização parceira verificada. Todas as adoções passam por entrevista e
-                        termo de responsabilidade.
+                        Organização parceira verificada. Todas as adoções passam
+                        por entrevista e termo de responsabilidade.
                       </p>
                     </div>
                   </div>
@@ -1355,7 +1481,8 @@ export default function PetDetailPage() {
                   </div>
 
                   <p className="mt-2 text-[11px] text-slate-500">
-                    Seus dados serão compartilhados apenas com a ONG responsável por este pet.
+                    Seus dados serão compartilhados apenas com a ONG responsável
+                    por este pet.
                   </p>
                 </section>
 
@@ -1374,8 +1501,8 @@ export default function PetDetailPage() {
                     </h2>
                   </div>
                   <p className="mb-3 text-[11px] text-slate-400">
-                    Quanto mais pessoas conhecerem {pet.nome}, maiores as chances de encontrar um
-                    lar.
+                    Quanto mais pessoas conhecerem {pet.nome}, maiores as
+                    chances de encontrar um lar.
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <button
@@ -1414,14 +1541,14 @@ export default function PetDetailPage() {
           >
             <div
               className={cn(
-                'pointer-events-auto flex items-center gap-2 rounded-2xl px-3 py-2 text-xs shadow-lg',
-                toast.variant === 'success'
-                  ? 'bg-emerald-600 text-emerald-50'
-                  : 'bg-slate-800 text-slate-200 border border-slate-700'
+                "pointer-events-auto flex items-center gap-2 rounded-2xl px-3 py-2 text-xs shadow-lg",
+                toast.variant === "success"
+                  ? "bg-emerald-600 text-emerald-50"
+                  : "bg-slate-800 text-slate-200 border border-slate-700",
               )}
             >
               <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-black/20">
-                {toast.variant === 'success' ? (
+                {toast.variant === "success" ? (
                   <Heart className="h-3.5 w-3.5" />
                 ) : (
                   <Info className="h-3.5 w-3.5" />
