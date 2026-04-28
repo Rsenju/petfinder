@@ -1,0 +1,64 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sofia+Sans:wght@400;500;600;700&display=swap");
+
+@import "tailwindcss";
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    background-color: #0f172a; /* slate-900 - fundo escuro */
+  }
+
+  body {
+    @apply bg-slate-900 text-white antialiased;
+  }
+}
+
+@layer components {
+  /* Botões */
+  .btn-primary {
+    @apply bg-blue-600 text-white px-6 py-2.5 rounded-lg font-medium 
+           hover:bg-blue-700 transition-colors duration-200 
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply border-2 border-slate-600 text-slate-300 px-6 py-2.5 rounded-lg font-medium 
+           hover:border-blue-400 hover:text-blue-400 transition-colors duration-200;
+  }
+
+  /* Cards - agora sempre escuros */
+  .card {
+    @apply bg-slate-800 rounded-2xl shadow-lg border border-slate-700 
+           hover:shadow-xl transition-shadow duration-300 text-white;
+  }
+
+  /* Badge/Tags */
+  .badge {
+    @apply bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  /* Inputs */
+  .input {
+    @apply bg-slate-800 border-slate-600 text-white placeholder-slate-400
+           focus:border-blue-500 focus:ring-blue-500;
+  }
+}
+
+/* Scrollbar estilizada para tema dark */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
