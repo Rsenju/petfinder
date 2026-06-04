@@ -1,21 +1,21 @@
 import { Link } from "react-router-dom";
-import { Heart, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 
 export default function PetCard({ pet, layout = "grid" }) {
   return (
     <article className={`overflow-hidden rounded-xl border border-slate-700 bg-slate-800 shadow-lg ${layout === "list" ? "sm:flex" : ""}`}>
-      <div className={layout === "list" ? "sm:w-56" : ""}>
-        <img src={pet.image || pet.image_url} alt={pet.name} className="h-56 w-full object-cover" loading="lazy" />
+      <div className={`bg-white ${layout === "list" ? "sm:w-56" : ""}`}>
+        <img
+          src={pet.image || pet.image_url}
+          alt={pet.name}
+          className="h-56 w-full object-contain p-2"
+          loading="lazy"
+        />
       </div>
       <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h3 className="text-xl font-bold text-white">{pet.name}</h3>
-            <p className="text-sm text-slate-400">{pet.breed} - {pet.age}</p>
-          </div>
-          <button className="rounded-full p-2 text-slate-300 hover:bg-rose-500/20 hover:text-rose-300" aria-label="Favoritar">
-            <Heart className="h-5 w-5" />
-          </button>
+        <div>
+          <h3 className="text-xl font-bold text-white">{pet.name}</h3>
+          <p className="text-sm text-slate-400">{pet.breed} - {pet.age}</p>
         </div>
         <p className="mt-3 flex items-center gap-2 text-sm text-slate-400">
           <MapPin className="h-4 w-4" />

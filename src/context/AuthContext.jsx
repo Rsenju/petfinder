@@ -1,8 +1,11 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import {
   getCurrentUser,
+  loginWithGoogle,
   loginWithCredentials,
   logoutUser,
+  onAuthStateChange,
+  registerOngAccount,
   updateCurrentUser,
 } from '../services/authService';
 
@@ -30,6 +33,14 @@ export function AuthProvider({ children }) {
     };
 
     checkAuth();
+
+    const subscription = onAuthStateChange((nextUser) => {
+      setUser(nextUser);
+      setIsAuthenticated(Boolean(nextUser));
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = useCallback(async (credentials) => {
@@ -40,10 +51,14 @@ export function AuthProvider({ children }) {
   }, []);
 
   const register = useCallback(async (userData) => {
-    const newUser = await loginWithCredentials(userData);
+    const newUser = await registerOngAccount(userData);
     setUser(newUser);
-    setIsAuthenticated(true);
+    setIsAuthenticated(Boolean(newUser));
     return newUser;
+  }, []);
+
+  const loginGoogle = useCallback(async () => {
+    await loginWithGoogle();
   }, []);
 
   const logout = useCallback(async () => {
@@ -76,6 +91,7 @@ export function AuthProvider({ children }) {
     isAuthenticated: isAuthenticated || !!user,
     isLoading,
     login,
+    loginGoogle,
     logout,
     register,
     updateUser,

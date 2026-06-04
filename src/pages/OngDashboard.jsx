@@ -12,9 +12,9 @@ import {
   Users,
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
+import { listAdoptionRequests } from "../services/adoptionService";
 import { deletePet, listPets, savePet } from "../services/petService";
 import { upsertOng } from "../services/ongService";
-import { readStorage, STORAGE_KEYS } from "../services/storage";
 
 const emptyPet = {
   name: "",
@@ -49,21 +49,41 @@ export function OngDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [pets, setPets] = useState([]);
   const [requests, setRequests] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("all");
   const [petForm, setPetForm] = useState(emptyPet);
   const [ongForm, setOngForm] = useState(user?.ong || {});
   const [editingPetId, setEditingPetId] = useState(null);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const ong = user?.ong || ongForm;
   const ongId = user?.ongId || ong?.id || "ong_001";
 
   useEffect(() => {
+    let isMounted = true;
     async function load() {
-      const data = await listPets({ ongId });
-      setPets(data);
-      setRequests(readStorage(STORAGE_KEYS.adoptionRequests, []).filter((item) => item.ong_id === ongId));
+      setIsLoading(true);
+      setError("");
+      try {
+        const [data, adoptionRequests] = await Promise.all([
+          listPets({ ongId }),
+          listAdoptionRequests({ ongId }),
+        ]);
+        if (isMounted) {
+          setPets(data);
+          setRequests(adoptionRequests);
+        }
+      } catch (loadError) {
+        if (isMounted) setError(loadError.message || "Nao foi possivel carregar o painel.");
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
     }
     load();
+    return () => {
+      isMounted = false;
+    };
   }, [ongId]);
 
   useEffect(() => {
@@ -84,6 +104,11 @@ export function OngDashboard() {
     setMessage(text);
     window.setTimeout(() => setMessage(""), 2400);
   };
+
+  const visiblePets = useMemo(
+    () => (statusFilter === "all" ? pets : pets.filter((pet) => pet.status === statusFilter)),
+    [pets, statusFilter],
+  );
 
   const handlePetSubmit = async (event) => {
     event.preventDefault();
@@ -133,6 +158,8 @@ export function OngDashboard() {
   };
 
   const handleDeletePet = async (id) => {
+    const confirmed = window.confirm("Remover este pet? Esta acao nao pode ser desfeita.");
+    if (!confirmed) return;
     await deletePet(id);
     setPets((current) => current.filter((pet) => pet.id !== id));
     showMessage("Pet removido.");
@@ -171,7 +198,9 @@ export function OngDashboard() {
             }}
           />
           <PetsTable
-            pets={pets}
+            pets={visiblePets}
+            statusFilter={statusFilter}
+            onStatusFilterChange={setStatusFilter}
             onEdit={handleEditPet}
             onDelete={handleDeletePet}
             onStatusChange={handleStatusChange}
@@ -263,6 +292,16 @@ export function OngDashboard() {
       </aside>
 
       <main className="flex-1 p-4 md:p-8">
+        {isLoading && (
+          <div className="mb-5 rounded-xl border border-slate-700 bg-slate-800 p-4 text-sm text-slate-300">
+            Carregando dados do painel...
+          </div>
+        )}
+        {error && (
+          <div className="mb-5 rounded-xl border border-red-500/30 bg-red-500/15 p-4 text-sm text-red-100">
+            {error}
+          </div>
+        )}
         {message && (
           <div className="mb-5 flex items-center gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/15 p-3 text-sm text-emerald-100">
             <CheckCircle2 className="h-4 w-4" />
@@ -303,6 +342,9 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
           <Input label="Bairro" value={form.neighborhood} onChange={(value) => update("neighborhood", value)} />
         </div>
         <Input label="URL da foto" value={form.image} onChange={(value) => update("image", value)} />
+        <p className="-mt-2 rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs text-amber-100">
+          Para melhor visualizacao utilize imagens JPG, PNG ou WEBP quadradas ou proporcionais, preferencialmente 1200x1200 ou 4:3.
+        </p>
         <label className="text-sm text-slate-300">
           Descricao
           <textarea
@@ -328,7 +370,7 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
   );
 }
 
-function PetsTable({ pets, onEdit, onDelete, onStatusChange }) {
+function PetsTable({ pets, statusFilter, onStatusFilterChange, onEdit, onDelete, onStatusChange }) {
   if (pets.length === 0) {
     return (
       <div className="rounded-xl border border-slate-700 bg-slate-800 p-8 text-center text-slate-400">
@@ -339,13 +381,23 @@ function PetsTable({ pets, onEdit, onDelete, onStatusChange }) {
 
   return (
     <section className="overflow-hidden rounded-xl border border-slate-700 bg-slate-800">
-      <div className="border-b border-slate-700 p-4">
+      <div className="flex flex-col gap-3 border-b border-slate-700 p-4 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="font-semibold">Pets cadastrados</h2>
+        <select
+          value={statusFilter}
+          onChange={(event) => onStatusFilterChange(event.target.value)}
+          className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm"
+        >
+          <option value="all">Todos os status</option>
+          {Object.entries(statusLabels).map(([value, label]) => (
+            <option key={value} value={value}>{label}</option>
+          ))}
+        </select>
       </div>
       <div className="divide-y divide-slate-700">
         {pets.map((pet) => (
           <article key={pet.id} className="grid gap-4 p-4 lg:grid-cols-[72px_1fr_auto] lg:items-center">
-            <img src={pet.image || pet.image_url} alt={pet.name} className="h-20 w-20 rounded-lg object-cover" />
+            <img src={pet.image || pet.image_url} alt={pet.name} className="h-20 w-20 rounded-lg bg-white object-contain p-1" />
             <div>
               <h3 className="font-semibold">{pet.name}</h3>
               <p className="text-sm text-slate-400">{pet.city} - {pet.age || "idade nao informada"}</p>

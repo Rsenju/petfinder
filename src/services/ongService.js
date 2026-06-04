@@ -1,6 +1,6 @@
 import { ongs as mockOngs } from "../data/mockData";
 import { createId, readStorage, STORAGE_KEYS, writeStorage } from "./storage";
-import { isSupabaseConfigured, supabaseRequest } from "./supabaseClient";
+import { isSupabaseConfigured, supabase } from "./supabaseClient";
 
 const normalizeOng = (ong) => ({
   id: ong.id,
@@ -10,6 +10,7 @@ const normalizeOng = (ong) => ({
   city: ong.city || "Salvador",
   neighborhood: ong.neighborhood || ong.bairro || "Centro",
   description: ong.description || "",
+  owner_user_id: ong.owner_user_id || null,
   image: ong.image || ong.logo || "",
   petsCount: ong.petsCount || 0,
   adoptionsCount: ong.adoptionsCount || 0,
@@ -24,7 +25,12 @@ export function seedOngs() {
 
 export async function listOngs() {
   if (isSupabaseConfigured) {
-    return supabaseRequest("ongs?select=*&order=created_at.desc");
+    const { data, error } = await supabase
+      .from("ongs")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(error.message);
+    return (data || []).map(normalizeOng);
   }
   return seedOngs();
 }
@@ -36,14 +42,21 @@ export async function getOngById(id) {
 
 export async function upsertOng(ongData) {
   if (isSupabaseConfigured) {
-    const payload = { ...ongData };
-    const path = ongData.id ? `ongs?id=eq.${ongData.id}` : "ongs";
-    const method = ongData.id ? "PATCH" : "POST";
-    const [saved] = await supabaseRequest(path, {
-      method,
-      body: JSON.stringify(payload),
-    });
-    return saved;
+    const payload = {
+      name: ongData.name,
+      email: ongData.email,
+      whatsapp: ongData.whatsapp,
+      city: ongData.city,
+      neighborhood: ongData.neighborhood || null,
+      description: ongData.description || null,
+      owner_user_id: ongData.owner_user_id || null,
+    };
+    const query = ongData.id
+      ? supabase.from("ongs").update(payload).eq("id", ongData.id)
+      : supabase.from("ongs").insert({ ...payload, id: createId("ong") });
+    const { data, error } = await query.select("*").single();
+    if (error) throw new Error(error.message);
+    return normalizeOng(data);
   }
 
   const ongs = seedOngs();

@@ -7,6 +7,7 @@ import {
   AlertCircle,
   ArrowRight,
   ChevronLeft,
+  Chrome,
   Eye,
   EyeOff,
   Lock,
@@ -15,13 +16,15 @@ import {
 import { loginSchema } from "../utils/validations";
 import { useAuth } from "../hooks/useAuth";
 import Logo from "../components/ui/Logo";
+import { isSupabaseConfigured } from "../services/supabaseClient";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, loginGoogle } = useAuth();
 
   const {
     register,
@@ -51,6 +54,17 @@ export default function Login() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    setIsGoogleLoading(true);
+    setLoginError("");
+    try {
+      await loginGoogle();
+    } catch (error) {
+      setLoginError(error.message || "Nao foi possivel entrar com Google.");
+      setIsGoogleLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
       <button
@@ -74,11 +88,13 @@ export default function Login() {
           <p className="mt-4 max-w-sm text-slate-300">
             Entre como ONG para gerenciar pets e dados de contato, ou como admin para acompanhar os dados do sistema.
           </p>
-          <div className="mt-10 rounded-xl border border-slate-700 bg-slate-900/70 p-5 text-sm text-slate-300">
-            <p className="font-semibold text-white">Contas de teste</p>
-            <p className="mt-3">ONG: ong@petfinder.local / ong123</p>
-            <p>Admin: admin@petfinder.local / admin123</p>
-          </div>
+          {!isSupabaseConfigured && (
+            <div className="mt-10 rounded-xl border border-slate-700 bg-slate-900/70 p-5 text-sm text-slate-300">
+              <p className="font-semibold text-white">Contas de teste</p>
+              <p className="mt-3">ONG: ong@petfinder.local / ong123</p>
+              <p>Admin: admin@petfinder.local / admin123</p>
+            </div>
+          )}
         </section>
 
         <section className="p-6 sm:p-10">
@@ -97,7 +113,28 @@ export default function Login() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5" noValidate>
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={isGoogleLoading || !isSupabaseConfigured}
+            className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-800 px-5 py-3 font-semibold text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <Chrome className="h-5 w-5" />
+            {isGoogleLoading ? "Abrindo Google..." : "Entrar com Google"}
+          </button>
+          {!isSupabaseConfigured && (
+            <p className="mt-2 text-center text-xs text-slate-500">
+              Configure o Supabase para ativar login social.
+            </p>
+          )}
+
+          <div className="my-6 flex items-center gap-3 text-xs text-slate-500">
+            <span className="h-px flex-1 bg-slate-800" />
+            <span>ou entre com email</span>
+            <span className="h-px flex-1 bg-slate-800" />
+          </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
             <div>
               <label className="mb-2 flex items-center gap-2 text-sm text-slate-200">
                 <Mail className="h-4 w-4" />

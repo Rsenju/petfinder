@@ -1,12 +1,12 @@
 import { allPets as mockPets, ongs as mockOngs } from "../data/mockData";
 import { createId, readStorage, STORAGE_KEYS, writeStorage } from "./storage";
-import { isSupabaseConfigured, supabaseRequest } from "./supabaseClient";
+import { isSupabaseConfigured, supabase } from "./supabaseClient";
 
 const findOngForPet = (pet) =>
   mockOngs.find((ong) => ong.name === pet.ong) || mockOngs[0];
 
 export const normalizePet = (pet) => {
-  const ong = pet.ongData || findOngForPet(pet);
+  const ong = pet.ongData || pet.ongs || findOngForPet(pet);
   return {
     id: pet.id,
     ong_id: pet.ong_id || ong?.id || "ong_001",
@@ -25,7 +25,7 @@ export const normalizePet = (pet) => {
     image: pet.image || pet.image_url || pet.gallery?.[0]?.fullUrl || "",
     image_url: pet.image_url || pet.image || pet.gallery?.[0]?.fullUrl || "",
     status: pet.status || "available",
-    tags: pet.tags || [],
+    tags: Array.isArray(pet.tags) ? pet.tags : [],
     ong: pet.ong || ong?.name || "ONG Parceira",
     ongData: {
       id: ong?.id || pet.ong_id || "ong_001",
@@ -47,7 +47,18 @@ export function seedPets() {
 
 export async function listPets(filters = {}) {
   if (isSupabaseConfigured) {
-    return supabaseRequest("pets?select=*&order=created_at.desc");
+    let query = supabase
+      .from("pets")
+      .select("*, ongs(*)")
+      .order("created_at", { ascending: false });
+
+    if (filters.ongId) query = query.eq("ong_id", filters.ongId);
+    if (filters.status) query = query.eq("status", filters.status);
+
+    const { data, error } = await query;
+    if (error) throw new Error(error.message);
+    const normalized = (data || []).map(normalizePet);
+    return normalized.length ? normalized : seedPets();
   }
 
   const pets = seedPets();
@@ -65,14 +76,13 @@ export async function getPetById(id) {
 
 export async function savePet(petData) {
   if (isSupabaseConfigured) {
-    const payload = { ...petData };
-    const path = petData.id ? `pets?id=eq.${petData.id}` : "pets";
-    const method = petData.id ? "PATCH" : "POST";
-    const [saved] = await supabaseRequest(path, {
-      method,
-      body: JSON.stringify(payload),
-    });
-    return saved;
+    const payload = mapPetPayload(petData);
+    const query = petData.id
+      ? supabase.from("pets").update(payload).eq("id", petData.id)
+      : supabase.from("pets").insert({ ...payload, id: createId("pet") });
+    const { data, error } = await query.select("*, ongs(*)").single();
+    if (error) throw new Error(error.message);
+    return normalizePet(data);
   }
 
   const pets = seedPets();
@@ -91,11 +101,31 @@ export async function savePet(petData) {
 
 export async function deletePet(id) {
   if (isSupabaseConfigured) {
-    await supabaseRequest(`pets?id=eq.${id}`, { method: "DELETE" });
+    const { error } = await supabase.from("pets").delete().eq("id", id);
+    if (error) throw new Error(error.message);
     return true;
   }
 
   const pets = seedPets().filter((pet) => pet.id !== id);
   writeStorage(STORAGE_KEYS.pets, pets);
   return true;
+}
+
+function mapPetPayload(petData) {
+  return {
+    ong_id: petData.ong_id,
+    name: petData.name,
+    species: petData.species,
+    breed: petData.breed || null,
+    gender: petData.gender || petData.sex || null,
+    size: petData.size || null,
+    age: petData.age || null,
+    age_type: petData.ageType || petData.age_type || null,
+    city: petData.city,
+    neighborhood: petData.neighborhood || null,
+    description: petData.description,
+    image_url: petData.image_url || petData.image || null,
+    status: petData.status || "available",
+    tags: petData.tags || [],
+  };
 }

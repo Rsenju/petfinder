@@ -41,7 +41,9 @@ export default function Pets() {
       setIsLoading(true);
       try {
         const data = await listPets();
-        if (isMounted) setPets(data);
+        if (isMounted) setPets(data.length ? data : allPets);
+      } catch {
+        if (isMounted) setPets(allPets);
       } finally {
         if (isMounted) setIsLoading(false);
       }

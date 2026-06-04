@@ -1,14 +1,12 @@
-import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+﻿import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { create } from "zustand";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { faker } from "@faker-js/faker";
 import {
   AlertTriangle,
   ArrowRight,
@@ -16,7 +14,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Dog,
-  Heart,
   Home,
   Info,
   Instagram,
@@ -40,20 +37,20 @@ const ageLabel = (idade) => {
 
   if (!valor) return "";
   if (tipo === "meses") {
-    return `${valor} ${valor === 1 ? "mês" : "meses"}`;
+    return `${valor} ${valor === 1 ? "mÃªs" : "meses"}`;
   }
   return `${valor} ${valor === 1 ? "ano" : "anos"}`;
 };
 
 const temperamentoLabel = (value) => {
   const map = {
-    docil: "Dócil",
-    brincalhao: "Brincalhão",
+    docil: "DÃ³cil",
+    brincalhao: "BrincalhÃ£o",
     calmo: "Calmo",
     ativo: "Ativo",
     protetor: "Protetor",
-    sociavel: "Sociável",
-    timido: "Tímido",
+    sociavel: "SociÃ¡vel",
+    timido: "TÃ­mido",
   };
   return map[value] ?? value;
 };
@@ -61,10 +58,10 @@ const temperamentoLabel = (value) => {
 const condicaoLabel = (value) => {
   const map = {
     cegueira: "Cegueira",
-    sem_pata: "Amputação",
+    sem_pata: "AmputaÃ§Ã£o",
     cardiopatia: "Cardiopatia",
     surdez: "Surdez",
-    cuidados_continuos: "Cuidados contínuos",
+    cuidados_continuos: "Cuidados contÃ­nuos",
   };
   return map[value] ?? value;
 };
@@ -78,163 +75,12 @@ const matchSchema = z.object({
 
 const adoptionSchema = z.object({
   nome: z.string().min(2, "Informe seu nome completo"),
-  email: z.string().email("Informe um e-mail válido"),
-  telefone: z.string().min(8, "Informe um telefone válido"),
-  cidade: z.string().min(2, "Informe sua cidade"),
-  tipoMoradia: z.enum(["casa", "apartamento", "sitio"]),
-  possuiQuintal: z.enum(["sim", "nao"]),
-  permiteInterior: z.enum(["sim", "nao"]),
-  jaTevePets: z.enum(["sim", "nao"]),
-  possuiPetsAtuais: z.enum(["sim", "nao"]),
-  tempoDisponivel: z.enum(["pouco", "medio", "muito"]),
+  telefone: z.string().min(8, "Informe um telefone valido"),
+  bairro: z.string().min(2, "Informe o bairro onde mora"),
+  casaPreparada: z.enum(["sim", "parcialmente", "nao"]),
+  precisaDicas: z.enum(["sim", "nao"]),
+  experienciaPets: z.enum(["sim", "nao"]),
 });
-
-const useFavoritesStore = create((set) => ({
-  favorites: {},
-  toggleFavorite: (id) =>
-    set((state) => {
-      const isFav = !!state.favorites[id];
-      const next = { ...state.favorites };
-      if (isFav) {
-        delete next[id];
-      } else {
-        next[id] = true;
-      }
-      return { favorites: next };
-    }),
-}));
-
-const createMockPet = (id) => {
-  const especie = faker.helpers.arrayElement(["cachorro", "gato"]);
-  const porte = faker.helpers.arrayElement(["pequeno", "medio", "grande"]);
-  const sexo = faker.helpers.arrayElement(["macho", "femea"]);
-
-  const nome = faker.person.firstName();
-  const cidade = faker.location.city();
-
-  const baseImage = faker.image.urlLoremFlickr({
-    category: "animals",
-    width: 1200,
-    height: 800,
-  });
-  const thumbImage = faker.image.urlLoremFlickr({
-    category: "animals",
-    width: 400,
-    height: 300,
-  });
-
-  const condicoesPool = [
-    "cegueira",
-    "sem_pata",
-    "cardiopatia",
-    "surdez",
-    "cuidados_continuos",
-  ];
-  const temperamentoPool = [
-    "docil",
-    "brincalhao",
-    "calmo",
-    "ativo",
-    "protetor",
-    "sociavel",
-  ];
-
-  const condicoesEspeciais = faker.helpers.arrayElements(condicoesPool, {
-    min: 0,
-    max: 2,
-  });
-  const temperamento = faker.helpers.arrayElements(temperamentoPool, {
-    min: 2,
-    max: 4,
-  });
-
-  const hasVideo = faker.datatype.boolean(0.4);
-  const hasPanorama = faker.datatype.boolean(0.3);
-
-  const gallery = [
-    {
-      id: `${id}-main`,
-      type: "image",
-      thumbUrl: thumbImage,
-      fullUrl: baseImage,
-      alt: `Foto de ${nome}, ${especie} para adoção em ${cidade}`,
-    },
-    {
-      id: `${id}-2`,
-      type: "image",
-      thumbUrl: faker.image.urlLoremFlickr({
-        category: "animals",
-        width: 400,
-        height: 300,
-      }),
-      fullUrl: faker.image.urlLoremFlickr({
-        category: "animals",
-        width: 1200,
-        height: 800,
-      }),
-      alt: `Outra foto de ${nome}`,
-    },
-    {
-      id: `${id}-3`,
-      type: hasPanorama ? "panorama" : "image",
-      thumbUrl: faker.image.urlLoremFlickr({
-        category: "nature",
-        width: 400,
-        height: 300,
-      }),
-      fullUrl: faker.image.urlLoremFlickr({
-        category: "nature",
-        width: 1600,
-        height: 900,
-      }),
-      alt: hasPanorama
-        ? `Foto panorâmica do espaço do pet ${nome}`
-        : `Ambiente onde ${nome} vive`,
-    },
-  ];
-
-  if (hasVideo) {
-    gallery.push({
-      id: `${id}-video`,
-      type: "video",
-      thumbUrl: faker.image.urlLoremFlickr({
-        category: "animals",
-        width: 400,
-        height: 300,
-      }),
-      fullUrl: faker.image.urlLoremFlickr({
-        category: "animals",
-        width: 1200,
-        height: 800,
-      }),
-      alt: `Vídeo do pet ${nome}`,
-    });
-  }
-
-  return {
-    id,
-    nome,
-    especie,
-    raca: faker.animal.dog(),
-    idade: { valor: faker.number.int({ min: 1, max: 14 }), tipo: "anos" },
-    porte,
-    sexo,
-    vacinado: faker.datatype.boolean(0.8),
-    castrado: faker.datatype.boolean(0.7),
-    vermifugado: faker.datatype.boolean(0.75),
-    condicoesEspeciais,
-    temperamento,
-    historia: faker.lorem.paragraphs({ min: 1, max: 2 }),
-    ong: {
-      nome: faker.company.name(),
-      contato: faker.phone.number(),
-      cidade,
-      email: faker.internet.email(),
-      whatsapp: faker.phone.number("###########"),
-    },
-    gallery,
-  };
-};
 
 const mapPetToDetail = (pet) => ({
   id: pet.id,
@@ -280,7 +126,7 @@ const mapPetToDetail = (pet) => ({
 const fetchPetById = async (id) => {
   await new Promise((resolve) => setTimeout(resolve, 400));
   const pet = await getPetById(id);
-  return pet ? mapPetToDetail(pet) : createMockPet(id);
+  return pet ? mapPetToDetail(pet) : null;
 };
 
 const fetchSimilarPets = async (pet) => {
@@ -290,10 +136,7 @@ const fetchSimilarPets = async (pet) => {
     .filter((item) => item.id !== pet.id && (item.species === pet.sourcePet?.species || item.city === pet.city))
     .slice(0, 4)
     .map(mapPetToDetail);
-  return similar.length ? similar : Array.from({ length: 4 }, (_, index) => {
-    const base = createMockPet(`${pet.id}-similar-${index + 1}`);
-    return { ...base, especie: pet.especie, porte: pet.porte, ong: { ...base.ong, nome: pet.ong.nome } };
-  });
+  return similar;
 };
 
 const badgeClass =
@@ -303,8 +146,6 @@ const badgePositive =
   "bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/30";
 const badgeNeutral = "bg-slate-700 text-slate-300 ring-1 ring-slate-600";
 const badgeWarning = "bg-amber-500/20 text-amber-400 ring-1 ring-amber-500/30";
-
-const stepTitles = ["Dados pessoais", "Moradia", "Experiência com pets"];
 
 function MatchSimulator({ pet }) {
   const [formValues, setFormValues] = useState({
@@ -350,9 +191,9 @@ function MatchSimulator({ pet }) {
 
     const status =
       value >= 85
-        ? "Match perfeito! Vocês têm tudo para dar muito certo."
+        ? "Match perfeito! VocÃªs tÃªm tudo para dar muito certo."
         : value >= 70
-          ? "Ótimo match! Com alguns cuidados extras, será uma ótima adoção."
+          ? "Ã“timo match! Com alguns cuidados extras, serÃ¡ uma Ã³tima adoÃ§Ã£o."
           : "Talvez seja melhor conversar com a ONG para entender melhor as necessidades do pet.";
 
     setMatchResult({ value, status });
@@ -372,7 +213,7 @@ function MatchSimulator({ pet }) {
             Simulador de Match
           </h2>
           <p className="mt-1 text-xs text-slate-400">
-            Descubra o quão compatível você é com {pet.nome}.
+            Descubra o quÃ£o compatÃ­vel vocÃª Ã© com {pet.nome}.
           </p>
         </div>
       </div>
@@ -380,7 +221,7 @@ function MatchSimulator({ pet }) {
       <div className="grid gap-3 text-xs text-slate-300 sm:grid-cols-2">
         <div className="space-y-2">
           <label className="block text-[11px] font-medium text-slate-500">
-            Você já tem outros pets?
+            VocÃª jÃ¡ tem outros pets?
           </label>
           <div className="flex gap-1.5">
             {["sim", "nao"].map((value) => (
@@ -395,7 +236,7 @@ function MatchSimulator({ pet }) {
                     : "border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500",
                 )}
               >
-                {value === "sim" ? "Sim" : "Não"}
+                {value === "sim" ? "Sim" : "NÃ£o"}
               </button>
             ))}
           </div>
@@ -403,7 +244,7 @@ function MatchSimulator({ pet }) {
 
         <div className="space-y-2">
           <label className="block text-[11px] font-medium text-slate-500">
-            Quanto tempo você passa em casa?
+            Quanto tempo vocÃª passa em casa?
           </label>
           <select
             value={formValues.tempoEmCasa}
@@ -412,15 +253,15 @@ function MatchSimulator({ pet }) {
             }
             className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
           >
-            <option value="pouco">Pouco (até 4h)</option>
-            <option value="medio">Médio (4h a 8h)</option>
+            <option value="pouco">Pouco (atÃ© 4h)</option>
+            <option value="medio">MÃ©dio (4h a 8h)</option>
             <option value="muito">Muito (mais de 8h)</option>
           </select>
         </div>
 
         <div className="space-y-2">
           <label className="block text-[11px] font-medium text-slate-500">
-            Espaço disponível
+            EspaÃ§o disponÃ­vel
           </label>
           <select
             value={formValues.espaco}
@@ -428,14 +269,14 @@ function MatchSimulator({ pet }) {
             className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
           >
             <option value="pequeno">Pequeno</option>
-            <option value="medio">Médio</option>
+            <option value="medio">MÃ©dio</option>
             <option value="grande">Grande</option>
           </select>
         </div>
 
         <div className="space-y-2">
           <label className="block text-[11px] font-medium text-slate-500">
-            Sua experiência com pets
+            Sua experiÃªncia com pets
           </label>
           <select
             value={formValues.experiencia}
@@ -445,8 +286,8 @@ function MatchSimulator({ pet }) {
             className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
           >
             <option value="iniciante">Iniciante</option>
-            <option value="intermediario">Intermediário</option>
-            <option value="avancado">Avançado</option>
+            <option value="intermediario">IntermediÃ¡rio</option>
+            <option value="avancado">AvanÃ§ado</option>
           </select>
         </div>
       </div>
@@ -508,22 +349,18 @@ function MatchSimulator({ pet }) {
 }
 
 function AdoptionFormLocal({ pet }) {
-  const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const methods = useForm({
     resolver: zodResolver(adoptionSchema),
     defaultValues: {
       nome: "",
-      email: "",
       telefone: "",
-      cidade: "",
-      tipoMoradia: "apartamento",
-      possuiQuintal: "nao",
-      permiteInterior: "sim",
-      jaTevePets: "nao",
-      possuiPetsAtuais: "nao",
-      tempoDisponivel: "medio",
+      bairro: "",
+      casaPreparada: "sim",
+      precisaDicas: "nao",
+      experienciaPets: "sim",
     },
     mode: "onBlur",
   });
@@ -535,68 +372,51 @@ function AdoptionFormLocal({ pet }) {
   } = methods;
 
   const onSubmit = async (values) => {
+    setSubmitError("");
+    const labels = {
+      sim: "Sim",
+      nao: "Nao",
+      parcialmente: "Parcialmente",
+    };
     const request = {
       adopter_name: values.nome,
       adopter_phone: values.telefone,
-      adopter_neighborhood: values.cidade,
-      home_prepared: values.permiteInterior === "sim"
-        ? `Sim, moradia ${values.tipoMoradia} ${values.possuiQuintal === "sim" ? "com quintal" : "sem quintal"} e pet permitido dentro de casa`
-        : `Parcialmente, moradia ${values.tipoMoradia} e ainda precisa ajustar o ambiente`,
-      needs_guidance: values.permiteInterior === "sim" && values.tempoDisponivel !== "pouco" ? "nao" : "sim",
-      has_or_had_pets: values.jaTevePets === "sim" || values.possuiPetsAtuais === "sim" ? "sim" : "nao",
+      adopter_neighborhood: values.bairro,
+      home_prepared: labels[values.casaPreparada],
+      needs_guidance: labels[values.precisaDicas],
+      has_or_had_pets: labels[values.experienciaPets],
     };
-    const saved = await createAdoptionRequest({
-      pet: {
-        id: pet.id,
-        name: pet.nome,
-        city: pet.ong.cidade,
-        ong_id: pet.ong.id,
-      },
-      request,
-    });
-    window.open(buildWhatsAppUrl(pet.ong.whatsapp, saved.message), "_blank", "noopener,noreferrer");
-    setSubmitted(true);
+
+    try {
+      const saved = await createAdoptionRequest({
+        pet: {
+          id: pet.id,
+          name: pet.nome,
+          city: pet.city || pet.ong.cidade,
+          ong_id: pet.ong.id,
+        },
+        request,
+      });
+      window.open(buildWhatsAppUrl(pet.ong.whatsapp, saved.message), "_blank", "noopener,noreferrer");
+      setSubmitted(true);
+    } catch (error) {
+      setSubmitError(error.message || "Nao foi possivel enviar o pedido agora.");
+    }
   };
-
-  const nextStep = () =>
-    setStep((prev) => Math.min(prev + 1, stepTitles.length - 1));
-  const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
-
-  const progress = ((step + 1) / stepTitles.length) * 100;
 
   return (
     <section
       aria-labelledby="adoption-form-title"
       className="rounded-3xl border border-slate-700 bg-slate-800/90 p-5 shadow-sm"
     >
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <h2
-            id="adoption-form-title"
-            className="text-sm font-semibold text-white sm:text-base"
-          >
-            Formulário de pré-adoção
+          <h2 id="adoption-form-title" className="text-sm font-semibold text-white sm:text-base">
+            Formulario de pre-adocao
           </h2>
           <p className="mt-1 text-xs text-slate-400">
-            Preencha as etapas para que a ONG possa conhecer melhor você.
+            Envie seus dados principais para a ONG continuar pelo WhatsApp.
           </p>
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <div className="mb-1 flex items-center justify-between text-[11px] text-slate-400">
-          <span>
-            Etapa {step + 1} de {stepTitles.length}
-          </span>
-          <span>{stepTitles[step]}</span>
-        </div>
-        <div className="relative h-1.5 overflow-hidden rounded-full bg-slate-700">
-          <Motion.div
-            className="h-full rounded-full bg-emerald-500"
-            initial={{ width: "0%" }}
-            animate={{ width: `${progress}%` }}
-            transition={{ type: "spring", stiffness: 120, damping: 20 }}
-          />
         </div>
       </div>
 
@@ -610,305 +430,74 @@ function AdoptionFormLocal({ pet }) {
             <CheckCircle2 className="h-6 w-6" />
           </div>
           <h3 className="text-sm font-semibold text-white sm:text-base">
-            Pré-adoção enviada com sucesso!
+            Pedido enviado com sucesso
           </h3>
           <p className="mt-1 max-w-xs text-xs text-slate-400">
-            A equipe da ONG {pet.ong.nome} entrará em contato com você em breve
-            para continuar o processo.
+            O WhatsApp da ONG foi aberto com sua mensagem organizada.
           </p>
         </Motion.div>
       ) : (
         <FormProvider {...methods}>
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="space-y-4 text-xs text-slate-300"
-            noValidate
-          >
-            <AnimatePresence mode="wait">
-              {step === 0 && (
-                <Motion.div
-                  key="step-1"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  transition={{ duration: 0.2 }}
-                  className="grid gap-3 sm:grid-cols-2"
-                >
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-medium text-slate-500">
-                      Nome completo
-                    </label>
-                    <input
-                      type="text"
-                      {...register("nome")}
-                      className={cn(
-                        "h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none",
-                        errors.nome
-                          ? "border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30"
-                          : "border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30",
-                      )}
-                    />
-                    {errors.nome && (
-                      <p className="text-[11px] text-rose-400">
-                        {errors.nome.message}
-                      </p>
-                    )}
-                  </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-xs text-slate-300" noValidate>
+            {submitError && (
+              <div className="rounded-2xl border border-rose-500/30 bg-rose-500/15 p-3 text-rose-100">
+                {submitError}
+              </div>
+            )}
 
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-medium text-slate-500">
-                      E-mail
-                    </label>
-                    <input
-                      type="email"
-                      {...register("email")}
-                      className={cn(
-                        "h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none",
-                        errors.email
-                          ? "border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30"
-                          : "border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30",
-                      )}
-                    />
-                    {errors.email && (
-                      <p className="text-[11px] text-rose-400">
-                        {errors.email.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-medium text-slate-500">
-                      Telefone / WhatsApp
-                    </label>
-                    <input
-                      type="tel"
-                      {...register("telefone")}
-                      className={cn(
-                        "h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none",
-                        errors.telefone
-                          ? "border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30"
-                          : "border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30",
-                      )}
-                    />
-                    {errors.telefone && (
-                      <p className="text-[11px] text-rose-400">
-                        {errors.telefone.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-medium text-slate-500">
-                      Bairro onde mora
-                    </label>
-                    <input
-                      type="text"
-                      {...register("cidade")}
-                      className={cn(
-                        "h-9 w-full rounded-full border bg-slate-700 px-3 text-xs text-white outline-none",
-                        errors.cidade
-                          ? "border-rose-400 focus:border-rose-400 focus:ring-1 focus:ring-rose-500/30"
-                          : "border-slate-600 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30",
-                      )}
-                    />
-                    {errors.cidade && (
-                      <p className="text-[11px] text-rose-400">
-                        {errors.cidade.message}
-                      </p>
-                    )}
-                  </div>
-                </Motion.div>
-              )}
-
-              {step === 1 && (
-                <Motion.div
-                  key="step-2"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  transition={{ duration: 0.2 }}
-                  className="grid gap-3 sm:grid-cols-2"
-                >
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-medium text-slate-500">
-                      Tipo de moradia
-                    </label>
-                    <select
-                      {...register("tipoMoradia")}
-                      className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
-                    >
-                      <option value="apartamento">Apartamento</option>
-                      <option value="casa">Casa</option>
-                      <option value="sitio">Sítio / Chácara</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-medium text-slate-500">
-                      Possui quintal?
-                    </label>
-                    <div className="flex gap-1.5">
-                      {["sim", "nao"].map((value) => (
-                        <button
-                          key={value}
-                          type="button"
-                          onClick={() =>
-                            methods.setValue("possuiQuintal", value)
-                          }
-                          className={cn(
-                            "flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition",
-                            methods.watch("possuiQuintal") === value
-                              ? "border-emerald-500 bg-emerald-500/20 text-emerald-400"
-                              : "border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500",
-                          )}
-                        >
-                          {value === "sim" ? "Sim" : "Não"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-medium text-slate-500">
-                      O pet poderá ficar dentro de casa?
-                    </label>
-                    <div className="flex gap-1.5">
-                      {["sim", "nao"].map((value) => (
-                        <button
-                          key={value}
-                          type="button"
-                          onClick={() =>
-                            methods.setValue("permiteInterior", value)
-                          }
-                          className={cn(
-                            "flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition",
-                            methods.watch("permiteInterior") === value
-                              ? "border-emerald-500 bg-emerald-500/20 text-emerald-400"
-                              : "border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500",
-                          )}
-                        >
-                          {value === "sim" ? "Sim" : "Não"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </Motion.div>
-              )}
-
-              {step === 2 && (
-                <Motion.div
-                  key="step-3"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
-                  transition={{ duration: 0.2 }}
-                  className="grid gap-3 sm:grid-cols-2"
-                >
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-medium text-slate-500">
-                      Já teve pets antes?
-                    </label>
-                    <div className="flex gap-1.5">
-                      {["sim", "nao"].map((value) => (
-                        <button
-                          key={value}
-                          type="button"
-                          onClick={() => methods.setValue("jaTevePets", value)}
-                          className={cn(
-                            "flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition",
-                            methods.watch("jaTevePets") === value
-                              ? "border-emerald-500 bg-emerald-500/20 text-emerald-400"
-                              : "border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500",
-                          )}
-                        >
-                          {value === "sim" ? "Sim" : "Não"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-medium text-slate-500">
-                      Possui pets atualmente?
-                    </label>
-                    <div className="flex gap-1.5">
-                      {["sim", "nao"].map((value) => (
-                        <button
-                          key={value}
-                          type="button"
-                          onClick={() =>
-                            methods.setValue("possuiPetsAtuais", value)
-                          }
-                          className={cn(
-                            "flex-1 rounded-full border px-3 py-1.5 text-xs font-medium transition",
-                            methods.watch("possuiPetsAtuais") === value
-                              ? "border-emerald-500 bg-emerald-500/20 text-emerald-400"
-                              : "border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500",
-                          )}
-                        >
-                          {value === "sim" ? "Sim" : "Não"}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="block text-[11px] font-medium text-slate-500">
-                      Tempo disponível por dia para o pet
-                    </label>
-                    <select
-                      {...register("tempoDisponivel")}
-                      className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
-                    >
-                      <option value="pouco">Pouco (até 2h)</option>
-                      <option value="medio">Médio (2h a 4h)</option>
-                      <option value="muito">Muito (mais de 4h)</option>
-                    </select>
-                  </div>
-                </Motion.div>
-              )}
-            </AnimatePresence>
-
-            <div className="flex items-center justify-between pt-1">
-              <button
-                type="button"
-                onClick={prevStep}
-                disabled={step === 0}
-                className={cn(
-                  "inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-medium transition",
-                  step === 0
-                    ? "cursor-not-allowed text-slate-600"
-                    : "text-slate-400 hover:bg-slate-700",
-                )}
-              >
-                <ChevronLeft className="h-3 w-3" />
-                Voltar
-              </button>
-
-              {step < stepTitles.length - 1 ? (
-                <button
-                  type="button"
-                  onClick={nextStep}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-blue-600 px-4 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.98]"
-                >
-                  Próxima etapa
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </button>
-              ) : (
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-4 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:bg-emerald-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  Enviar pré-adoção
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </button>
-              )}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <AdoptionInput label="Nome completo" error={errors.nome?.message}>
+                <input type="text" {...register("nome")} className="adoption-field" />
+              </AdoptionInput>
+              <AdoptionInput label="Telefone / WhatsApp" error={errors.telefone?.message}>
+                <input type="tel" {...register("telefone")} className="adoption-field" />
+              </AdoptionInput>
+              <AdoptionInput label="Bairro onde mora" error={errors.bairro?.message}>
+                <input type="text" {...register("bairro")} className="adoption-field" />
+              </AdoptionInput>
+              <AdoptionInput label="Casa preparada para receber o pet?" error={errors.casaPreparada?.message}>
+                <select {...register("casaPreparada")} className="adoption-field">
+                  <option value="sim">Sim</option>
+                  <option value="parcialmente">Parcialmente</option>
+                  <option value="nao">Ainda nao</option>
+                </select>
+              </AdoptionInput>
+              <AdoptionInput label="Precisa de dicas da ONG?" error={errors.precisaDicas?.message}>
+                <select {...register("precisaDicas")} className="adoption-field">
+                  <option value="nao">Nao</option>
+                  <option value="sim">Sim</option>
+                </select>
+              </AdoptionInput>
+              <AdoptionInput label="Ja possui ou ja teve animais?" error={errors.experienciaPets?.message}>
+                <select {...register("experienciaPets")} className="adoption-field">
+                  <option value="sim">Sim</option>
+                  <option value="nao">Nao</option>
+                </select>
+              </AdoptionInput>
             </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSubmitting ? "Enviando..." : "Enviar e falar no WhatsApp"}
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
           </form>
         </FormProvider>
       )}
     </section>
+  );
+}
+
+function AdoptionInput({ label, error, children }) {
+  return (
+    <label className="space-y-1.5 text-[11px] font-medium text-slate-500">
+      <span>{label}</span>
+      {children}
+      {error && <p className="text-[11px] text-rose-400">{error}</p>}
+    </label>
   );
 }
 
@@ -947,7 +536,7 @@ function MediaGallery({ pet }) {
 
   return (
     <section
-      aria-label={`Galeria de mídia do pet ${pet.nome}`}
+      aria-label={`Galeria de mÃ­dia do pet ${pet.nome}`}
       className="space-y-3"
     >
       <div className="flex flex-col gap-3 md:flex-row">
@@ -968,7 +557,7 @@ function MediaGallery({ pet }) {
                 src={media.thumbUrl}
                 alt={media.alt}
                 loading="lazy"
-                className="h-20 w-full object-cover md:h-20"
+                className="h-20 w-full bg-white object-contain p-1 md:h-20"
               />
               {media.type === "video" && (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/30 text-white">
@@ -977,7 +566,7 @@ function MediaGallery({ pet }) {
               )}
               {media.type === "panorama" && (
                 <div className="pointer-events-none absolute bottom-1 right-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white">
-                  360°
+                  360Â°
                 </div>
               )}
             </button>
@@ -996,7 +585,7 @@ function MediaGallery({ pet }) {
             <img
               src={mainMedia.fullUrl}
               alt={mainMedia.alt}
-              className="h-full w-full object-cover transition duration-500 hover:scale-105"
+              className="h-full w-full bg-white object-contain transition duration-500"
               loading="lazy"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-black/10" />
@@ -1006,7 +595,7 @@ function MediaGallery({ pet }) {
             </div>
             <button
               type="button"
-              aria-label="Ver mídia em tela cheia"
+              aria-label="Ver mÃ­dia em tela cheia"
               className="pointer-events-auto absolute right-3 top-3 inline-flex items-center justify-center rounded-full bg-black/60 p-1.5 text-white shadow-sm transition hover:bg-black/80"
             >
               <Maximize2 className="h-4 w-4" />
@@ -1016,7 +605,7 @@ function MediaGallery({ pet }) {
           <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between p-3 text-[11px] text-white">
             <span className="pointer-events-auto flex items-center gap-1 rounded-full bg-black/50 px-2.5 py-1">
               <Info className="h-3.5 w-3.5" />
-              <span>Zoom disponível</span>
+              <span>Zoom disponÃ­vel</span>
             </span>
             <span className="rounded-full bg-black/45 px-2 py-0.5">
               {activeIndex + 1} / {pet.gallery.length}
@@ -1041,7 +630,7 @@ function MediaGallery({ pet }) {
                 <div className="flex items-center gap-2">
                   <Dog className="h-4 w-4" />
                   <span>
-                    {pet.nome} · {pet.especie}
+                    {pet.nome} Â· {pet.especie}
                   </span>
                 </div>
                 <button
@@ -1058,7 +647,7 @@ function MediaGallery({ pet }) {
                   type="button"
                   onClick={handlePrev}
                   className="absolute left-4 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
-                  aria-label="Mídia anterior"
+                  aria-label="MÃ­dia anterior"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
@@ -1066,7 +655,7 @@ function MediaGallery({ pet }) {
                   type="button"
                   onClick={handleNext}
                   className="absolute right-4 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
-                  aria-label="Próxima mídia"
+                  aria-label="PrÃ³xima mÃ­dia"
                 >
                   <ChevronRight className="h-5 w-5" />
                 </button>
@@ -1143,10 +732,10 @@ function SimilarPets({ basePet }) {
                   src={pet.gallery[0].thumbUrl}
                   alt={pet.gallery[0].alt}
                   loading="lazy"
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  className="h-full w-full bg-white object-contain p-2 transition duration-500"
                 />
                 <div className="absolute left-2 top-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-medium text-white">
-                  {pet.porte} · {pet.sexo === "femea" ? "Fêmea" : "Macho"}
+                  {pet.porte} Â· {pet.sexo === "femea" ? "FÃªmea" : "Macho"}
                 </div>
               </div>
               <div className="px-3 pb-3 pt-2 text-xs text-slate-300">
@@ -1182,9 +771,6 @@ export default function PetDetailPage() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const isFavorite = useFavoritesStore((state) => !!state.favorites[petId]);
-  const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
-
   const toastTimeoutRef = useRef(null);
   const [toast, setToast] = useState(null);
 
@@ -1198,28 +784,18 @@ export default function PetDetailPage() {
     }, 2600);
   };
 
-  const handleFavoriteClick = () => {
-    toggleFavorite(petId);
-    showToast(
-      isFavorite
-        ? `${pet?.nome ?? "Pet"} removido dos favoritos.`
-        : `${pet?.nome ?? "Pet"} adicionado aos favoritos!`,
-      isFavorite ? "neutral" : "success",
-    );
-  };
-
   const handleShareWhatsApp = () => {
     if (!pet) return;
     const url = window.location.href;
-    const text = `Olha este pet para adoção: ${pet.nome} · ${pet.especie} · ${url}`;
-    const link = `https://wa.me/?text=${encodeURIComponent(text)}`;
+    const text = `Ola! Tenho interesse em saber mais sobre o pet ${pet.nome}. ${url}`;
+    const link = buildWhatsAppUrl(pet.ong.whatsapp, text);
     window.open(link, "_blank", "noopener,noreferrer");
   };
 
   const handleShareInstagram = () => {
     if (!pet) return;
     showToast(
-      "Abrindo câmera do Instagram (simulação). Use o link do pet na sua story.",
+      "Abrindo cÃ¢mera do Instagram (simulaÃ§Ã£o). Use o link do pet na sua story.",
       "neutral",
     );
     window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
@@ -1241,7 +817,7 @@ export default function PetDetailPage() {
         href="#pet-detail-main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-blue-600 focus:px-4 focus:py-2 focus:text-xs focus:font-semibold focus:text-white focus:shadow-lg"
       >
-        Pular para conteúdo principal
+        Pular para conteÃºdo principal
       </a>
 
       <div className="mx-auto flex w-full max-w-6xl flex-col px-4 pb-12 pt-6 sm:px-6 lg:px-8">
@@ -1264,10 +840,10 @@ export default function PetDetailPage() {
               <AlertTriangle className="h-6 w-6" />
             </div>
             <h1 className="text-lg font-semibold text-white">
-              Não foi possível carregar os detalhes do pet
+              NÃ£o foi possÃ­vel carregar os detalhes do pet
             </h1>
             <p className="mt-1 max-w-md text-sm text-slate-400">
-              Tente atualizar a página ou voltar para a lista de pets para
+              Tente atualizar a pÃ¡gina ou voltar para a lista de pets para
               escolher outro amigo.
             </p>
           </div>
@@ -1295,42 +871,15 @@ export default function PetDetailPage() {
                   <span>{ageLabel(pet.idade)}</span>
                   <span className="h-1 w-1 rounded-full bg-slate-600" />
                   <span className="capitalize">
-                    {pet.sexo === "femea" ? "Fêmea" : "Macho"}
+                    {pet.sexo === "femea" ? "FÃªmea" : "Macho"}
                   </span>
                 </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleFavoriteClick}
-                  className={cn(
-                    "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium shadow-sm transition",
-                    isFavorite
-                      ? "border-rose-500/30 bg-rose-500/20 text-rose-400 hover:bg-rose-500/30"
-                      : "border-slate-600 bg-slate-800 text-slate-300 hover:bg-slate-700",
-                  )}
-                  aria-pressed={isFavorite}
-                  aria-label={
-                    isFavorite
-                      ? "Remover pet dos favoritos"
-                      : "Adicionar pet aos favoritos para acompanhar depois"
-                  }
-                >
-                  <Heart
-                    className={cn(
-                      "h-4 w-4",
-                      isFavorite
-                        ? "fill-rose-500 text-rose-500"
-                        : "text-slate-400",
-                    )}
-                  />
-                  <span>{isFavorite ? "Favoritado" : "Favoritar"}</span>
-                </button>
-
                 <div className="inline-flex items-center gap-1 rounded-full bg-slate-800 px-3 py-1.5 text-xs font-medium text-white shadow-sm border border-slate-700">
                   <ShieldCheck className="h-4 w-4 text-emerald-400" />
-                  Adoção responsável
+                  AdoÃ§Ã£o responsÃ¡vel
                 </div>
               </div>
             </header>
@@ -1351,7 +900,7 @@ export default function PetDetailPage() {
                       id="pet-info-title"
                       className="text-sm font-semibold text-white sm:text-base"
                     >
-                      Informações sobre {pet.nome}
+                      InformaÃ§Ãµes sobre {pet.nome}
                     </h2>
                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2.5 py-1 text-[11px] font-medium text-emerald-400">
                       <Info className="h-3.5 w-3.5" />
@@ -1367,14 +916,14 @@ export default function PetDetailPage() {
                       <dl className="grid grid-cols-2 gap-y-1.5 gap-x-3">
                         <div>
                           <dt className="text-[11px] text-slate-500">
-                            Espécie
+                            EspÃ©cie
                           </dt>
                           <dd className="font-medium capitalize text-white">
                             {pet.especie}
                           </dd>
                         </div>
                         <div>
-                          <dt className="text-[11px] text-slate-500">Raça</dt>
+                          <dt className="text-[11px] text-slate-500">RaÃ§a</dt>
                           <dd className="font-medium text-white">{pet.raca}</dd>
                         </div>
                         <div>
@@ -1394,7 +943,7 @@ export default function PetDetailPage() {
 
                     <div className="space-y-2">
                       <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                        Saúde
+                        SaÃºde
                       </h3>
                       <div className="flex flex-wrap gap-1.5">
                         <span
@@ -1404,7 +953,7 @@ export default function PetDetailPage() {
                           )}
                         >
                           <ShieldCheck className="h-3.5 w-3.5" />
-                          {pet.vacinado ? "Vacinado" : "Não vacinado"}
+                          {pet.vacinado ? "Vacinado" : "NÃ£o vacinado"}
                         </span>
                         <span
                           className={cn(
@@ -1413,7 +962,7 @@ export default function PetDetailPage() {
                           )}
                         >
                           <ShieldCheck className="h-3.5 w-3.5" />
-                          {pet.castrado ? "Castrado" : "Não castrado"}
+                          {pet.castrado ? "Castrado" : "NÃ£o castrado"}
                         </span>
                         <span
                           className={cn(
@@ -1422,7 +971,7 @@ export default function PetDetailPage() {
                           )}
                         >
                           <ShieldCheck className="h-3.5 w-3.5" />
-                          {pet.vermifugado ? "Vermifugado" : "Não vermifugado"}
+                          {pet.vermifugado ? "Vermifugado" : "NÃ£o vermifugado"}
                         </span>
                       </div>
                     </div>
@@ -1449,7 +998,7 @@ export default function PetDetailPage() {
                     {structuredCondicoes.length > 0 && (
                       <div className="space-y-2">
                         <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                          Condições especiais
+                          CondiÃ§Ãµes especiais
                         </h3>
                         <div className="flex flex-wrap gap-1.5">
                           {structuredCondicoes.map((label) => (
@@ -1467,8 +1016,8 @@ export default function PetDetailPage() {
                           ))}
                         </div>
                         <p className="text-[11px] text-slate-400">
-                          Pets com condições especiais também merecem um lar. A
-                          ONG dará todo apoio necessário.
+                          Pets com condiÃ§Ãµes especiais tambÃ©m merecem um lar. A
+                          ONG darÃ¡ todo apoio necessÃ¡rio.
                         </p>
                       </div>
                     )}
@@ -1476,7 +1025,7 @@ export default function PetDetailPage() {
 
                   <div className="mt-4 space-y-2 text-xs text-slate-300">
                     <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                      História
+                      HistÃ³ria
                     </h3>
                     <p className="leading-relaxed text-slate-300">
                       {pet.historia}
@@ -1502,7 +1051,7 @@ export default function PetDetailPage() {
                         ONG {pet.ong.nome}
                       </h2>
                       <p className="mt-1 text-xs text-slate-400">
-                        Organização parceira verificada. Todas as adoções passam
+                        OrganizaÃ§Ã£o parceira verificada. Todas as adoÃ§Ãµes passam
                         por entrevista e termo de responsabilidade.
                       </p>
                     </div>
@@ -1543,7 +1092,7 @@ export default function PetDetailPage() {
                   </div>
 
                   <p className="mt-2 text-[11px] text-slate-500">
-                    Seus dados serão compartilhados apenas com a ONG responsável
+                    Seus dados serÃ£o compartilhados apenas com a ONG responsÃ¡vel
                     por este pet.
                   </p>
                 </section>
@@ -1610,11 +1159,7 @@ export default function PetDetailPage() {
               )}
             >
               <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-black/20">
-                {toast.variant === "success" ? (
-                  <Heart className="h-3.5 w-3.5" />
-                ) : (
-                  <Info className="h-3.5 w-3.5" />
-                )}
+                <Info className="h-3.5 w-3.5" />
               </span>
               <p className="flex-1">{toast.message}</p>
             </div>
@@ -1624,3 +1169,5 @@ export default function PetDetailPage() {
     </div>
   );
 }
+
+
