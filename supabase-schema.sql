@@ -39,6 +39,14 @@ create table if not exists public.pets (
   image_url text,
   status text not null default 'available' check (status in ('available', 'in_process', 'adopted')),
   tags text[] not null default '{}',
+  personality text,
+  health_status text,
+  vaccinated boolean not null default false,
+  castrated boolean not null default false,
+  children_compatibility text,
+  cats_compatibility text,
+  dogs_compatibility text,
+  energy_level text,
   created_at timestamptz not null default now()
 );
 

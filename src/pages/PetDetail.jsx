@@ -100,6 +100,12 @@ const mapPetToDetail = (pet) => ({
   temperamento: pet.tags || ["docil", "sociavel"],
   historia: pet.description,
   status: pet.status,
+  personality: pet.personality,
+  healthStatus: pet.healthStatus,
+  childrenCompatibility: pet.childrenCompatibility,
+  catsCompatibility: pet.catsCompatibility,
+  dogsCompatibility: pet.dogsCompatibility,
+  energyLevel: pet.energyLevel,
   city: pet.city,
   neighborhood: pet.neighborhood,
   sourcePet: pet,
@@ -557,7 +563,7 @@ function MediaGallery({ pet }) {
                 src={media.thumbUrl}
                 alt={media.alt}
                 loading="lazy"
-                className="h-20 w-full bg-white object-contain p-1 md:h-20"
+                className="h-20 w-full bg-slate-950 object-contain md:h-20"
               />
               {media.type === "video" && (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/30 text-white">
@@ -585,7 +591,7 @@ function MediaGallery({ pet }) {
             <img
               src={mainMedia.fullUrl}
               alt={mainMedia.alt}
-              className="h-full w-full bg-white object-contain transition duration-500"
+              className="h-full w-full bg-slate-950 object-contain transition duration-500"
               loading="lazy"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-black/10" />
@@ -732,7 +738,7 @@ function SimilarPets({ basePet }) {
                   src={pet.gallery[0].thumbUrl}
                   alt={pet.gallery[0].alt}
                   loading="lazy"
-                  className="h-full w-full bg-white object-contain p-2 transition duration-500"
+                  className="h-full w-full bg-slate-950 object-contain transition duration-500"
                 />
                 <div className="absolute left-2 top-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-medium text-white">
                   {pet.porte} Â· {pet.sexo === "femea" ? "FÃªmea" : "Macho"}
@@ -967,31 +973,50 @@ export default function PetDetailPage() {
                         <span
                           className={cn(
                             badgeClass,
-                            pet.vermifugado ? badgePositive : badgeNeutral,
+                            "bg-blue-500/15 text-blue-200 ring-1 ring-blue-500/20",
                           )}
                         >
                           <ShieldCheck className="h-3.5 w-3.5" />
-                          {pet.vermifugado ? "Vermifugado" : "NÃ£o vermifugado"}
+                          {pet.healthStatus || "saudavel"}
                         </span>
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                        Temperamento
+                        Compatibilidade
                       </h3>
                       <div className="flex flex-wrap gap-1.5">
-                        {structuredTemperamento.map((label) => (
-                          <span
-                            key={label}
-                            className={cn(
-                              badgeClass,
-                              "bg-slate-700 text-slate-300 ring-1 ring-slate-600",
-                            )}
-                          >
-                            {label}
-                          </span>
-                        ))}
+                        <span className={cn(badgeClass, "bg-slate-700 text-slate-300 ring-1 ring-slate-600")}>
+                          Criancas: {pet.childrenCompatibility || "nao testado"}
+                        </span>
+                        <span className={cn(badgeClass, "bg-slate-700 text-slate-300 ring-1 ring-slate-600")}>
+                          Gatos: {pet.catsCompatibility || "nao testado"}
+                        </span>
+                        <span className={cn(badgeClass, "bg-slate-700 text-slate-300 ring-1 ring-slate-600")}>
+                          Caes: {pet.dogsCompatibility || "nao testado"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        Perfil
+                      </h3>
+                      <div className="flex flex-wrap gap-1.5">
+                        {[pet.personality, `energia ${pet.energyLevel || "media"}`, ...structuredTemperamento.slice(0, 2)]
+                          .filter(Boolean)
+                          .map((label) => (
+                            <span
+                              key={label}
+                              className={cn(
+                                badgeClass,
+                                "bg-slate-700 text-slate-300 ring-1 ring-slate-600",
+                              )}
+                            >
+                              {label}
+                            </span>
+                          ))}
                       </div>
                     </div>
 

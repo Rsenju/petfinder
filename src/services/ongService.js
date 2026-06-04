@@ -19,7 +19,7 @@ const normalizeOng = (ong) => ({
 
 export function seedOngs() {
   const current = readStorage(STORAGE_KEYS.ongs, null);
-  if (current?.length) return current;
+  if (current?.length >= mockOngs.length && current.some((ong) => ong.id === "ong_feira")) return current;
   return writeStorage(STORAGE_KEYS.ongs, mockOngs.map(normalizeOng));
 }
 

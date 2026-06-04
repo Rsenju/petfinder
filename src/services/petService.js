@@ -25,6 +25,14 @@ export const normalizePet = (pet) => {
     image: pet.image || pet.image_url || pet.gallery?.[0]?.fullUrl || "",
     image_url: pet.image_url || pet.image || pet.gallery?.[0]?.fullUrl || "",
     status: pet.status || "available",
+    personality: pet.personality || "",
+    healthStatus: pet.healthStatus || pet.health_status || "saudavel",
+    vaccinated: Boolean(pet.vaccinated ?? pet.vacinado ?? false),
+    castrated: Boolean(pet.castrated ?? pet.castrado ?? false),
+    childrenCompatibility: pet.childrenCompatibility || pet.children_compatibility || "nao testado",
+    catsCompatibility: pet.catsCompatibility || pet.cats_compatibility || "nao testado",
+    dogsCompatibility: pet.dogsCompatibility || pet.dogs_compatibility || "nao testado",
+    energyLevel: pet.energyLevel || pet.energy_level || "medio",
     tags: Array.isArray(pet.tags) ? pet.tags : [],
     ong: pet.ong || ong?.name || "ONG Parceira",
     ongData: {
@@ -41,7 +49,7 @@ export const normalizePet = (pet) => {
 
 export function seedPets() {
   const current = readStorage(STORAGE_KEYS.pets, null);
-  if (current?.length) return current;
+  if (current?.length >= mockPets.length) return current;
   return writeStorage(STORAGE_KEYS.pets, mockPets.map(normalizePet));
 }
 
@@ -58,10 +66,13 @@ export async function listPets(filters = {}) {
     const { data, error } = await query;
     if (error) throw new Error(error.message);
     const normalized = (data || []).map(normalizePet);
-    return normalized.length ? normalized : seedPets();
+    return normalized.length ? normalized : filterPets(seedPets(), filters);
   }
 
-  const pets = seedPets();
+  return filterPets(seedPets(), filters);
+}
+
+function filterPets(pets, filters = {}) {
   return pets.filter((pet) => {
     if (filters.ongId && pet.ong_id !== filters.ongId) return false;
     if (filters.status && pet.status !== filters.status) return false;
@@ -127,5 +138,13 @@ function mapPetPayload(petData) {
     image_url: petData.image_url || petData.image || null,
     status: petData.status || "available",
     tags: petData.tags || [],
+    personality: petData.personality || null,
+    health_status: petData.healthStatus || petData.health_status || null,
+    vaccinated: Boolean(petData.vaccinated),
+    castrated: Boolean(petData.castrated),
+    children_compatibility: petData.childrenCompatibility || petData.children_compatibility || null,
+    cats_compatibility: petData.catsCompatibility || petData.cats_compatibility || null,
+    dogs_compatibility: petData.dogsCompatibility || petData.dogs_compatibility || null,
+    energy_level: petData.energyLevel || petData.energy_level || null,
   };
 }

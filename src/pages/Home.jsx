@@ -36,7 +36,7 @@ export default function Home() {
           <img
             src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=900&auto=format&q=80"
             alt="Cachorro e gato juntos"
-            className="h-[420px] w-full rounded-2xl bg-white object-contain p-2 shadow-2xl"
+            className="h-[420px] w-full rounded-2xl object-cover shadow-2xl"
           />
         </div>
       </section>

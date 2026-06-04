@@ -12,6 +12,7 @@ import {
   Users,
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
+import { COMPATIBILITY_OPTIONS, ENERGY_LEVELS, HEALTH_OPTIONS_BY_SPECIES } from "../data/mockData";
 import { listAdoptionRequests } from "../services/adoptionService";
 import { deletePet, listPets, savePet } from "../services/petService";
 import { upsertOng } from "../services/ongService";
@@ -29,6 +30,14 @@ const emptyPet = {
   description: "",
   image: "",
   status: "available",
+  personality: "",
+  healthStatus: "saudavel",
+  vaccinated: true,
+  castrated: false,
+  childrenCompatibility: "boa",
+  catsCompatibility: "nao testado",
+  dogsCompatibility: "nao testado",
+  energyLevel: "medio",
 };
 
 const statusLabels = {
@@ -36,6 +45,9 @@ const statusLabels = {
   in_process: "Em processo",
   adopted: "Adotado",
 };
+
+const anyImageExtension = /\.(jpe?g|png|webp|gif|svg|bmp|avif)(\?.*)?$/i;
+const allowedImageExtension = /\.(jpe?g|png|webp)(\?.*)?$/i;
 
 const menuItems = [
   { id: "overview", label: "Visao Geral", icon: LayoutDashboard },
@@ -116,6 +128,13 @@ export function OngDashboard() {
       showMessage("Preencha nome, cidade e descricao do pet.");
       return;
     }
+    if (petForm.image) {
+      const validation = await validateHorizontalImage(petForm.image);
+      if (!validation.valid) {
+        showMessage(validation.message);
+        return;
+      }
+    }
 
     const saved = await savePet({
       ...petForm,
@@ -125,7 +144,15 @@ export function OngDashboard() {
       ongData: ong,
       location: `${petForm.city}, BA`,
       image_url: petForm.image,
-      tags: [statusLabels[petForm.status], petForm.size, petForm.ageType].filter(Boolean),
+      personality: petForm.personality,
+      healthStatus: petForm.healthStatus,
+      vaccinated: petForm.vaccinated,
+      castrated: petForm.castrated,
+      childrenCompatibility: petForm.childrenCompatibility,
+      catsCompatibility: petForm.catsCompatibility,
+      dogsCompatibility: petForm.dogsCompatibility,
+      energyLevel: petForm.energyLevel,
+      tags: [petForm.personality, petForm.healthStatus, petForm.energyLevel].filter(Boolean),
     });
 
     setPets((current) =>
@@ -153,6 +180,14 @@ export function OngDashboard() {
       description: pet.description,
       image: pet.image,
       status: pet.status,
+      personality: pet.personality || "",
+      healthStatus: pet.healthStatus || "saudavel",
+      vaccinated: Boolean(pet.vaccinated),
+      castrated: Boolean(pet.castrated),
+      childrenCompatibility: pet.childrenCompatibility || "boa",
+      catsCompatibility: pet.catsCompatibility || "nao testado",
+      dogsCompatibility: pet.dogsCompatibility || "nao testado",
+      energyLevel: pet.energyLevel || "medio",
     });
     setActiveTab("pets");
   };
@@ -314,6 +349,30 @@ export function OngDashboard() {
   );
 }
 
+function validateHorizontalImage(url) {
+  if (anyImageExtension.test(url) && !allowedImageExtension.test(url)) {
+    return Promise.resolve({
+      valid: false,
+      message: "Use imagem horizontal em JPG, PNG ou WEBP.",
+    });
+  }
+
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = () => {
+      resolve(
+        image.naturalWidth > image.naturalHeight
+          ? { valid: true }
+          : { valid: false, message: "A imagem precisa ser horizontal, com largura maior que altura." },
+      );
+    };
+    image.onerror = () => {
+      resolve({ valid: false, message: "Nao foi possivel validar a imagem. Confira a URL informada." });
+    };
+    image.src = url;
+  });
+}
+
 function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
   const update = (field, value) => setForm((current) => ({ ...current, [field]: value }));
 
@@ -338,12 +397,33 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
           <Select label="Sexo" value={form.sex} onChange={(value) => update("sex", value)} options={[["macho", "Macho"], ["femea", "Femea"]]} />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
+          <Input label="Personalidade" value={form.personality} onChange={(value) => update("personality", value)} placeholder="carinhoso e tranquilo" />
+          <Select
+            label="Status de saude"
+            value={form.healthStatus}
+            onChange={(value) => update("healthStatus", value)}
+            options={(HEALTH_OPTIONS_BY_SPECIES[form.species] || []).map((value) => [value, value])}
+          />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Select label="Vacinacao" value={String(form.vaccinated)} onChange={(value) => update("vaccinated", value === "true")} options={[["true", "Vacinado"], ["false", "Nao vacinado"]]} />
+          <Select label="Castracao" value={String(form.castrated)} onChange={(value) => update("castrated", value === "true")} options={[["true", "Castrado"], ["false", "Nao castrado"]]} />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Select label="Criancas" value={form.childrenCompatibility} onChange={(value) => update("childrenCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
+          <Select label="Gatos" value={form.catsCompatibility} onChange={(value) => update("catsCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Select label="Caes" value={form.dogsCompatibility} onChange={(value) => update("dogsCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
+          <Select label="Nivel de energia" value={form.energyLevel} onChange={(value) => update("energyLevel", value)} options={ENERGY_LEVELS.map((item) => [item.value, item.label])} />
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
           <Input label="Cidade" value={form.city} onChange={(value) => update("city", value)} required />
           <Input label="Bairro" value={form.neighborhood} onChange={(value) => update("neighborhood", value)} />
         </div>
         <Input label="URL da foto" value={form.image} onChange={(value) => update("image", value)} />
         <p className="-mt-2 rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs text-amber-100">
-          Para melhor visualizacao utilize imagens JPG, PNG ou WEBP quadradas ou proporcionais, preferencialmente 1200x1200 ou 4:3.
+          Use apenas imagens horizontais em JPG, PNG ou WEBP, preferencialmente 1200x800 ou proporcao 3:2 / 4:3.
         </p>
         <label className="text-sm text-slate-300">
           Descricao
@@ -397,7 +477,7 @@ function PetsTable({ pets, statusFilter, onStatusFilterChange, onEdit, onDelete,
       <div className="divide-y divide-slate-700">
         {pets.map((pet) => (
           <article key={pet.id} className="grid gap-4 p-4 lg:grid-cols-[72px_1fr_auto] lg:items-center">
-            <img src={pet.image || pet.image_url} alt={pet.name} className="h-20 w-20 rounded-lg bg-white object-contain p-1" />
+            <img src={pet.image || pet.image_url} alt={pet.name} className="h-20 w-20 rounded-lg bg-slate-950 object-contain" />
             <div>
               <h3 className="font-semibold">{pet.name}</h3>
               <p className="text-sm text-slate-400">{pet.city} - {pet.age || "idade nao informada"}</p>
