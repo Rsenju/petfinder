@@ -1,4 +1,4 @@
-﻿import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion as Motion, AnimatePresence } from "framer-motion";
@@ -37,20 +37,20 @@ const ageLabel = (idade) => {
 
   if (!valor) return "";
   if (tipo === "meses") {
-    return `${valor} ${valor === 1 ? "mÃªs" : "meses"}`;
+    return `${valor} ${valor === 1 ? "mês" : "meses"}`;
   }
   return `${valor} ${valor === 1 ? "ano" : "anos"}`;
 };
 
 const temperamentoLabel = (value) => {
   const map = {
-    docil: "DÃ³cil",
-    brincalhao: "BrincalhÃ£o",
+    docil: "Dócil",
+    brincalhao: "Brincalhão",
     calmo: "Calmo",
     ativo: "Ativo",
     protetor: "Protetor",
-    sociavel: "SociÃ¡vel",
-    timido: "TÃ­mido",
+    sociavel: "Sociável",
+    timido: "Tímido",
   };
   return map[value] ?? value;
 };
@@ -58,10 +58,10 @@ const temperamentoLabel = (value) => {
 const condicaoLabel = (value) => {
   const map = {
     cegueira: "Cegueira",
-    sem_pata: "AmputaÃ§Ã£o",
+    sem_pata: "Amputação",
     cardiopatia: "Cardiopatia",
     surdez: "Surdez",
-    cuidados_continuos: "Cuidados contÃ­nuos",
+    cuidados_continuos: "Cuidados contínuos",
   };
   return map[value] ?? value;
 };
@@ -197,9 +197,9 @@ function MatchSimulator({ pet }) {
 
     const status =
       value >= 85
-        ? "Match perfeito! VocÃªs tÃªm tudo para dar muito certo."
+        ? "Match perfeito! Vocês têm tudo para dar muito certo."
         : value >= 70
-          ? "Ã“timo match! Com alguns cuidados extras, serÃ¡ uma Ã³tima adoÃ§Ã£o."
+          ? "Ótimo match! Com alguns cuidados extras, será uma ótima adoção."
           : "Talvez seja melhor conversar com a ONG para entender melhor as necessidades do pet.";
 
     setMatchResult({ value, status });
@@ -219,7 +219,7 @@ function MatchSimulator({ pet }) {
             Simulador de Match
           </h2>
           <p className="mt-1 text-xs text-slate-400">
-            Descubra o quÃ£o compatÃ­vel vocÃª Ã© com {pet.nome}.
+            Descubra o quão compatível você é com {pet.nome}.
           </p>
         </div>
       </div>
@@ -227,7 +227,7 @@ function MatchSimulator({ pet }) {
       <div className="grid gap-3 text-xs text-slate-300 sm:grid-cols-2">
         <div className="space-y-2">
           <label className="block text-[11px] font-medium text-slate-500">
-            VocÃª jÃ¡ tem outros pets?
+            Você já tem outros pets?
           </label>
           <div className="flex gap-1.5">
             {["sim", "nao"].map((value) => (
@@ -242,7 +242,7 @@ function MatchSimulator({ pet }) {
                     : "border-slate-600 bg-slate-700 text-slate-300 hover:border-slate-500",
                 )}
               >
-                {value === "sim" ? "Sim" : "NÃ£o"}
+                {value === "sim" ? "Sim" : "Não"}
               </button>
             ))}
           </div>
@@ -250,7 +250,7 @@ function MatchSimulator({ pet }) {
 
         <div className="space-y-2">
           <label className="block text-[11px] font-medium text-slate-500">
-            Quanto tempo vocÃª passa em casa?
+            Quanto tempo você passa em casa?
           </label>
           <select
             value={formValues.tempoEmCasa}
@@ -259,15 +259,15 @@ function MatchSimulator({ pet }) {
             }
             className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
           >
-            <option value="pouco">Pouco (atÃ© 4h)</option>
-            <option value="medio">MÃ©dio (4h a 8h)</option>
+            <option value="pouco">Pouco (até 4h)</option>
+            <option value="medio">Médio (4h a 8h)</option>
             <option value="muito">Muito (mais de 8h)</option>
           </select>
         </div>
 
         <div className="space-y-2">
           <label className="block text-[11px] font-medium text-slate-500">
-            EspaÃ§o disponÃ­vel
+            Espaço disponível
           </label>
           <select
             value={formValues.espaco}
@@ -275,14 +275,14 @@ function MatchSimulator({ pet }) {
             className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
           >
             <option value="pequeno">Pequeno</option>
-            <option value="medio">MÃ©dio</option>
+            <option value="medio">Médio</option>
             <option value="grande">Grande</option>
           </select>
         </div>
 
         <div className="space-y-2">
           <label className="block text-[11px] font-medium text-slate-500">
-            Sua experiÃªncia com pets
+            Sua experiência com pets
           </label>
           <select
             value={formValues.experiencia}
@@ -292,8 +292,8 @@ function MatchSimulator({ pet }) {
             className="h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30"
           >
             <option value="iniciante">Iniciante</option>
-            <option value="intermediario">IntermediÃ¡rio</option>
-            <option value="avancado">AvanÃ§ado</option>
+            <option value="intermediario">Intermediário</option>
+            <option value="avancado">Avançado</option>
           </select>
         </div>
       </div>
@@ -542,7 +542,7 @@ function MediaGallery({ pet }) {
 
   return (
     <section
-      aria-label={`Galeria de mÃ­dia do pet ${pet.nome}`}
+      aria-label={`Galeria de mídia do pet ${pet.nome}`}
       className="space-y-3"
     >
       <div className="flex flex-col gap-3 md:flex-row">
@@ -572,7 +572,7 @@ function MediaGallery({ pet }) {
               )}
               {media.type === "panorama" && (
                 <div className="pointer-events-none absolute bottom-1 right-1 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white">
-                  360Â°
+                  360°
                 </div>
               )}
             </button>
@@ -601,7 +601,7 @@ function MediaGallery({ pet }) {
             </div>
             <button
               type="button"
-              aria-label="Ver mÃ­dia em tela cheia"
+              aria-label="Ver mídia em tela cheia"
               className="pointer-events-auto absolute right-3 top-3 inline-flex items-center justify-center rounded-full bg-black/60 p-1.5 text-white shadow-sm transition hover:bg-black/80"
             >
               <Maximize2 className="h-4 w-4" />
@@ -611,7 +611,7 @@ function MediaGallery({ pet }) {
           <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between p-3 text-[11px] text-white">
             <span className="pointer-events-auto flex items-center gap-1 rounded-full bg-black/50 px-2.5 py-1">
               <Info className="h-3.5 w-3.5" />
-              <span>Zoom disponÃ­vel</span>
+              <span>Zoom disponível</span>
             </span>
             <span className="rounded-full bg-black/45 px-2 py-0.5">
               {activeIndex + 1} / {pet.gallery.length}
@@ -636,7 +636,7 @@ function MediaGallery({ pet }) {
                 <div className="flex items-center gap-2">
                   <Dog className="h-4 w-4" />
                   <span>
-                    {pet.nome} Â· {pet.especie}
+                    {pet.nome} · {pet.especie}
                   </span>
                 </div>
                 <button
@@ -653,7 +653,7 @@ function MediaGallery({ pet }) {
                   type="button"
                   onClick={handlePrev}
                   className="absolute left-4 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
-                  aria-label="MÃ­dia anterior"
+                  aria-label="Mídia anterior"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
@@ -661,7 +661,7 @@ function MediaGallery({ pet }) {
                   type="button"
                   onClick={handleNext}
                   className="absolute right-4 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-full bg-white/10 p-2 text-white hover:bg-white/20"
-                  aria-label="PrÃ³xima mÃ­dia"
+                  aria-label="Próxima mídia"
                 >
                   <ChevronRight className="h-5 w-5" />
                 </button>
@@ -741,7 +741,7 @@ function SimilarPets({ basePet }) {
                   className="h-full w-full bg-slate-950 object-contain transition duration-500"
                 />
                 <div className="absolute left-2 top-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-medium text-white">
-                  {pet.porte} Â· {pet.sexo === "femea" ? "FÃªmea" : "Macho"}
+                  {pet.porte} · {pet.sexo === "femea" ? "Fêmea" : "Macho"}
                 </div>
               </div>
               <div className="px-3 pb-3 pt-2 text-xs text-slate-300">
@@ -801,7 +801,7 @@ export default function PetDetailPage() {
   const handleShareInstagram = () => {
     if (!pet) return;
     showToast(
-      "Abrindo cÃ¢mera do Instagram (simulaÃ§Ã£o). Use o link do pet na sua story.",
+      "Abrindo câmera do Instagram (simulação). Use o link do pet na sua story.",
       "neutral",
     );
     window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
@@ -823,7 +823,7 @@ export default function PetDetailPage() {
         href="#pet-detail-main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-blue-600 focus:px-4 focus:py-2 focus:text-xs focus:font-semibold focus:text-white focus:shadow-lg"
       >
-        Pular para conteÃºdo principal
+        Pular para conteúdo principal
       </a>
 
       <div className="mx-auto flex w-full max-w-6xl flex-col px-4 pb-12 pt-6 sm:px-6 lg:px-8">
@@ -846,10 +846,10 @@ export default function PetDetailPage() {
               <AlertTriangle className="h-6 w-6" />
             </div>
             <h1 className="text-lg font-semibold text-white">
-              NÃ£o foi possÃ­vel carregar os detalhes do pet
+              Não foi possível carregar os detalhes do pet
             </h1>
             <p className="mt-1 max-w-md text-sm text-slate-400">
-              Tente atualizar a pÃ¡gina ou voltar para a lista de pets para
+              Tente atualizar a página ou voltar para a lista de pets para
               escolher outro amigo.
             </p>
           </div>
@@ -877,7 +877,7 @@ export default function PetDetailPage() {
                   <span>{ageLabel(pet.idade)}</span>
                   <span className="h-1 w-1 rounded-full bg-slate-600" />
                   <span className="capitalize">
-                    {pet.sexo === "femea" ? "FÃªmea" : "Macho"}
+                    {pet.sexo === "femea" ? "Fêmea" : "Macho"}
                   </span>
                 </div>
               </div>
@@ -885,7 +885,7 @@ export default function PetDetailPage() {
               <div className="flex flex-wrap items-center gap-2">
                 <div className="inline-flex items-center gap-1 rounded-full bg-slate-800 px-3 py-1.5 text-xs font-medium text-white shadow-sm border border-slate-700">
                   <ShieldCheck className="h-4 w-4 text-emerald-400" />
-                  AdoÃ§Ã£o responsÃ¡vel
+                  Adoção responsável
                 </div>
               </div>
             </header>
@@ -906,7 +906,7 @@ export default function PetDetailPage() {
                       id="pet-info-title"
                       className="text-sm font-semibold text-white sm:text-base"
                     >
-                      InformaÃ§Ãµes sobre {pet.nome}
+                      Informações sobre {pet.nome}
                     </h2>
                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/20 px-2.5 py-1 text-[11px] font-medium text-emerald-400">
                       <Info className="h-3.5 w-3.5" />
@@ -922,14 +922,14 @@ export default function PetDetailPage() {
                       <dl className="grid grid-cols-2 gap-y-1.5 gap-x-3">
                         <div>
                           <dt className="text-[11px] text-slate-500">
-                            EspÃ©cie
+                            Espécie
                           </dt>
                           <dd className="font-medium capitalize text-white">
                             {pet.especie}
                           </dd>
                         </div>
                         <div>
-                          <dt className="text-[11px] text-slate-500">RaÃ§a</dt>
+                          <dt className="text-[11px] text-slate-500">Raça</dt>
                           <dd className="font-medium text-white">{pet.raca}</dd>
                         </div>
                         <div>
@@ -949,7 +949,7 @@ export default function PetDetailPage() {
 
                     <div className="space-y-2">
                       <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                        SaÃºde
+                        Saúde
                       </h3>
                       <div className="flex flex-wrap gap-1.5">
                         <span
@@ -959,7 +959,7 @@ export default function PetDetailPage() {
                           )}
                         >
                           <ShieldCheck className="h-3.5 w-3.5" />
-                          {pet.vacinado ? "Vacinado" : "NÃ£o vacinado"}
+                          {pet.vacinado ? "Vacinado" : "Não vacinado"}
                         </span>
                         <span
                           className={cn(
@@ -968,7 +968,7 @@ export default function PetDetailPage() {
                           )}
                         >
                           <ShieldCheck className="h-3.5 w-3.5" />
-                          {pet.castrado ? "Castrado" : "NÃ£o castrado"}
+                          {pet.castrado ? "Castrado" : "Não castrado"}
                         </span>
                         <span
                           className={cn(
@@ -1023,7 +1023,7 @@ export default function PetDetailPage() {
                     {structuredCondicoes.length > 0 && (
                       <div className="space-y-2">
                         <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                          CondiÃ§Ãµes especiais
+                          Condições especiais
                         </h3>
                         <div className="flex flex-wrap gap-1.5">
                           {structuredCondicoes.map((label) => (
@@ -1041,8 +1041,8 @@ export default function PetDetailPage() {
                           ))}
                         </div>
                         <p className="text-[11px] text-slate-400">
-                          Pets com condiÃ§Ãµes especiais tambÃ©m merecem um lar. A
-                          ONG darÃ¡ todo apoio necessÃ¡rio.
+                          Pets com condições especiais também merecem um lar. A
+                          ONG dará todo apoio necessário.
                         </p>
                       </div>
                     )}
@@ -1050,7 +1050,7 @@ export default function PetDetailPage() {
 
                   <div className="mt-4 space-y-2 text-xs text-slate-300">
                     <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                      HistÃ³ria
+                      História
                     </h3>
                     <p className="leading-relaxed text-slate-300">
                       {pet.historia}
@@ -1076,7 +1076,7 @@ export default function PetDetailPage() {
                         ONG {pet.ong.nome}
                       </h2>
                       <p className="mt-1 text-xs text-slate-400">
-                        OrganizaÃ§Ã£o parceira verificada. Todas as adoÃ§Ãµes passam
+                        Organização parceira verificada. Todas as adoções passam
                         por entrevista e termo de responsabilidade.
                       </p>
                     </div>
@@ -1117,7 +1117,7 @@ export default function PetDetailPage() {
                   </div>
 
                   <p className="mt-2 text-[11px] text-slate-500">
-                    Seus dados serÃ£o compartilhados apenas com a ONG responsÃ¡vel
+                    Seus dados serão compartilhados apenas com a ONG responsável
                     por este pet.
                   </p>
                 </section>
