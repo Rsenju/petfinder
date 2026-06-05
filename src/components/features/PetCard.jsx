@@ -4,11 +4,11 @@ import { MapPin } from "lucide-react";
 export default function PetCard({ pet, layout = "grid" }) {
   return (
     <article className={`overflow-hidden rounded-xl border border-slate-700 bg-slate-800 shadow-lg ${layout === "list" ? "sm:flex" : ""}`}>
-      <div className={`aspect-[3/2] bg-slate-950 ${layout === "list" ? "sm:w-56" : ""}`}>
+      <div className={`aspect-[16/10] bg-slate-950 ${layout === "list" ? "sm:w-56" : ""}`}>
         <img
           src={pet.image || pet.image_url}
           alt={pet.name}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover object-center"
           loading="lazy"
         />
       </div>

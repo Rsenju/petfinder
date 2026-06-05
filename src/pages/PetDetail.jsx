@@ -563,7 +563,7 @@ function MediaGallery({ pet }) {
                 src={media.thumbUrl}
                 alt={media.alt}
                 loading="lazy"
-                className="h-20 w-full object-cover md:h-20"
+                className="h-20 w-full object-cover object-center md:h-20"
               />
               {media.type === "video" && (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/30 text-white">
@@ -591,7 +591,7 @@ function MediaGallery({ pet }) {
             <img
               src={mainMedia.fullUrl}
               alt={mainMedia.alt}
-              className="h-full w-full object-cover transition duration-500"
+              className="h-full w-full object-cover object-center transition duration-500"
               loading="lazy"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-black/10" />
@@ -734,12 +734,12 @@ function SimilarPets({ basePet }) {
               to={`/pet/${pet.id}`}
               className="group overflow-hidden rounded-2xl border border-slate-700 bg-slate-800/90 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div className="relative aspect-[3/1] w-full overflow-hidden bg-slate-900">
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-900">
                 <img
                   src={pet.gallery[0].thumbUrl}
                   alt={pet.gallery[0].alt}
                   loading="lazy"
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
                 />
                 <div className="absolute left-2 top-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-medium text-white">
                   {pet.porte} · {pet.sexo === "femea" ? "Fêmea" : "Macho"}

@@ -1,25 +1,25 @@
 const dogImages = [
-  "https://images.unsplash.com/photo-1552053831-71594a27632d?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1534361960057-19889db9621e?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1529472119196-cb724127a98e?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1525253086316-d0c936c814f8?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=1200&h=800&auto=format&fit=crop&q=85",
+  "https://images.unsplash.com/photo-1552053831-71594a27632d?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1561037404-61cd46aa615b?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1517849845537-4d257902454a?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1507146426996-ef05306b995a?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1558788353-f76d92427f16?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
 ];
 
 const catImages = [
-  "https://images.unsplash.com/photo-1513245543132-31f507417b26?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=1200&h=800&auto=format&fit=crop&q=85",
-  "https://images.unsplash.com/photo-1494256997604-768d1f608cac?w=1200&h=800&auto=format&fit=crop&q=85",
+  "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1495360010541-f48722b34f7d?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1494256997604-768d1f608cac?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
+  "https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=1200&h=800&auto=format&fit=crop&crop=faces&q=85",
 ];
 
 export const DOG_HEALTH_OPTIONS = [

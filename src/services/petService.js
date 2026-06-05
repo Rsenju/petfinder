@@ -2,6 +2,8 @@ import { allPets as mockPets, ongs as mockOngs } from "../data/mockData";
 import { createId, readStorage, STORAGE_KEYS, writeStorage } from "./storage";
 import { isSupabaseConfigured, supabase } from "./supabaseClient";
 
+const MOCK_PETS_SEED_VERSION = "2026-06-04-horizontal-single-pet-images";
+
 const findOngForPet = (pet) =>
   mockOngs.find((ong) => ong.name === pet.ong) || mockOngs[0];
 
@@ -49,8 +51,19 @@ export const normalizePet = (pet) => {
 
 export function seedPets() {
   const current = readStorage(STORAGE_KEYS.pets, null);
-  if (current?.length >= mockPets.length) return current;
-  return writeStorage(STORAGE_KEYS.pets, mockPets.map(normalizePet));
+  const currentSeedVersion = readStorage(STORAGE_KEYS.petsSeedVersion, "");
+  const normalizedMocks = mockPets.map(normalizePet);
+
+  if (current?.length >= mockPets.length && currentSeedVersion === MOCK_PETS_SEED_VERSION) {
+    return current;
+  }
+
+  const mockIds = new Set(normalizedMocks.map((pet) => pet.id));
+  const customPets = Array.isArray(current) ? current.filter((pet) => !mockIds.has(pet.id)) : [];
+  const nextPets = [...normalizedMocks, ...customPets.map(normalizePet)];
+
+  writeStorage(STORAGE_KEYS.petsSeedVersion, MOCK_PETS_SEED_VERSION);
+  return writeStorage(STORAGE_KEYS.pets, nextPets);
 }
 
 export async function listPets(filters = {}) {
