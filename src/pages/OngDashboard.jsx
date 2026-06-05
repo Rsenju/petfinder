@@ -477,7 +477,7 @@ function PetsTable({ pets, statusFilter, onStatusFilterChange, onEdit, onDelete,
       <div className="divide-y divide-slate-700">
         {pets.map((pet) => (
           <article key={pet.id} className="grid gap-4 p-4 lg:grid-cols-[72px_1fr_auto] lg:items-center">
-            <img src={pet.image || pet.image_url} alt={pet.name} className="h-20 w-20 rounded-lg bg-slate-950 object-contain" />
+            <img src={pet.image || pet.image_url} alt={pet.name} className="h-20 w-20 rounded-lg object-cover" />
             <div>
               <h3 className="font-semibold">{pet.name}</h3>
               <p className="text-sm text-slate-400">{pet.city} - {pet.age || "idade nao informada"}</p>

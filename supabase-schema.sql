@@ -182,7 +182,7 @@ on public.pets for delete to authenticated
 using (app_private.owns_ong(ong_id) or app_private.is_admin());
 
 create policy "Public can create adoption requests"
-on public.adoption_requests for insert
+on public.adoption_requests for insert to anon, authenticated
 with check (true);
 
 create policy "Ongs can read own adoption requests"

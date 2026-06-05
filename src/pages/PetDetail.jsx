@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useForm, FormProvider } from "react-hook-form";
@@ -563,7 +563,7 @@ function MediaGallery({ pet }) {
                 src={media.thumbUrl}
                 alt={media.alt}
                 loading="lazy"
-                className="h-20 w-full bg-slate-950 object-contain md:h-20"
+                className="h-20 w-full object-cover md:h-20"
               />
               {media.type === "video" && (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/30 text-white">
@@ -585,13 +585,13 @@ function MediaGallery({ pet }) {
             initial={{ opacity: 0.6, scale: 1.02 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4 }}
-            className="relative h-64 w-full cursor-zoom-in overflow-hidden sm:h-80 md:h-96"
+            className="relative aspect-[3/2] w-full cursor-zoom-in overflow-hidden"
             onClick={() => setIsModalOpen(true)}
           >
             <img
               src={mainMedia.fullUrl}
               alt={mainMedia.alt}
-              className="h-full w-full bg-slate-950 object-contain transition duration-500"
+              className="h-full w-full object-cover transition duration-500"
               loading="lazy"
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-black/10" />
@@ -729,16 +729,17 @@ function SimilarPets({ basePet }) {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {similarPets.map((pet) => (
-            <article
+            <Link
               key={pet.id}
+              to={`/pet/${pet.id}`}
               className="group overflow-hidden rounded-2xl border border-slate-700 bg-slate-800/90 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
-              <div className="relative h-28 w-full overflow-hidden bg-slate-900">
+              <div className="relative aspect-[3/1] w-full overflow-hidden bg-slate-900">
                 <img
                   src={pet.gallery[0].thumbUrl}
                   alt={pet.gallery[0].alt}
                   loading="lazy"
-                  className="h-full w-full bg-slate-950 object-contain transition duration-500"
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                 />
                 <div className="absolute left-2 top-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] font-medium text-white">
                   {pet.porte} · {pet.sexo === "femea" ? "Fêmea" : "Macho"}
@@ -751,7 +752,7 @@ function SimilarPets({ basePet }) {
                   {pet.ong.cidade}
                 </p>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       )}

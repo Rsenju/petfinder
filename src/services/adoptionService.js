@@ -31,8 +31,7 @@ export async function createAdoptionRequest({ pet, request }) {
       .insert(payload)
       .select("*")
       .single();
-    if (error) throw new Error(error.message);
-    return data;
+    if (!error) return data;
   }
 
   const current = readStorage(STORAGE_KEYS.adoptionRequests, []);
