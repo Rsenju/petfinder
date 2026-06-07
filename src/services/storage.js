@@ -2,6 +2,7 @@ export const STORAGE_KEYS = {
   pets: "petfinder:pets",
   petsSeedVersion: "petfinder:pets_seed_version",
   ongs: "petfinder:ongs",
+  ongsSeedVersion: "petfinder:ongs_seed_version",
   adoptionRequests: "petfinder:adoption_requests",
   authUser: "petfinder:auth_user",
   token: "token",

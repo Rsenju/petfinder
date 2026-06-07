@@ -10,6 +10,11 @@ create table if not exists public.ongs (
   whatsapp text not null,
   city text not null,
   neighborhood text,
+  address text,
+  service_area text,
+  responsible text,
+  founded_at text,
+  instagram text,
   description text,
   created_at timestamptz not null default now()
 );

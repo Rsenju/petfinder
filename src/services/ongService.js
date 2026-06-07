@@ -2,6 +2,8 @@ import { ongs as mockOngs } from "../data/mockData";
 import { createId, readStorage, STORAGE_KEYS, writeStorage } from "./storage";
 import { isSupabaseConfigured, supabase } from "./supabaseClient";
 
+const MOCK_ONGS_SEED_VERSION = "2026-06-07-clickable-ong-profiles";
+
 const normalizeOng = (ong) => ({
   id: ong.id,
   name: ong.name || ong.nome || "ONG Parceira",
@@ -9,6 +11,11 @@ const normalizeOng = (ong) => ({
   whatsapp: ong.whatsapp || ong.phone || "(71) 99999-0000",
   city: ong.city || "Salvador",
   neighborhood: ong.neighborhood || ong.bairro || "Centro",
+  address: ong.address || ong.endereco || "",
+  serviceArea: ong.serviceArea || ong.service_area || "",
+  responsible: ong.responsible || ong.responsavel || "",
+  foundedAt: ong.foundedAt || ong.founded_at || "",
+  instagram: ong.instagram || "",
   description: ong.description || "",
   owner_user_id: ong.owner_user_id || null,
   image: ong.image || ong.logo || "",
@@ -19,8 +26,19 @@ const normalizeOng = (ong) => ({
 
 export function seedOngs() {
   const current = readStorage(STORAGE_KEYS.ongs, null);
-  if (current?.length >= mockOngs.length && current.some((ong) => ong.id === "ong_feira")) return current;
-  return writeStorage(STORAGE_KEYS.ongs, mockOngs.map(normalizeOng));
+  const currentSeedVersion = readStorage(STORAGE_KEYS.ongsSeedVersion, "");
+  const normalizedMocks = mockOngs.map(normalizeOng);
+
+  if (current?.length >= mockOngs.length && currentSeedVersion === MOCK_ONGS_SEED_VERSION) {
+    return current;
+  }
+
+  const mockIds = new Set(normalizedMocks.map((ong) => ong.id));
+  const customOngs = Array.isArray(current) ? current.filter((ong) => !mockIds.has(ong.id)) : [];
+  const nextOngs = [...normalizedMocks, ...customOngs.map(normalizeOng)];
+
+  writeStorage(STORAGE_KEYS.ongsSeedVersion, MOCK_ONGS_SEED_VERSION);
+  return writeStorage(STORAGE_KEYS.ongs, nextOngs);
 }
 
 export async function listOngs() {
@@ -48,6 +66,11 @@ export async function upsertOng(ongData) {
       whatsapp: ongData.whatsapp,
       city: ongData.city,
       neighborhood: ongData.neighborhood || null,
+      address: ongData.address || null,
+      service_area: ongData.serviceArea || ongData.service_area || null,
+      responsible: ongData.responsible || null,
+      founded_at: ongData.foundedAt || ongData.founded_at || null,
+      instagram: ongData.instagram || null,
       description: ongData.description || null,
       owner_user_id: ongData.owner_user_id || null,
     };
