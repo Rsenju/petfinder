@@ -9,11 +9,14 @@ import {
   Dog, 
   X,
   ChevronDown,
-  Loader2
+  Loader2,
+  Navigation
 } from 'lucide-react';
 import { allPets, CITIES, SPECIES, SIZES, AGES, SEXES } from '../data/mockData';
+import { LOCATION_OPTIONS, NEIGHBORHOOD_COORDINATES, withDistance } from '../data/geoData';
 import { listPets } from '../services/petService';
 import PetCard from '../components/features/PetCard';
+import RegionalMap from '../components/features/RegionalMap';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import ScrollReveal from '../components/ui/ScrollReveal';
 
@@ -32,7 +35,10 @@ export default function Pets() {
     size: searchParams.get('porte') || '',
     age: searchParams.get('idade') || '',
     sex: searchParams.get('sexo') || '',
-    name: searchParams.get('nome') || ''
+    name: searchParams.get('nome') || '',
+    neighborhood: searchParams.get('bairro') || '',
+    origin: searchParams.get('origem') || '',
+    maxDistance: searchParams.get('distancia') || ''
   });
 
   useEffect(() => {
@@ -63,22 +69,50 @@ export default function Pets() {
     if (filters.age) params.set('idade', filters.age);
     if (filters.sex) params.set('sexo', filters.sex);
     if (filters.name) params.set('nome', filters.name);
+    if (filters.neighborhood) params.set('bairro', filters.neighborhood);
+    if (filters.origin) params.set('origem', filters.origin);
+    if (filters.maxDistance) params.set('distancia', filters.maxDistance);
     setSearchParams(params, { replace: true });
   }, [filters, setSearchParams]);
 
-  // Filtrar pets
+  const origin = useMemo(
+    () => LOCATION_OPTIONS.find((item) => item.id === filters.origin) || null,
+    [filters.origin],
+  );
+
+  const neighborhoodOptions = useMemo(() => {
+    if (filters.city) return Object.keys(NEIGHBORHOOD_COORDINATES[filters.city] || {});
+    return [...new Set(Object.values(NEIGHBORHOOD_COORDINATES).flatMap((items) => Object.keys(items)))].sort();
+  }, [filters.city]);
+
   const filteredPets = useMemo(() => {
-    return pets.filter(pet => {
+    return pets
+      .map((pet) => withDistance(pet, origin))
+      .filter(pet => {
       if (filters.city && pet.city !== filters.city) return false;
+      if (filters.neighborhood && pet.neighborhood !== filters.neighborhood) return false;
       if (filters.species && pet.species !== filters.species) return false;
       if (filters.size && pet.size !== filters.size) return false;
-      // ✅ CORRIGIDO: Usar ageType em vez de age string
       if (filters.age && pet.ageType !== filters.age) return false;
       if (filters.sex && pet.sex !== filters.sex) return false;
       if (filters.name && !pet.name.toLowerCase().includes(filters.name.toLowerCase())) return false;
+      if (filters.maxDistance && typeof pet.distanceKm === 'number' && pet.distanceKm > Number(filters.maxDistance)) return false;
       return true;
-    });
-  }, [filters, pets]);
+    })
+      .sort((a, b) => {
+        if (!origin) return 0;
+        return (a.distanceKm ?? 9999) - (b.distanceKm ?? 9999);
+      });
+  }, [filters, origin, pets]);
+
+  const mapMarkers = useMemo(
+    () => filteredPets.map((pet) => ({
+      ...pet,
+      type: 'pet',
+      href: `/pet/${pet.id}`,
+    })),
+    [filteredPets],
+  );
 
   const visiblePets = filteredPets.slice(0, visibleCount);
   const hasMore = visibleCount < filteredPets.length;
@@ -101,7 +135,12 @@ export default function Pets() {
   }, [hasMore, filteredPets.length]);
 
   const updateFilter = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+    setFilters(prev => ({
+      ...prev,
+      [key]: value,
+      ...(key === 'city' ? { neighborhood: '' } : {}),
+      ...(key === 'origin' && !value ? { maxDistance: '' } : {}),
+    }));
     setVisibleCount(12);
   };
 
@@ -112,7 +151,10 @@ export default function Pets() {
       size: '',
       age: '',
       sex: '',
-      name: ''
+      name: '',
+      neighborhood: '',
+      origin: '',
+      maxDistance: ''
     });
     setVisibleCount(12);
   };
@@ -197,6 +239,21 @@ export default function Pets() {
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
               </div>
 
+              {/* Bairro */}
+              <div className="relative">
+                <select
+                  value={filters.neighborhood}
+                  onChange={(e) => updateFilter('neighborhood', e.target.value)}
+                  className="appearance-none pl-4 pr-10 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 cursor-pointer text-sm"
+                >
+                  <option value="">Todos os bairros</option>
+                  {neighborhoodOptions.map(neighborhood => (
+                    <option key={neighborhood} value={neighborhood}>{neighborhood}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              </div>
+
               {/* Porte */}
               <div className="relative">
                 <select
@@ -263,7 +320,7 @@ export default function Pets() {
                     ? 'bg-blue-600 text-white' 
                     : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700'
                 }`}
-                title="Visualização em grade"
+                title="Visualizacao em grade"
               >
                 <Grid3X3 className="w-5 h-5" />
               </button>
@@ -274,7 +331,7 @@ export default function Pets() {
                     ? 'bg-blue-600 text-white' 
                     : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700'
                 }`}
-                title="Visualização em lista"
+                title="Visualizacao em lista"
               >
                 <List className="w-5 h-5" />
               </button>
@@ -290,6 +347,45 @@ export default function Pets() {
             )}
           </div>
         </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <div className="mb-4 grid gap-3 md:grid-cols-[1fr_180px]">
+          <label className="relative">
+            <Navigation className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <select
+              value={filters.origin}
+              onChange={(e) => updateFilter('origin', e.target.value)}
+              className="w-full appearance-none rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-10 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            >
+              <option value="">Calcular distancia de...</option>
+              {LOCATION_OPTIONS.map((item) => (
+                <option key={item.id} value={item.id}>{item.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          </label>
+
+          <select
+            value={filters.maxDistance}
+            onChange={(e) => updateFilter('maxDistance', e.target.value)}
+            disabled={!origin}
+            className="appearance-none rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+          >
+            <option value="">Qualquer distancia</option>
+            <option value="5">Ate 5 km</option>
+            <option value="10">Ate 10 km</option>
+            <option value="20">Ate 20 km</option>
+            <option value="50">Ate 50 km</option>
+          </select>
+        </div>
+
+        <RegionalMap
+          title="Mapa de pets disponiveis"
+          description="Pontos aproximados por bairro para encontrar adocoes proximas."
+          markers={mapMarkers}
+          origin={origin}
+        />
       </section>
 
       {/* Lista de Pets */}
@@ -365,7 +461,7 @@ export default function Pets() {
             {!hasMore && filteredPets.length > 12 && (
               <div className="mt-12 text-center">
                 <p className="text-gray-500 dark:text-gray-400">
-                  Você viu todos os {filteredPets.length} pets! 🐾
+                  Você viu todos os {filteredPets.length} pets.
                 </p>
               </div>
             )}

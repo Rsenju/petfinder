@@ -1,24 +1,24 @@
-import { useContext, useCallback } from 'react';
-import { AuthContext } from '../context/AuthContext'; // ✅ CORRIGIDO
+import { useCallback, useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  
+
   if (!context) {
-    throw new Error('useAuth deve ser usado dentro de um AuthProvider');
+    throw new Error("useAuth deve ser usado dentro de um AuthProvider");
   }
 
-  const { 
-    user, 
-    isAuthenticated, 
-    isLoading, 
-    login, 
+  const {
+    user,
+    isAuthenticated,
+    isLoading,
+    login,
     loginGoogle,
-    logout, 
+    logout,
     register,
     updateUser,
     forgotPassword,
-    resetPassword
+    resetPassword,
   } = context;
 
   const handleLogin = useCallback(async (credentials) => {
@@ -26,9 +26,9 @@ export function useAuth() {
       const userData = await login(credentials);
       return { success: true, user: userData };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.message || 'Erro ao fazer login' 
+      return {
+        success: false,
+        error: error.message || "Erro ao fazer login",
       };
     }
   }, [login]);
@@ -38,9 +38,9 @@ export function useAuth() {
       const newUser = await register(userData);
       return { success: true, user: newUser };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.message || 'Erro ao cadastrar' 
+      return {
+        success: false,
+        error: error.message || "Erro ao cadastrar",
       };
     }
   }, [register]);
@@ -50,9 +50,9 @@ export function useAuth() {
       await logout();
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.message || 'Erro ao sair' 
+      return {
+        success: false,
+        error: error.message || "Erro ao sair",
       };
     }
   }, [logout]);
@@ -61,8 +61,8 @@ export function useAuth() {
     user,
     isAuthenticated,
     isLoading,
-    isOng: user?.tipo === 'ong' || user?.role === 'ong',
-    isAdmin: user?.tipo === 'admin' || user?.role === 'admin',
+    isOng: user?.tipo === "ong" || user?.role === "ong",
+    isAdmin: user?.tipo === "admin" || user?.role === "admin",
     login: handleLogin,
     loginGoogle,
     logout: handleLogout,

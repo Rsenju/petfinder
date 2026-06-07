@@ -2,7 +2,14 @@ import { ongs as mockOngs } from "../data/mockData";
 import { createId, readStorage, STORAGE_KEYS, writeStorage } from "./storage";
 import { isSupabaseConfigured, supabase } from "./supabaseClient";
 
-const MOCK_ONGS_SEED_VERSION = "2026-06-07-clickable-ong-profiles";
+const MOCK_ONGS_SEED_VERSION = "2026-06-07-moderated-ong-profiles";
+
+export const ONG_APPROVAL_STATUS = {
+  pending: "pending",
+  approved: "approved",
+  rejected: "rejected",
+  blocked: "blocked",
+};
 
 const normalizeOng = (ong) => ({
   id: ong.id,
@@ -12,10 +19,15 @@ const normalizeOng = (ong) => ({
   city: ong.city || "Salvador",
   neighborhood: ong.neighborhood || ong.bairro || "Centro",
   address: ong.address || ong.endereco || "",
+  latitude: ong.latitude || ong.lat || null,
+  longitude: ong.longitude || ong.lng || null,
   serviceArea: ong.serviceArea || ong.service_area || "",
   responsible: ong.responsible || ong.responsavel || "",
   foundedAt: ong.foundedAt || ong.founded_at || "",
   instagram: ong.instagram || "",
+  approvalStatus: ong.approvalStatus || ong.approval_status || ONG_APPROVAL_STATUS.pending,
+  verified: Boolean(ong.verified ?? ong.is_verified ?? (ong.approvalStatus || ong.approval_status) === ONG_APPROVAL_STATUS.approved),
+  moderationNote: ong.moderationNote || ong.moderation_note || "",
   description: ong.description || "",
   owner_user_id: ong.owner_user_id || null,
   image: ong.image || ong.logo || "",
@@ -41,16 +53,21 @@ export function seedOngs() {
   return writeStorage(STORAGE_KEYS.ongs, nextOngs);
 }
 
-export async function listOngs() {
+export async function listOngs(options = {}) {
   if (isSupabaseConfigured) {
-    const { data, error } = await supabase
+    let query = supabase
       .from("ongs")
       .select("*")
       .order("created_at", { ascending: false });
+    if (!options.includeInactive) query = query.eq("approval_status", ONG_APPROVAL_STATUS.approved);
+    const { data, error } = await query;
     if (error) throw new Error(error.message);
     return (data || []).map(normalizeOng);
   }
-  return seedOngs();
+  const ongs = seedOngs();
+  return options.includeInactive
+    ? ongs
+    : ongs.filter((ong) => ong.approvalStatus === ONG_APPROVAL_STATUS.approved);
 }
 
 export async function getOngById(id) {
@@ -67,10 +84,15 @@ export async function upsertOng(ongData) {
       city: ongData.city,
       neighborhood: ongData.neighborhood || null,
       address: ongData.address || null,
+      latitude: ongData.latitude || ongData.lat || null,
+      longitude: ongData.longitude || ongData.lng || null,
       service_area: ongData.serviceArea || ongData.service_area || null,
       responsible: ongData.responsible || null,
       founded_at: ongData.foundedAt || ongData.founded_at || null,
       instagram: ongData.instagram || null,
+      approval_status: ongData.approvalStatus || ongData.approval_status || ONG_APPROVAL_STATUS.pending,
+      is_verified: Boolean(ongData.verified ?? ongData.is_verified ?? false),
+      moderation_note: ongData.moderationNote || ongData.moderation_note || null,
       description: ongData.description || null,
       owner_user_id: ongData.owner_user_id || null,
     };
@@ -94,4 +116,37 @@ export async function upsertOng(ongData) {
     : [nextOng, ...ongs];
   writeStorage(STORAGE_KEYS.ongs, next);
   return nextOng;
+}
+
+export async function updateOngModeration(id, { approvalStatus, moderationNote = "" }) {
+  const verified = approvalStatus === ONG_APPROVAL_STATUS.approved;
+
+  if (isSupabaseConfigured) {
+    const { data, error } = await supabase
+      .from("ongs")
+      .update({
+        approval_status: approvalStatus,
+        is_verified: verified,
+        moderation_note: moderationNote || null,
+      })
+      .eq("id", id)
+      .select("*")
+      .single();
+    if (error) throw new Error(error.message);
+    return normalizeOng(data);
+  }
+
+  const ongs = seedOngs();
+  const next = ongs.map((ong) =>
+    ong.id === id
+      ? normalizeOng({
+          ...ong,
+          approvalStatus,
+          verified,
+          moderationNote,
+        })
+      : ong,
+  );
+  writeStorage(STORAGE_KEYS.ongs, next);
+  return next.find((ong) => ong.id === id) || null;
 }

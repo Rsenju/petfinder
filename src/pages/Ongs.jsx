@@ -1,12 +1,37 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Building2, MapPin, Phone, Users } from "lucide-react";
+import { ArrowRight, Building2, ChevronDown, MapPin, Navigation, Phone, ShieldCheck, Users } from "lucide-react";
+import RegionalMap from "../components/features/RegionalMap";
+import { LOCATION_OPTIONS, withDistance } from "../data/geoData";
 import { listOngs } from "../services/ongService";
 
 export default function Ongs() {
   const [ongs, setOngs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [originId, setOriginId] = useState("");
+
+  const origin = useMemo(
+    () => LOCATION_OPTIONS.find((item) => item.id === originId) || null,
+    [originId],
+  );
+
+  const visibleOngs = useMemo(
+    () =>
+      ongs
+        .map((ong) => withDistance(ong, origin))
+        .sort((a, b) => (origin ? (a.distanceKm ?? 9999) - (b.distanceKm ?? 9999) : 0)),
+    [ongs, origin],
+  );
+
+  const mapMarkers = useMemo(
+    () => visibleOngs.map((ong) => ({
+      ...ong,
+      type: "ong",
+      href: `/ong/${ong.id}`,
+    })),
+    [visibleOngs],
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -43,7 +68,29 @@ export default function Ongs() {
             Conheca as organizacoes verificadas, veja seus contatos e encontre os animais disponiveis em cada uma.
           </p>
         </div>
+        <label className="relative min-w-0 sm:w-80">
+          <Navigation className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+          <select
+            value={originId}
+            onChange={(event) => setOriginId(event.target.value)}
+            className="w-full appearance-none rounded-xl border border-slate-700 bg-slate-800 py-2.5 pl-10 pr-10 text-sm text-white outline-none focus:border-blue-400"
+          >
+            <option value="">Calcular distancia de...</option>
+            {LOCATION_OPTIONS.map((item) => (
+              <option key={item.id} value={item.id}>{item.label}</option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 pointer-events-none" />
+        </label>
       </div>
+
+      <RegionalMap
+        className="mt-8"
+        title="Mapa de ONGs parceiras"
+        description="Organizacoes verificadas por cidade e bairro de atuacao."
+        markers={mapMarkers}
+        origin={origin}
+      />
 
       {isLoading ? (
         <div className="mt-8 grid gap-5 md:grid-cols-3">
@@ -62,7 +109,7 @@ export default function Ongs() {
         </div>
       ) : (
         <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {ongs.map((ong) => (
+          {visibleOngs.map((ong) => (
             <Link
               key={ong.id}
               to={`/ong/${ong.id}`}
@@ -76,9 +123,20 @@ export default function Ongs() {
               />
               <div className="flex flex-1 flex-col">
                 <h2 className="mt-4 text-xl font-semibold text-white">{ong.name}</h2>
+                {ong.verified && (
+                  <span className="mt-2 inline-flex w-fit items-center gap-1 rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-semibold text-emerald-200 ring-1 ring-emerald-500/25">
+                    <ShieldCheck className="h-3.5 w-3.5" />
+                    ONG verificada
+                  </span>
+                )}
                 <p className="mt-2 flex items-center gap-2 text-sm text-slate-400">
                   <MapPin className="h-4 w-4" />
                   {ong.city} - {ong.neighborhood}
+                  {typeof ong.distanceKm === "number" && (
+                    <span className="rounded-full bg-slate-700 px-2 py-0.5 text-xs text-slate-200">
+                      {ong.distanceKm.toFixed(1)} km
+                    </span>
+                  )}
                 </p>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-300">{ong.description}</p>
                 <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-300">

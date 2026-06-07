@@ -15,6 +15,10 @@ O app funciona em dois modos:
 - Login por email/senha e Google OAuth via Supabase Auth.
 - Cadastro de ONG com dados de contato, cidade, bairro e descricao.
 - Painel da ONG para cadastrar, editar, remover e alterar status dos pets.
+- Upload de fotos horizontais dos pets com validacao, preview, otimizacao em WebP e galeria.
+- Mapa regional para pets, ONGs e pet shops, com filtros por cidade, bairro e distancia aproximada.
+- Perfil avancado do pet com saude, carteira de vacinacao, historico veterinario, microchip, peso, comportamento, rotina, alimentacao e observacoes da ONG.
+- Catalogo de parceiros/pet shops com servicos, fonte publica, WhatsApp, Instagram, localizacao e fallback local.
 - Painel admin com visao de ONGs, pets, pedidos e perfis.
 - Configuracao pronta para Vercel SPA com `vercel.json`.
 
@@ -61,8 +65,12 @@ O schema cria:
 - `profiles`: role do usuario (`adopter`, `ong`, `admin`) e vinculo com ONG.
 - `ongs`: dados da ONG e dono autenticado.
 - `pets`: pets da ONG, status e campos usados pelo frontend.
+- `pet-images`: bucket publico do Supabase Storage para fotos otimizadas dos pets.
+- `partners`: pet shops e servicos parceiros exibidos no hub regional.
 - `adoption_requests`: pedidos enviados pelo formulario.
 As policies RLS permitem leitura publica de ONGs e pets disponiveis, criacao publica de pedidos de adocao, gestao de pets apenas pela ONG dona e visao administrativa para perfis `admin`.
+Quando o Supabase nao esta configurado, as imagens selecionadas sao convertidas para base64 e persistidas no `localStorage` apenas para desenvolvimento.
+Pets e ONGs tambem podem armazenar `latitude` e `longitude`; quando esses campos nao existem, o frontend usa coordenadas aproximadas por cidade e bairro para o mapa regional.
 
 ## Contas Locais de Desenvolvimento
 

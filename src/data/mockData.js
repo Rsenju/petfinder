@@ -76,6 +76,8 @@ export const ongs = [
     responsible: "Equipe Patinhas de Salvador",
     foundedAt: "2019",
     instagram: "@patinhasdesalvador",
+    approvalStatus: "approved",
+    verified: true,
     whatsapp: "(71) 99991-1201",
     phone: "(71) 99991-1201",
     email: "contato@patinhasdesalvador.org",
@@ -95,6 +97,8 @@ export const ongs = [
     responsible: "Projeto Lar Animal Lauro",
     foundedAt: "2021",
     instagram: "@laranimallauro",
+    approvalStatus: "approved",
+    verified: true,
     whatsapp: "(71) 99992-2302",
     phone: "(71) 99992-2302",
     email: "contato@laranimallauro.org",
@@ -114,6 +118,8 @@ export const ongs = [
     responsible: "Anjos de 4 Patas Feira",
     foundedAt: "2018",
     instagram: "@anjos4patasfeira",
+    approvalStatus: "approved",
+    verified: true,
     whatsapp: "(75) 99993-3403",
     phone: "(75) 99993-3403",
     email: "contato@anjos4patasfeira.org",
@@ -123,10 +129,50 @@ export const ongs = [
   },
 ];
 
+const buildAdvancedProfile = (data) => {
+  const isDog = data.species === "dog";
+  const isSenior = data.ageType === "idoso";
+  const hasTreatment = !["saudavel", "vacinado", "vermifugado", "castrado"].includes(data.healthStatus);
+  const weightBySize = {
+    pequeno: isDog ? "6 kg" : "3,5 kg",
+    medio: isDog ? "14 kg" : "4,8 kg",
+    grande: "24 kg",
+  };
+
+  return {
+    vaccinationRecord: data.vaccinated
+      ? "Vacinas essenciais em dia conforme acompanhamento da ONG."
+      : "Carteira em organizacao pela ONG antes da adocao.",
+    veterinaryHistory: hasTreatment
+      ? `Acompanhamento veterinario recente por ${data.healthStatus}. Quadro estavel e monitorado.`
+      : "Avaliacao veterinaria recente sem alteracoes importantes.",
+    specialNeeds: isSenior
+      ? "Precisa de rotina tranquila e acompanhamento preventivo por idade."
+      : hasTreatment
+        ? "Pode precisar de cuidado simples de adaptacao e revisao veterinaria."
+        : "Nao possui necessidades especiais informadas.",
+    medications: hasTreatment ? "Sem medicacao fixa. Manter retorno indicado pela ONG se necessario." : "Nao usa medicacao continua.",
+    microchip: false,
+    weight: weightBySize[data.size] || "4 kg",
+    behaviorProfile: data.personality || "docil e sociavel",
+    adaptationNeeds: isDog
+      ? "Adaptacao gradual ao novo lar, passeios curtos e rotina previsivel nos primeiros dias."
+      : "Adaptacao em ambiente interno, com caixa de areia, telas e espacos de descanso.",
+    routine: isDog
+      ? "Alimenta-se duas vezes ao dia e gosta de passeios leves com supervisao."
+      : "Alimenta-se duas vezes ao dia, usa caixa de areia e prefere ambiente seguro.",
+    feeding: isDog
+      ? "Racao seca de boa qualidade para caes adultos, ajustada ao porte."
+      : "Racao seca para gatos, agua fresca e ambiente interno telado.",
+    ongNotes: "A ONG recomenda entrevista, visita responsavel e acompanhamento no periodo de adaptacao.",
+  };
+};
+
 const pet = (data) => ({
   location: `${data.city}, BA`,
   image_url: data.image,
   tags: [data.personality, data.healthStatus, data.energyLevel].filter(Boolean),
+  ...buildAdvancedProfile(data),
   ...data,
 });
 

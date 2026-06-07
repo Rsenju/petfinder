@@ -16,7 +16,7 @@ const demoUsers = [
     email: "ong@petfinder.local",
     password: "ong123",
     role: "ong",
-    ongId: "ong_001",
+    ongId: "ong_salvador",
   },
 ];
 

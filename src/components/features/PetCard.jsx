@@ -20,6 +20,11 @@ export default function PetCard({ pet, layout = "grid" }) {
         <p className="mt-3 flex items-center gap-2 text-sm text-slate-400">
           <MapPin className="h-4 w-4" />
           {pet.location || pet.city}
+          {typeof pet.distanceKm === "number" && (
+            <span className="rounded-full bg-slate-700 px-2 py-0.5 text-xs text-slate-200">
+              {pet.distanceKm.toFixed(1)} km
+            </span>
+          )}
         </p>
         <p className="mt-3 line-clamp-2 text-sm text-slate-300">{pet.description}</p>
         <div className="mt-4 flex flex-wrap gap-2">

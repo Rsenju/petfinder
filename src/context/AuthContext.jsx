@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
         }
       } catch (error) {
         localStorage.removeItem('token');
-        console.error('Erro ao restaurar sessao:', error);
+        localStorage.removeItem('petfinder:auth_user');
       } finally {
         setIsLoading(false);
       }
@@ -64,8 +64,9 @@ export function AuthProvider({ children }) {
   const logout = useCallback(async () => {
     try {
       await logoutUser();
-    } catch (error) {
-      console.error('Erro no logout:', error);
+    } catch {
+      localStorage.removeItem('token');
+      localStorage.removeItem('petfinder:auth_user');
     } finally {
       setUser(null);
       setIsAuthenticated(false);
@@ -78,12 +79,12 @@ export function AuthProvider({ children }) {
     return updated;
   }, []);
 
-  const forgotPassword = useCallback(async (email) => {
-    console.info(`Fluxo de recuperacao solicitado para ${email}`);
+  const forgotPassword = useCallback(async () => {
+    return null;
   }, []);
 
-  const resetPassword = useCallback(async (token, newPassword) => {
-    console.info('Fluxo de redefinicao local solicitado', token, newPassword);
+  const resetPassword = useCallback(async () => {
+    return null;
   }, []);
 
   const value = {

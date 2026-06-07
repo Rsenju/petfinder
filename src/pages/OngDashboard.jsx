@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   CheckCircle2,
   Edit3,
+  ImagePlus,
   LayoutDashboard,
   LogOut,
   PawPrint,
@@ -10,12 +11,15 @@ import {
   Settings,
   Trash2,
   Users,
+  X,
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { COMPATIBILITY_OPTIONS, ENERGY_LEVELS, HEALTH_OPTIONS_BY_SPECIES } from "../data/mockData";
+import { createImagePreview, uploadPetImages, validateRemoteHorizontalImage } from "../services/imageService";
 import { listAdoptionRequests } from "../services/adoptionService";
 import { deletePet, listPets, savePet } from "../services/petService";
 import { upsertOng } from "../services/ongService";
+import { createId } from "../services/storage";
 
 const emptyPet = {
   name: "",
@@ -29,6 +33,9 @@ const emptyPet = {
   neighborhood: "",
   description: "",
   image: "",
+  gallery: [],
+  imageFiles: [],
+  imagePreviews: [],
   status: "available",
   personality: "",
   healthStatus: "saudavel",
@@ -38,6 +45,17 @@ const emptyPet = {
   catsCompatibility: "nao testado",
   dogsCompatibility: "nao testado",
   energyLevel: "medio",
+  vaccinationRecord: "",
+  veterinaryHistory: "",
+  specialNeeds: "",
+  medications: "",
+  microchip: false,
+  weight: "",
+  behaviorProfile: "",
+  adaptationNeeds: "",
+  routine: "",
+  feeding: "",
+  ongNotes: "",
 };
 
 const statusLabels = {
@@ -45,9 +63,6 @@ const statusLabels = {
   in_process: "Em processo",
   adopted: "Adotado",
 };
-
-const anyImageExtension = /\.(jpe?g|png|webp|gif|svg|bmp|avif)(\?.*)?$/i;
-const allowedImageExtension = /\.(jpe?g|png|webp)(\?.*)?$/i;
 
 const menuItems = [
   { id: "overview", label: "Visao Geral", icon: LayoutDashboard },
@@ -124,45 +139,83 @@ export function OngDashboard() {
 
   const handlePetSubmit = async (event) => {
     event.preventDefault();
+    setError("");
+
     if (!petForm.name || !petForm.city || !petForm.description) {
       showMessage("Preencha nome, cidade e descricao do pet.");
       return;
     }
-    if (petForm.image) {
-      const validation = await validateHorizontalImage(petForm.image);
+
+    const hasNewImageFiles = petForm.imageFiles?.length > 0;
+    if (!hasNewImageFiles && !petForm.image && !petForm.gallery?.length) {
+      showMessage("Adicione pelo menos uma foto horizontal do pet.");
+      return;
+    }
+
+    if (!hasNewImageFiles && petForm.image) {
+      const validation = await validateRemoteHorizontalImage(petForm.image);
       if (!validation.valid) {
         showMessage(validation.message);
         return;
       }
     }
 
-    const saved = await savePet({
-      ...petForm,
-      id: editingPetId,
-      ong_id: ongId,
-      ong: ong?.name,
-      ongData: ong,
-      location: `${petForm.city}, BA`,
-      image_url: petForm.image,
-      personality: petForm.personality,
-      healthStatus: petForm.healthStatus,
-      vaccinated: petForm.vaccinated,
-      castrated: petForm.castrated,
-      childrenCompatibility: petForm.childrenCompatibility,
-      catsCompatibility: petForm.catsCompatibility,
-      dogsCompatibility: petForm.dogsCompatibility,
-      energyLevel: petForm.energyLevel,
-      tags: [petForm.personality, petForm.healthStatus, petForm.energyLevel].filter(Boolean),
-    });
+    try {
+      const nextPetId = editingPetId || createId("pet");
+      const uploadedImages = hasNewImageFiles
+        ? await uploadPetImages(petForm.imageFiles, { petId: nextPetId, ongId })
+        : null;
+      const currentGallery = petForm.gallery?.length
+        ? petForm.gallery
+        : [petForm.image].filter(Boolean);
+      const gallery = uploadedImages?.urls?.length ? uploadedImages.urls : currentGallery;
+      const coverImage = uploadedImages?.coverUrl || petForm.image || gallery[0] || "";
 
-    setPets((current) =>
-      editingPetId
-        ? current.map((pet) => (pet.id === saved.id ? saved : pet))
-        : [saved, ...current],
-    );
-    setPetForm(emptyPet);
-    setEditingPetId(null);
-    showMessage(editingPetId ? "Pet atualizado com sucesso." : "Pet cadastrado com sucesso.");
+      const saved = await savePet({
+        ...petForm,
+        id: nextPetId,
+        ong_id: ongId,
+        ong: ong?.name,
+        ongData: ong,
+        location: `${petForm.city}, BA`,
+        image: coverImage,
+        image_url: coverImage,
+        gallery,
+        imageGallery: gallery,
+        imageMetadata: uploadedImages?.metadata || petForm.imageMetadata || {},
+        personality: petForm.personality,
+        healthStatus: petForm.healthStatus,
+        vaccinated: petForm.vaccinated,
+        castrated: petForm.castrated,
+        childrenCompatibility: petForm.childrenCompatibility,
+        catsCompatibility: petForm.catsCompatibility,
+        dogsCompatibility: petForm.dogsCompatibility,
+        energyLevel: petForm.energyLevel,
+        vaccinationRecord: petForm.vaccinationRecord,
+        veterinaryHistory: petForm.veterinaryHistory,
+        specialNeeds: petForm.specialNeeds,
+        medications: petForm.medications,
+        microchip: petForm.microchip,
+        weight: petForm.weight,
+        behaviorProfile: petForm.behaviorProfile,
+        adaptationNeeds: petForm.adaptationNeeds,
+        routine: petForm.routine,
+        feeding: petForm.feeding,
+        ongNotes: petForm.ongNotes,
+        tags: [petForm.personality, petForm.healthStatus, petForm.energyLevel].filter(Boolean),
+      });
+
+      setPets((current) =>
+        editingPetId
+          ? current.map((pet) => (pet.id === saved.id ? saved : pet))
+          : [saved, ...current],
+      );
+      setPetForm(emptyPet);
+      setEditingPetId(null);
+      showMessage(editingPetId ? "Pet atualizado com sucesso." : "Pet cadastrado com sucesso.");
+    } catch (submitError) {
+      setError(submitError.message || "Nao foi possivel salvar o pet.");
+    }
   };
 
   const handleEditPet = (pet) => {
@@ -179,6 +232,9 @@ export function OngDashboard() {
       neighborhood: pet.neighborhood || "",
       description: pet.description,
       image: pet.image,
+      gallery: pet.gallery || [pet.image].filter(Boolean),
+      imageFiles: [],
+      imagePreviews: pet.gallery || [pet.image].filter(Boolean),
       status: pet.status,
       personality: pet.personality || "",
       healthStatus: pet.healthStatus || "saudavel",
@@ -188,6 +244,17 @@ export function OngDashboard() {
       catsCompatibility: pet.catsCompatibility || "nao testado",
       dogsCompatibility: pet.dogsCompatibility || "nao testado",
       energyLevel: pet.energyLevel || "medio",
+      vaccinationRecord: pet.vaccinationRecord || "",
+      veterinaryHistory: pet.veterinaryHistory || "",
+      specialNeeds: pet.specialNeeds || "",
+      medications: pet.medications || "",
+      microchip: Boolean(pet.microchip),
+      weight: pet.weight || "",
+      behaviorProfile: pet.behaviorProfile || "",
+      adaptationNeeds: pet.adaptationNeeds || "",
+      routine: pet.routine || "",
+      feeding: pet.feeding || "",
+      ongNotes: pet.ongNotes || "",
     });
     setActiveTab("pets");
   };
@@ -349,32 +416,55 @@ export function OngDashboard() {
   );
 }
 
-function validateHorizontalImage(url) {
-  if (anyImageExtension.test(url) && !allowedImageExtension.test(url)) {
-    return Promise.resolve({
-      valid: false,
-      message: "Use imagem horizontal em JPG, PNG ou WEBP.",
-    });
-  }
-
-  return new Promise((resolve) => {
-    const image = new Image();
-    image.onload = () => {
-      resolve(
-        image.naturalWidth > image.naturalHeight
-          ? { valid: true }
-          : { valid: false, message: "A imagem precisa ser horizontal, com largura maior que altura." },
-      );
-    };
-    image.onerror = () => {
-      resolve({ valid: false, message: "Nao foi possivel validar a imagem. Confira a URL informada." });
-    };
-    image.src = url;
-  });
-}
-
 function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
+  const [imageError, setImageError] = useState("");
   const update = (field, value) => setForm((current) => ({ ...current, [field]: value }));
+  const previews = form.imagePreviews?.length
+    ? form.imagePreviews
+    : form.gallery?.length
+      ? form.gallery
+      : [form.image].filter(Boolean);
+
+  const handleImageFilesChange = async (event) => {
+    const files = Array.from(event.target.files || []);
+    setImageError("");
+
+    if (!files.length) {
+      setForm((current) => ({ ...current, imageFiles: [], imagePreviews: [] }));
+      return;
+    }
+
+    if (files.length > 5) {
+      setImageError("Envie no maximo 5 imagens por pet.");
+      event.target.value = "";
+      return;
+    }
+
+    try {
+      const validations = await Promise.all(files.map((file) => createImagePreview(file)));
+      const invalid = validations.find((item) => !item.valid);
+      if (invalid) {
+        setImageError(invalid.message);
+        event.target.value = "";
+        return;
+      }
+
+      setForm((current) => ({
+        ...current,
+        imageFiles: files,
+        imagePreviews: validations.map((item) => item.previewUrl),
+        image: validations[0]?.previewUrl || current.image,
+      }));
+    } catch (fileError) {
+      setImageError(fileError.message || "Nao foi possivel validar as imagens.");
+      event.target.value = "";
+    }
+  };
+
+  const clearImages = () => {
+    setImageError("");
+    setForm((current) => ({ ...current, image: "", gallery: [], imageFiles: [], imagePreviews: [] }));
+  };
 
   return (
     <form onSubmit={onSubmit} className="rounded-xl border border-slate-700 bg-slate-800 p-5">
@@ -417,23 +507,90 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
           <Select label="Caes" value={form.dogsCompatibility} onChange={(value) => update("dogsCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
           <Select label="Nivel de energia" value={form.energyLevel} onChange={(value) => update("energyLevel", value)} options={ENERGY_LEVELS.map((item) => [item.value, item.label])} />
         </div>
+
+        <Fieldset title="Saude avancada">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Input label="Peso" value={form.weight} onChange={(value) => update("weight", value)} placeholder="14 kg" />
+            <Select label="Microchip" value={String(form.microchip)} onChange={(value) => update("microchip", value === "true")} options={[["false", "Nao possui"], ["true", "Possui microchip"]]} />
+          </div>
+          <TextArea label="Carteira de vacinacao" value={form.vaccinationRecord} onChange={(value) => update("vaccinationRecord", value)} />
+          <TextArea label="Historico veterinario" value={form.veterinaryHistory} onChange={(value) => update("veterinaryHistory", value)} />
+          <TextArea label="Necessidades especiais" value={form.specialNeeds} onChange={(value) => update("specialNeeds", value)} />
+          <TextArea label="Medicacoes" value={form.medications} onChange={(value) => update("medications", value)} />
+        </Fieldset>
+
+        <Fieldset title="Comportamento e rotina">
+          <TextArea label="Perfil comportamental" value={form.behaviorProfile} onChange={(value) => update("behaviorProfile", value)} />
+          <TextArea label="Adaptacao recomendada" value={form.adaptationNeeds} onChange={(value) => update("adaptationNeeds", value)} />
+          <TextArea label="Rotina" value={form.routine} onChange={(value) => update("routine", value)} />
+          <TextArea label="Alimentacao" value={form.feeding} onChange={(value) => update("feeding", value)} />
+          <TextArea label="Observacoes da ONG" value={form.ongNotes} onChange={(value) => update("ongNotes", value)} />
+        </Fieldset>
+
         <div className="grid gap-3 sm:grid-cols-2">
           <Input label="Cidade" value={form.city} onChange={(value) => update("city", value)} required />
           <Input label="Bairro" value={form.neighborhood} onChange={(value) => update("neighborhood", value)} />
         </div>
-        <Input label="URL da foto" value={form.image} onChange={(value) => update("image", value)} />
-        <p className="-mt-2 rounded-lg border border-amber-400/20 bg-amber-400/10 px-3 py-2 text-xs text-amber-100">
-          Use apenas imagens horizontais em JPG, PNG ou WEBP, preferencialmente 1200x800 ou proporcao 3:2 / 4:3.
-        </p>
-        <label className="text-sm text-slate-300">
-          Descricao
-          <textarea
-            value={form.description}
-            onChange={(event) => update("description", event.target.value)}
-            className="mt-1 min-h-28 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white outline-none focus:border-blue-400"
-            required
-          />
-        </label>
+        <div className="rounded-lg border border-slate-700 bg-slate-900 p-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium text-slate-200">Fotos do pet</p>
+              <p className="mt-1 text-xs text-slate-400">
+                Use fotos horizontais em JPG, PNG ou WEBP. A primeira imagem sera a capa.
+              </p>
+            </div>
+            {previews.length > 0 && (
+              <button
+                type="button"
+                onClick={clearImages}
+                className="rounded-lg border border-slate-600 p-2 text-slate-300 hover:bg-slate-800"
+                aria-label="Remover imagens selecionadas"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+
+          <label className="mt-3 flex min-h-24 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-slate-600 bg-slate-950 px-3 py-4 text-center text-sm text-slate-300 hover:border-blue-400 hover:text-blue-200">
+            <ImagePlus className="mb-2 h-6 w-6" />
+            Selecionar fotos horizontais
+            <input
+              type="file"
+              className="sr-only"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              onChange={handleImageFilesChange}
+            />
+          </label>
+
+          {previews.length > 0 && (
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              {previews.slice(0, 5).map((url, index) => (
+                <div key={`${url}-${index}`} className="relative aspect-[4/3] overflow-hidden rounded-lg border border-slate-700 bg-slate-950">
+                  <img src={url} alt={`Previa ${index + 1}`} className="h-full w-full object-cover object-center" />
+                  {index === 0 && (
+                    <span className="absolute left-2 top-2 rounded-full bg-blue-600 px-2 py-0.5 text-[11px] font-semibold text-white">
+                      Capa
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {imageError && (
+            <p className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-100">
+              {imageError}
+            </p>
+          )}
+        </div>
+        <Input
+          label="URL da foto (opcional)"
+          value={form.imageFiles?.length ? "" : form.image}
+          onChange={(value) => update("image", value)}
+          placeholder="Use se ainda nao tiver upload local"
+        />
+        <TextArea label="Descricao" value={form.description} onChange={(value) => update("description", value)} required minHeight="min-h-28" />
       </div>
       <div className="mt-4 flex gap-2">
         <button className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold hover:bg-blue-700">
@@ -477,7 +634,7 @@ function PetsTable({ pets, statusFilter, onStatusFilterChange, onEdit, onDelete,
       <div className="divide-y divide-slate-700">
         {pets.map((pet) => (
           <article key={pet.id} className="grid gap-4 p-4 lg:grid-cols-[72px_1fr_auto] lg:items-center">
-            <img src={pet.image || pet.image_url} alt={pet.name} className="h-20 w-20 rounded-lg object-cover" />
+            <img src={pet.image || pet.image_url} alt={pet.name} className="h-20 w-20 rounded-lg object-cover object-center" />
             <div>
               <h3 className="font-semibold">{pet.name}</h3>
               <p className="text-sm text-slate-400">{pet.city} - {pet.age || "idade nao informada"}</p>
@@ -546,6 +703,31 @@ function Input({ label, value, onChange, required, placeholder }) {
         className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white outline-none focus:border-blue-400"
       />
     </label>
+  );
+}
+
+function TextArea({ label, value, onChange, required, minHeight = "min-h-20" }) {
+  return (
+    <label className="text-sm text-slate-300">
+      {label}
+      <textarea
+        value={value || ""}
+        onChange={(event) => onChange(event.target.value)}
+        required={required}
+        className={`mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white outline-none focus:border-blue-400 ${minHeight}`}
+      />
+    </label>
+  );
+}
+
+function Fieldset({ title, children }) {
+  return (
+    <fieldset className="grid gap-3 rounded-lg border border-slate-700 bg-slate-900/40 p-3">
+      <legend className="px-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+        {title}
+      </legend>
+      {children}
+    </fieldset>
   );
 }
 

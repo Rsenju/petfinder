@@ -2,13 +2,29 @@ import { allPets as mockPets, ongs as mockOngs } from "../data/mockData";
 import { createId, readStorage, STORAGE_KEYS, writeStorage } from "./storage";
 import { isSupabaseConfigured, supabase } from "./supabaseClient";
 
-const MOCK_PETS_SEED_VERSION = "2026-06-04-horizontal-single-pet-images";
+const MOCK_PETS_SEED_VERSION = "2026-06-07-advanced-pet-profile";
 
 const findOngForPet = (pet) =>
   mockOngs.find((ong) => ong.name === pet.ong) || mockOngs[0];
 
+const normalizeGallery = (pet) => {
+  const rawGallery = pet.gallery || pet.image_gallery || pet.images || [];
+  const gallery = Array.isArray(rawGallery)
+    ? rawGallery
+        .map((item) => {
+          if (typeof item === "string") return item;
+          return item?.fullUrl || item?.url || item?.image_url || item?.thumbUrl || "";
+        })
+        .filter(Boolean)
+    : [];
+  const cover = pet.image || pet.image_url || gallery[0] || "";
+  return cover ? [cover, ...gallery.filter((url) => url !== cover)] : gallery;
+};
+
 export const normalizePet = (pet) => {
   const ong = pet.ongData || pet.ongs || findOngForPet(pet);
+  const ongApprovalStatus = ong?.approvalStatus || ong?.approval_status || "approved";
+  const gallery = normalizeGallery(pet);
   return {
     id: pet.id,
     ong_id: pet.ong_id || ong?.id || "ong_001",
@@ -22,10 +38,15 @@ export const normalizePet = (pet) => {
     ageType: pet.ageType || "adulto",
     city: pet.city || ong?.city || "Salvador",
     neighborhood: pet.neighborhood || ong?.neighborhood || "Centro",
+    latitude: pet.latitude || pet.lat || null,
+    longitude: pet.longitude || pet.lng || null,
     location: pet.location || `${pet.city || ong?.city || "Salvador"}, BA`,
     description: pet.description || pet.historia || "",
-    image: pet.image || pet.image_url || pet.gallery?.[0]?.fullUrl || "",
-    image_url: pet.image_url || pet.image || pet.gallery?.[0]?.fullUrl || "",
+    image: pet.image || pet.image_url || gallery[0] || "",
+    image_url: pet.image_url || pet.image || gallery[0] || "",
+    gallery,
+    imageGallery: gallery,
+    imageMetadata: pet.imageMetadata || pet.image_metadata || {},
     status: pet.status || "available",
     personality: pet.personality || "",
     healthStatus: pet.healthStatus || pet.health_status || "saudavel",
@@ -35,6 +56,17 @@ export const normalizePet = (pet) => {
     catsCompatibility: pet.catsCompatibility || pet.cats_compatibility || "nao testado",
     dogsCompatibility: pet.dogsCompatibility || pet.dogs_compatibility || "nao testado",
     energyLevel: pet.energyLevel || pet.energy_level || "medio",
+    vaccinationRecord: pet.vaccinationRecord || pet.vaccination_record || "",
+    veterinaryHistory: pet.veterinaryHistory || pet.veterinary_history || "",
+    specialNeeds: pet.specialNeeds || pet.special_needs || "",
+    medications: pet.medications || "",
+    microchip: Boolean(pet.microchip ?? false),
+    weight: pet.weight || "",
+    behaviorProfile: pet.behaviorProfile || pet.behavior_profile || pet.personality || "",
+    adaptationNeeds: pet.adaptationNeeds || pet.adaptation_needs || "",
+    routine: pet.routine || "",
+    feeding: pet.feeding || "",
+    ongNotes: pet.ongNotes || pet.ong_notes || "",
     tags: Array.isArray(pet.tags) ? pet.tags : [],
     ong: pet.ong || ong?.name || "ONG Parceira",
     ongData: {
@@ -44,7 +76,10 @@ export const normalizePet = (pet) => {
       city: ong?.city || pet.city || "Salvador",
       neighborhood: ong?.neighborhood || "Centro",
       email: ong?.email || "contato@ong.org",
+      approvalStatus: ongApprovalStatus,
+      verified: Boolean(ong?.verified ?? ong?.is_verified ?? ongApprovalStatus === "approved"),
     },
+    ongApprovalStatus,
     createdAt: pet.createdAt || pet.created_at || new Date().toISOString(),
   };
 };
@@ -79,16 +114,26 @@ export async function listPets(filters = {}) {
     const { data, error } = await query;
     if (error) throw new Error(error.message);
     const normalized = (data || []).map(normalizePet);
-    return normalized.length ? normalized : filterPets(seedPets(), filters);
+    return normalized.length ? filterPets(normalized, filters) : filterPets(seedPets(), filters);
   }
 
   return filterPets(seedPets(), filters);
 }
 
 function filterPets(pets, filters = {}) {
+  const storedOngs = readStorage(STORAGE_KEYS.ongs, mockOngs);
+  const approvedOngIds = new Set(
+    storedOngs
+      .filter((ong) => (ong.approvalStatus || ong.approval_status || "approved") === "approved")
+      .map((ong) => ong.id),
+  );
+
   return pets.filter((pet) => {
     if (filters.ongId && pet.ong_id !== filters.ongId) return false;
     if (filters.status && pet.status !== filters.status) return false;
+    if (!filters.ongId && !filters.includeInactive && pet.status !== "available") return false;
+    if (!filters.ongId && !filters.includeInactive && !approvedOngIds.has(pet.ong_id)) return false;
+    if (!filters.ongId && !filters.includeInactive && pet.ongApprovalStatus !== "approved") return false;
     return true;
   });
 }
@@ -147,8 +192,12 @@ function mapPetPayload(petData) {
     age_type: petData.ageType || petData.age_type || null,
     city: petData.city,
     neighborhood: petData.neighborhood || null,
+    latitude: petData.latitude || petData.lat || null,
+    longitude: petData.longitude || petData.lng || null,
     description: petData.description,
     image_url: petData.image_url || petData.image || null,
+    image_gallery: petData.gallery || petData.imageGallery || petData.image_gallery || [],
+    image_metadata: petData.imageMetadata || petData.image_metadata || {},
     status: petData.status || "available",
     tags: petData.tags || [],
     personality: petData.personality || null,
@@ -159,5 +208,16 @@ function mapPetPayload(petData) {
     cats_compatibility: petData.catsCompatibility || petData.cats_compatibility || null,
     dogs_compatibility: petData.dogsCompatibility || petData.dogs_compatibility || null,
     energy_level: petData.energyLevel || petData.energy_level || null,
+    vaccination_record: petData.vaccinationRecord || petData.vaccination_record || null,
+    veterinary_history: petData.veterinaryHistory || petData.veterinary_history || null,
+    special_needs: petData.specialNeeds || petData.special_needs || null,
+    medications: petData.medications || null,
+    microchip: Boolean(petData.microchip),
+    weight: petData.weight || null,
+    behavior_profile: petData.behaviorProfile || petData.behavior_profile || null,
+    adaptation_needs: petData.adaptationNeeds || petData.adaptation_needs || null,
+    routine: petData.routine || null,
+    feeding: petData.feeding || null,
+    ong_notes: petData.ongNotes || petData.ong_notes || null,
   };
 }

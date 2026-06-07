@@ -4,6 +4,7 @@ export const STORAGE_KEYS = {
   ongs: "petfinder:ongs",
   ongsSeedVersion: "petfinder:ongs_seed_version",
   adoptionRequests: "petfinder:adoption_requests",
+  reports: "petfinder:reports",
   authUser: "petfinder:auth_user",
   token: "token",
 };
@@ -12,8 +13,7 @@ export function readStorage(key, fallback) {
   try {
     const raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) : fallback;
-  } catch (error) {
-    console.warn(`Nao foi possivel ler ${key} do localStorage`, error);
+  } catch {
     return fallback;
   }
 }

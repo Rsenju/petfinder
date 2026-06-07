@@ -107,10 +107,12 @@ export default function OngProfile() {
           <img src={ong.image} alt={ong.name} className="h-full w-full object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-200 ring-1 ring-emerald-500/30">
-              <ShieldCheck className="h-4 w-4" />
-              ONG parceira verificada
-            </div>
+            {ong.verified && (
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-200 ring-1 ring-emerald-500/30">
+                <ShieldCheck className="h-4 w-4" />
+                ONG parceira verificada
+              </div>
+            )}
             <h1 className="text-3xl font-bold text-white sm:text-4xl">{ong.name}</h1>
             <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-200">
               <MapPin className="h-4 w-4" />

@@ -14,6 +14,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Dog,
+  Flag,
   Home,
   Info,
   Instagram,
@@ -27,6 +28,7 @@ import {
 } from "lucide-react";
 import { buildWhatsAppUrl, createAdoptionRequest } from "../services/adoptionService";
 import { getPetById, listPets } from "../services/petService";
+import { createReport, REPORT_REASONS } from "../services/reportService";
 
 const cn = (...inputs) => twMerge(clsx(inputs));
 
@@ -106,6 +108,17 @@ const mapPetToDetail = (pet) => ({
   catsCompatibility: pet.catsCompatibility,
   dogsCompatibility: pet.dogsCompatibility,
   energyLevel: pet.energyLevel,
+  vaccinationRecord: pet.vaccinationRecord,
+  veterinaryHistory: pet.veterinaryHistory,
+  specialNeeds: pet.specialNeeds,
+  medications: pet.medications,
+  microchip: pet.microchip,
+  weight: pet.weight,
+  behaviorProfile: pet.behaviorProfile,
+  adaptationNeeds: pet.adaptationNeeds,
+  routine: pet.routine,
+  feeding: pet.feeding,
+  ongNotes: pet.ongNotes,
   city: pet.city,
   neighborhood: pet.neighborhood,
   sourcePet: pet,
@@ -118,15 +131,13 @@ const mapPetToDetail = (pet) => ({
     whatsapp: pet.ongData?.whatsapp || "(71) 99999-0000",
     id: pet.ong_id || pet.ongData?.id,
   },
-  gallery: [
-    {
-      id: `${pet.id}-main`,
-      type: "image",
-      thumbUrl: pet.image || pet.image_url,
-      fullUrl: pet.image || pet.image_url,
-      alt: `Foto de ${pet.name}`,
-    },
-  ],
+  gallery: (pet.gallery?.length ? pet.gallery : [pet.image || pet.image_url]).filter(Boolean).map((url, index) => ({
+    id: `${pet.id}-${index}`,
+    type: "image",
+    thumbUrl: url,
+    fullUrl: url,
+    alt: `Foto ${index + 1} de ${pet.name}`,
+  })),
 });
 
 const fetchPetById = async (id) => {
@@ -504,6 +515,161 @@ function AdoptionInput({ label, error, children }) {
       {children}
       {error && <p className="text-[11px] text-rose-400">{error}</p>}
     </label>
+  );
+}
+
+function ReportPet({ pet }) {
+  const [form, setForm] = useState({
+    reason: "wrong_image",
+    description: "",
+    reporter_contact: "",
+  });
+  const [status, setStatus] = useState({ type: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setStatus({ type: "", message: "" });
+
+    try {
+      await createReport({
+        pet: {
+          id: pet.id,
+          ong_id: pet.ong.id,
+        },
+        report: {
+          reason: form.reason,
+          description: form.description,
+          reporter_contact: form.reporter_contact,
+        },
+      });
+      setForm({ reason: "wrong_image", description: "", reporter_contact: "" });
+      setStatus({ type: "success", message: "Denuncia enviada para analise." });
+    } catch (error) {
+      setStatus({ type: "error", message: error.message || "Nao foi possivel enviar a denuncia." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <section className="rounded-3xl border border-dashed border-slate-700 bg-slate-800/50 p-4 text-xs text-slate-300">
+      <div className="mb-3 flex items-center gap-2">
+        <Flag className="h-4 w-4 text-slate-500" />
+        <h2 className="text-xs font-semibold text-white">Denunciar informacao</h2>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <label className="block text-[11px] font-medium text-slate-500">
+          Motivo
+          <select
+            value={form.reason}
+            onChange={(event) => setForm((current) => ({ ...current, reason: event.target.value }))}
+            className="mt-1 h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-blue-400"
+          >
+            {REPORT_REASONS.map((reason) => (
+              <option key={reason.value} value={reason.value}>
+                {reason.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="block text-[11px] font-medium text-slate-500">
+          Descricao
+          <textarea
+            value={form.description}
+            onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
+            className="mt-1 min-h-20 w-full rounded-2xl border border-slate-600 bg-slate-700 px-3 py-2 text-xs text-white outline-none focus:border-blue-400"
+            placeholder="Explique rapidamente o problema."
+          />
+        </label>
+        <label className="block text-[11px] font-medium text-slate-500">
+          Contato opcional
+          <input
+            value={form.reporter_contact}
+            onChange={(event) => setForm((current) => ({ ...current, reporter_contact: event.target.value }))}
+            className="mt-1 h-9 w-full rounded-full border border-slate-600 bg-slate-700 px-3 text-xs text-white outline-none focus:border-blue-400"
+            placeholder="Email ou WhatsApp"
+          />
+        </label>
+        {status.message && (
+          <p className={status.type === "success" ? "text-emerald-300" : "text-rose-300"}>
+            {status.message}
+          </p>
+        )}
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-slate-600 px-4 py-2 text-xs font-semibold text-slate-200 transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isSubmitting ? "Enviando..." : "Enviar denuncia"}
+        </button>
+      </form>
+    </section>
+  );
+}
+
+function AdvancedPetProfile({ pet }) {
+  const healthItems = [
+    ["Carteira de vacinacao", pet.vaccinationRecord || (pet.vacinado ? "Vacinas essenciais em dia." : "Carteira em atualizacao pela ONG.")],
+    ["Historico veterinario", pet.veterinaryHistory || "Avaliacao veterinaria basica realizada pela ONG."],
+    ["Necessidades especiais", pet.specialNeeds || "Nao possui necessidades especiais informadas."],
+    ["Medicacoes", pet.medications || "Nao usa medicacao continua."],
+    ["Microchip", pet.microchip ? "Possui microchip." : "Microchip nao informado."],
+    ["Peso", pet.weight || "Peso nao informado."],
+  ];
+
+  const behaviorItems = [
+    ["Nivel de energia", pet.energyLevel || "medio"],
+    ["Perfil comportamental", pet.behaviorProfile || pet.personality || "Perfil em observacao pela ONG."],
+    ["Adaptacao", pet.adaptationNeeds || "Adaptacao gradual recomendada nos primeiros dias."],
+    ["Convivencia com criancas", pet.childrenCompatibility || "nao testado"],
+    ["Convivencia com gatos", pet.catsCompatibility || "nao testado"],
+    ["Convivencia com caes", pet.dogsCompatibility || "nao testado"],
+  ];
+
+  const careItems = [
+    ["Rotina", pet.routine || "Rotina detalhada nao informada."],
+    ["Alimentacao", pet.feeding || "Alimentacao orientada pela ONG no contato inicial."],
+    ["Observacoes da ONG", pet.ongNotes || "A ONG acompanha a adaptacao e orienta a familia adotante."],
+  ];
+
+  return (
+    <section className="rounded-3xl border border-slate-700 bg-slate-800/90 p-5 shadow-sm">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <h2 className="text-sm font-semibold text-white sm:text-base">Perfil avancado</h2>
+          <p className="mt-1 text-xs text-slate-400">
+            Informacoes complementares para uma adocao mais consciente.
+          </p>
+        </div>
+        <span className="rounded-full bg-blue-500/15 px-2.5 py-1 text-[11px] font-medium text-blue-200 ring-1 ring-blue-500/20">
+          SaaS v1
+        </span>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-3">
+        <AdvancedProfileCard title="Saude" items={healthItems} />
+        <AdvancedProfileCard title="Comportamento" items={behaviorItems} />
+        <AdvancedProfileCard title="Rotina e cuidados" items={careItems} />
+      </div>
+    </section>
+  );
+}
+
+function AdvancedProfileCard({ title, items }) {
+  return (
+    <div className="rounded-2xl border border-slate-700 bg-slate-900/45 p-4">
+      <h3 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">{title}</h3>
+      <dl className="mt-3 space-y-3">
+        {items.map(([label, value]) => (
+          <div key={label}>
+            <dt className="text-[11px] font-medium text-slate-500">{label}</dt>
+            <dd className="mt-0.5 text-xs leading-relaxed text-slate-200">{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   );
 }
 
@@ -1058,6 +1224,8 @@ export default function PetDetailPage() {
                     </p>
                   </div>
                 </section>
+
+                <AdvancedPetProfile pet={pet} />
               </div>
 
               <aside className="space-y-4 md:space-y-5">
@@ -1160,6 +1328,8 @@ export default function PetDetailPage() {
                     </button>
                   </div>
                 </section>
+
+                <ReportPet pet={pet} />
               </aside>
             </main>
 
