@@ -148,12 +148,23 @@ const fetchPetById = async (id) => {
 
 const fetchSimilarPets = async (pet) => {
   await new Promise((resolve) => setTimeout(resolve, 400));
-  const pets = await listPets();
-  const similar = pets
-    .filter((item) => item.id !== pet.id && (item.species === pet.sourcePet?.species || item.city === pet.city))
+  const pets = await listPets({ includeInactive: true });
+  const base = pet.sourcePet || {};
+
+  return pets
+    .filter((item) => item.id !== pet.id)
+    .map((item) => {
+      let score = 0;
+      if (item.ong_id && item.ong_id === base.ong_id) score += 4;
+      if (item.species && item.species === base.species) score += 3;
+      if (item.city && item.city === pet.city) score += 2;
+      if (item.size && item.size === pet.porte) score += 1;
+      return { item, score };
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
     .slice(0, 4)
-    .map(mapPetToDetail);
-  return similar;
+    .map(({ item }) => mapPetToDetail(item));
 };
 
 const badgeClass =
@@ -856,7 +867,7 @@ function MediaGallery({ pet }) {
 }
 
 function SimilarPets({ basePet }) {
-  const { data: similarPets = [], isLoading } = useQuery({
+  const { data: similarPets = [], isLoading, isError } = useQuery({
     queryKey: ["similarPets", basePet.id],
     queryFn: () => fetchSimilarPets(basePet),
     enabled: !!basePet,
@@ -894,7 +905,7 @@ function SimilarPets({ basePet }) {
         </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {similarPets.map((pet) => (
+          {similarPets.length > 0 && !isError ? similarPets.map((pet) => (
             <Link
               key={pet.id}
               to={`/pet/${pet.id}`}
@@ -902,8 +913,8 @@ function SimilarPets({ basePet }) {
             >
               <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-900">
                 <img
-                  src={pet.gallery[0].thumbUrl}
-                  alt={pet.gallery[0].alt}
+                  src={pet.gallery?.[0]?.thumbUrl || pet.sourcePet?.image || pet.sourcePet?.image_url}
+                  alt={pet.gallery?.[0]?.alt || `Foto de ${pet.nome}`}
                   loading="lazy"
                   className="h-full w-full object-cover object-center transition duration-500 group-hover:scale-105"
                 />
@@ -919,7 +930,14 @@ function SimilarPets({ basePet }) {
                 </p>
               </div>
             </Link>
-          ))}
+          )) : (
+            <div className="rounded-2xl border border-slate-700 bg-slate-800/70 p-4 text-sm text-slate-300 sm:col-span-2 lg:col-span-4">
+              Nenhum pet similar encontrado agora. Veja todos os pets disponíveis para encontrar outro amigo.
+              <Link to="/pets" className="ml-1 font-semibold text-blue-300 hover:text-blue-200">
+                Ver pets
+              </Link>
+            </div>
+          )}
         </div>
       )}
     </section>
@@ -1365,4 +1383,3 @@ export default function PetDetailPage() {
     </div>
   );
 }
-
