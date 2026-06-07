@@ -17,7 +17,7 @@ export const supabase = isSupabaseConfigured
 
 export async function supabaseRequest(path, options = {}) {
   if (!isSupabaseConfigured) {
-    throw new Error("Supabase nao configurado");
+    throw new Error("Supabase não configurado");
   }
 
   const response = await fetch(`${supabaseUrl}/rest/v1/${path}`, {

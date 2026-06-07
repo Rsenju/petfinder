@@ -19,7 +19,7 @@ const registerOngSchema = z
     description: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "As senhas nao conferem",
+    message: "As senhas não conferem",
     path: ["confirmPassword"],
   });
 
@@ -59,7 +59,7 @@ export default function Register() {
       );
       window.setTimeout(() => navigate("/dashboard"), 900);
     } catch (error) {
-      setFormError(error.message || "Nao foi possivel criar o cadastro.");
+      setFormError(error.message || "Não foi possível criar o cadastro.");
     }
   };
 
@@ -80,7 +80,7 @@ export default function Register() {
           </div>
           <h1 className="mt-6 text-3xl font-bold">Cadastrar ONG</h1>
           <p className="mt-3 text-sm leading-6 text-slate-300">
-            Crie a conta da organizacao para gerenciar pets, dados de contato e pedidos de adocao.
+            Crie a conta da organização para gerenciar pets, dados de contato e pedidos de adoção.
           </p>
           <p className="mt-5 rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100">
             Em producao, a liberacao do painel depende do perfil aprovado no Supabase.
@@ -128,7 +128,7 @@ export default function Register() {
             </Field>
           </div>
 
-          <Field label="Descricao da ONG" error={errors.description?.message}>
+          <Field label="Descrição da ONG" error={errors.description?.message}>
             <textarea {...register("description")} className="field min-h-28" />
           </Field>
 

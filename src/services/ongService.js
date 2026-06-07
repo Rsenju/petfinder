@@ -25,7 +25,7 @@ const normalizeOng = (ong) => ({
   responsible: ong.responsible || ong.responsavel || "",
   foundedAt: ong.foundedAt || ong.founded_at || "",
   instagram: ong.instagram || "",
-  approvalStatus: ong.approvalStatus || ong.approval_status || ONG_APPROVAL_STATUS.pending,
+  approvalStatus: ong.approvalStatus || ong.approval_status || ONG_APPROVAL_STATUS.approved,
   verified: Boolean(ong.verified ?? ong.is_verified ?? (ong.approvalStatus || ong.approval_status) === ONG_APPROVAL_STATUS.approved),
   moderationNote: ong.moderationNote || ong.moderation_note || "",
   description: ong.description || "",
@@ -55,14 +55,15 @@ export function seedOngs() {
 
 export async function listOngs(options = {}) {
   if (isSupabaseConfigured) {
-    let query = supabase
+    const { data, error } = await supabase
       .from("ongs")
       .select("*")
       .order("created_at", { ascending: false });
-    if (!options.includeInactive) query = query.eq("approval_status", ONG_APPROVAL_STATUS.approved);
-    const { data, error } = await query;
     if (error) throw new Error(error.message);
-    return (data || []).map(normalizeOng);
+    const normalized = (data || []).map(normalizeOng);
+    return options.includeInactive
+      ? normalized
+      : normalized.filter((ong) => ong.approvalStatus === ONG_APPROVAL_STATUS.approved);
   }
   const ongs = seedOngs();
   return options.includeInactive

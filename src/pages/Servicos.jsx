@@ -4,16 +4,17 @@ import RegionalMap from "../components/features/RegionalMap";
 import { CITIES } from "../data/mockData";
 import { LOCATION_OPTIONS, withDistance } from "../data/geoData";
 import { listPartners } from "../services/partnerService";
+import { buildWhatsAppUrl } from "../services/adoptionService";
 
 const SERVICE_OPTIONS = [
   ["banho", "Banho"],
   ["tosa", "Tosa"],
-  ["vacina", "Vacinacao"],
+  ["vacina", "Vacinação"],
   ["exames", "Exames"],
-  ["veterinario", "Veterinario"],
-  ["racao", "Racao"],
-  ["farmacia", "Farmacia pet"],
-  ["acessorios", "Acessorios"],
+  ["veterinario", "Veterinário"],
+  ["racao", "Ração"],
+  ["farmacia", "Farmácia pet"],
+  ["acessorios", "Acessórios"],
 ];
 
 export default function Servicos() {
@@ -41,7 +42,7 @@ export default function Servicos() {
         const data = await listPartners();
         if (isMounted) setPartners(data);
       } catch (loadError) {
-        if (isMounted) setError(loadError.message || "Nao foi possivel carregar parceiros.");
+        if (isMounted) setError(loadError.message || "Não foi possível carregar parceiros.");
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -87,9 +88,9 @@ export default function Servicos() {
             <Store className="h-4 w-4" />
             Rede local
           </p>
-          <h1 className="mt-2 text-3xl font-bold text-white">Servicos e pet shops parceiros</h1>
+          <h1 className="mt-2 text-3xl font-bold text-white">Serviços e pet shops parceiros</h1>
           <p className="mt-2 max-w-2xl text-sm text-slate-400">
-            Encontre apoio perto de voce para banho, tosa, vacinacao, exames, veterinario, racao e itens essenciais.
+            Encontre apoio perto de você para banho, tosa, vacinação, exames, veterinário, ração e itens essenciais.
           </p>
         </div>
 
@@ -102,7 +103,7 @@ export default function Servicos() {
           <Select
             value={filters.service}
             onChange={(value) => updateFilter("service", value)}
-            options={[["", "Todos os servicos"], ...SERVICE_OPTIONS]}
+            options={[["", "Todos os serviços"], ...SERVICE_OPTIONS]}
           />
           <label className="relative">
             <Navigation className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
@@ -111,7 +112,7 @@ export default function Servicos() {
               onChange={(event) => updateFilter("origin", event.target.value)}
               className="w-full appearance-none rounded-xl border border-slate-700 bg-slate-800 py-2.5 pl-10 pr-10 text-sm text-white outline-none focus:border-blue-400"
             >
-              <option value="">Distancia de...</option>
+              <option value="">Distância de...</option>
               {LOCATION_OPTIONS.map((item) => (
                 <option key={item.id} value={item.id}>{item.label}</option>
               ))}
@@ -123,8 +124,8 @@ export default function Servicos() {
 
       <RegionalMap
         className="mt-8"
-        title="Mapa de servicos locais"
-        description="Pet shops e clinicas parceiras nas regioes prioritarias."
+        title="Mapa de serviços locais"
+        description="Pet shops e clínicas parceiras nas regiões prioritárias."
         markers={mapMarkers}
         origin={origin}
       />
@@ -182,7 +183,7 @@ export default function Servicos() {
 
               <div className="mt-5 grid gap-2 sm:grid-cols-2">
                 <a
-                  href={`https://wa.me/55${String(shop.whatsapp).replace(/\D/g, "")}`}
+                  href={buildWhatsAppUrl(shop.whatsapp, `Olá! Encontrei ${shop.name} no PetFinder e gostaria de confirmar informações.`)}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
@@ -190,10 +191,22 @@ export default function Servicos() {
                   <MessageCircle className="h-4 w-4" />
                   WhatsApp
                 </a>
-                <span className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-300">
-                  <Instagram className="h-4 w-4" />
-                  {shop.instagram}
-                </span>
+                {getInstagramUrl(shop.instagram) ? (
+                  <a
+                    href={getInstagramUrl(shop.instagram)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white"
+                  >
+                    <Instagram className="h-4 w-4" />
+                    Instagram
+                  </a>
+                ) : (
+                  <span className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-300">
+                    <Instagram className="h-4 w-4" />
+                    {shop.instagram}
+                  </span>
+                )}
               </div>
               {shop.sourceUrl && (
                 <a
@@ -232,4 +245,11 @@ function Select({ value, onChange, options }) {
 
 function labelService(service) {
   return SERVICE_OPTIONS.find(([value]) => value === service)?.[1] || service;
+}
+
+function getInstagramUrl(instagram) {
+  if (!instagram) return "";
+  if (/^https?:\/\//i.test(instagram)) return instagram;
+  if (instagram.startsWith("@")) return `https://www.instagram.com/${instagram.slice(1)}`;
+  return "";
 }

@@ -11,7 +11,7 @@ function loadImageFromSource(source) {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error("Nao foi possivel carregar a imagem."));
+    image.onerror = () => reject(new Error("Não foi possível carregar a imagem."));
     image.src = source;
   });
 }
@@ -20,7 +20,7 @@ function fileToDataUrl(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("Nao foi possivel ler a imagem."));
+    reader.onerror = () => reject(new Error("Não foi possível ler a imagem."));
     reader.readAsDataURL(file);
   });
 }
@@ -30,7 +30,7 @@ function canvasToBlob(canvas, type = "image/webp", quality = 0.86) {
     canvas.toBlob(
       (blob) => {
         if (blob) resolve(blob);
-        else reject(new Error("Nao foi possivel otimizar a imagem."));
+        else reject(new Error("Não foi possível otimizar a imagem."));
       },
       type,
       quality,
@@ -48,7 +48,7 @@ export async function validateImageFile(file) {
   }
 
   if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
-    return { valid: false, message: `A imagem deve ter ate ${MAX_IMAGE_SIZE_MB}MB.` };
+    return { valid: false, message: `A imagem deve ter até ${MAX_IMAGE_SIZE_MB}MB.` };
   }
 
   const dataUrl = await fileToDataUrl(file);
@@ -82,7 +82,7 @@ export async function validateRemoteHorizontalImage(url) {
       ? { valid: true, width: image.naturalWidth, height: image.naturalHeight }
       : { valid: false, message: "A imagem precisa ser horizontal, com largura maior que altura." };
   } catch {
-    return { valid: false, message: "Nao foi possivel validar a imagem. Confira a URL informada." };
+    return { valid: false, message: "Não foi possível validar a imagem. Confira a URL informada." };
   }
 }
 
@@ -111,7 +111,7 @@ export async function optimizeImageFile(file, options = {}) {
 
   canvas.width = width;
   canvas.height = height;
-  if (!context) throw new Error("Nao foi possivel preparar a imagem.");
+  if (!context) throw new Error("Não foi possível preparar a imagem.");
   context.drawImage(image, 0, 0, width, height);
 
   const blob = await canvasToBlob(canvas, "image/webp", quality);

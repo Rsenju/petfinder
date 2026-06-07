@@ -58,7 +58,7 @@ export const PET_SHOPS = [
     lng: -38.4667,
     sourceLabel: "Shopping Bela Vista",
     sourceUrl: "https://www.shoppingbelavista.com.br/lojas/amado-pet-shop.html",
-    openingHours: "Segunda a sabado 09h as 22h; domingo 13h as 21h",
+    openingHours: "Segunda a sábado 09h as 22h; domingo 13h as 21h",
   },
   {
     id: "petshop_salvador_mundo_pet",
@@ -74,7 +74,7 @@ export const PET_SHOPS = [
     lng: -38.4547,
     sourceLabel: "Salvador Shopping",
     sourceUrl: "https://salvadorshopping.com.br/loja/mundo-pet",
-    openingHours: "Segunda a sabado 09h as 22h; domingo 12h as 21h",
+    openingHours: "Segunda a sábado 09h as 22h; domingo 12h as 21h",
   },
   {
     id: "petshop_lauro_cobasi",
@@ -90,7 +90,7 @@ export const PET_SHOPS = [
     lng: -38.3192,
     sourceLabel: "Cobasi",
     sourceUrl: "https://www.cobasi.com.br/lojas/cobasi-mp-lauro-de-freitas",
-    openingHours: "Segunda a sabado 08h as 18h45; domingo 09h as 17h45",
+    openingHours: "Segunda a sábado 08h as 18h45; domingo 09h as 17h45",
   },
   {
     id: "petshop_lauro_petz_parque",
@@ -106,7 +106,7 @@ export const PET_SHOPS = [
     lng: -38.3199,
     sourceLabel: "Petz",
     sourceUrl: "https://www.petz.com.br/loja/petz-parque-shopping-bahia",
-    openingHours: "Segunda a sabado 09h as 22h; domingo 09h as 21h",
+    openingHours: "Segunda a sábado 09h as 22h; domingo 09h as 21h",
   },
   {
     id: "petshop_feira_pets_star",
@@ -122,7 +122,7 @@ export const PET_SHOPS = [
     lng: -38.9561,
     sourceLabel: "Guia Pinzon",
     sourceUrl: "https://guiapinzon.com.br/ba/pets-star-petshop-932634",
-    openingHours: "Consultar horarios pelo WhatsApp",
+    openingHours: "Consultar horários pelo WhatsApp",
   },
 ];
 

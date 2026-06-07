@@ -404,7 +404,7 @@ Telefone: 71994043159
 Bairro: vila praiana
 Minha casa esta preparada: Sim
 Preciso de dicas da ONG: Sim
-Ja tive ou tenho outros animais: Sim
+Já tive ou tenho outros animais: Sim
 ```
 
 ### ONGs Parceiras
@@ -682,7 +682,7 @@ Exemplo real do mock:
 {
   id: "ong_salvador",
   name: "Patinhas de Salvador",
-  description: "ONG de resgate e adocao responsavel atuando em Salvador no resgate de caes e gatos abandonados.",
+  description: "ONG de resgate e adoção responsável atuando em Salvador no resgate de cães e gatos abandonados.",
   image: "https://images.unsplash.com/...",
   city: "Salvador",
   neighborhood: "Rio Vermelho",
@@ -733,8 +733,8 @@ Exemplo real do mock:
   sex: "macho",
   city: "Salvador",
   neighborhood: "Brotas",
-  description: "Thor foi resgatado em uma area movimentada de Brotas. E alegre, atento e ja esta acostumado com passeios curtos.",
-  personality: "brincalhao e leal",
+  description: "Thor foi resgatado em uma area movimentada de Brotas. E alegre, atento e já esta acostumado com passeios curtos.",
+  personality: "brincalhão e leal",
   healthStatus: "vacinado",
   vaccinated: true,
   castrated: true,
@@ -957,7 +957,7 @@ Esta é uma análise honesta do estado atual.
 
 ### Encoding ainda aparece quebrado em alguns arquivos
 
-Apesar de parte do projeto já ter sido corrigida, `Pets.jsx` ainda contém textos com mojibake como `DisponÃ­veis`, `AdoÃ§Ã£o`, `espÃ©cies` e outros. Isso precisa ser corrigido em todo o projeto antes de produção.
+Apesar de parte do projeto já ter sido corrigida, `Pets.jsx` ainda contém textos com mojibake como `Disponíveis`, `Adoção`, `espécies` e outros. Isso precisa ser corrigido em todo o projeto antes de produção.
 
 ### Supabase está preparado, mas não totalmente operacional sem configuração externa
 
@@ -1285,4 +1285,3 @@ Ele ainda precisa, antes de uso real em produção:
 O PetFinder tem uma arquitetura adequada para um MVP de SaaS: React/Vite no frontend, services desacoplados, fallback local para desenvolvimento, schema Supabase para produção e rotas protegidas por role. A aplicação já demonstra o fluxo principal de valor: encontrar pets, entender detalhes, falar com a ONG e permitir que ONGs gerenciem animais.
 
 O maior risco atual não é a interface pública, mas a transição para produção real: autenticação, roles, RLS, upload de imagens, gestão de dados sensíveis e fluxo completo de adoção precisam ser fechados com rigor. A base está boa para evoluir, mas ainda não deve ser tratada como produto pronto para operação pública sem essas correções.
-

@@ -10,10 +10,10 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 lg:grid-cols-[1fr_0.9fr] lg:items-center">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-300">
-              Adocao responsavel
+              Adoção responsável
             </p>
             <h1 className="mt-4 text-4xl font-bold tracking-tight text-white sm:text-6xl">
-              Encontre um pet pronto para ganhar uma familia.
+              Encontre um pet pronto para ganhar uma família.
             </h1>
             <p className="mt-5 max-w-2xl text-lg text-slate-300">
               O PetFinder conecta adotantes a ONGs, com filtros, detalhes claros e contato direto pelo WhatsApp.
@@ -44,7 +44,7 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-4 py-14">
         <div className="mb-8 flex items-end justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-bold">Pets disponiveis</h2>
+            <h2 className="text-3xl font-bold">Pets disponíveis</h2>
             <p className="mt-2 text-slate-400">Alguns amigos esperando uma conversa com a ONG.</p>
           </div>
           <Link to="/pets" className="text-sm font-semibold text-blue-300 hover:text-blue-200">Ver todos</Link>
@@ -56,7 +56,7 @@ export default function Home() {
 
       <section className="border-y border-slate-800 bg-slate-950 px-4 py-14">
         <div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-2">
-          <Info icon={ShieldCheck} title="Fluxo responsavel" text="O formulario organiza os primeiros dados e abre o WhatsApp da ONG responsavel." />
+          <Info icon={ShieldCheck} title="Fluxo responsável" text="O formulário organiza os primeiros dados e abre o WhatsApp da ONG responsável." />
           <Info icon={Users} title="Painel da ONG" text="ONGs podem cadastrar pets, editar dados de contato e acompanhar pedidos." />
         </div>
       </section>

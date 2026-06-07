@@ -1,8 +1,8 @@
 export const BLOG_CATEGORIES = [
-  ["adocao", "Adocao"],
-  ["saude", "Saude preventiva"],
+  ["adocao", "Adoção"],
+  ["saude", "Saúde preventiva"],
   ["comportamento", "Comportamento"],
-  ["nutricao", "Nutricao"],
+  ["nutricao", "Nutrição"],
   ["higiene", "Higiene"],
   ["bem-estar", "Bem-estar"],
 ];
@@ -10,32 +10,32 @@ export const BLOG_CATEGORIES = [
 export const BLOG_ARTICLES = [
   {
     id: "primeiros-dias-adocao",
-    title: "Primeiros dias depois da adocao: como preparar uma chegada tranquila",
+    title: "Primeiros dias depois da adoção: como preparar uma chegada tranquila",
     category: "adocao",
     readTime: "6 min",
     featured: true,
     summary:
-      "A chegada ao novo lar deve ser calma, previsivel e sem excesso de estimulos. O pet precisa de tempo para entender cheiros, sons, pessoas e rotina.",
+      "A chegada ao novo lar deve ser calma, previsível e sem excesso de estímulos. O pet precisa de tempo para entender cheiros, sons, pessoas e rotina.",
     keyTakeaways: [
-      "Prepare um espaco seguro antes de buscar o pet.",
-      "Evite visitas, passeios longos e apresentacoes intensas no primeiro momento.",
-      "Crie rotina simples para alimentacao, descanso e banheiro.",
+      "Prepare um espaço seguro antes de buscar o pet.",
+      "Evite visitas, passeios longos e apresentações intensas no primeiro momento.",
+      "Crie rotina simples para alimentação, descanso e banheiro.",
     ],
     sections: [
       {
         heading: "Comece pequeno",
         body:
-          "Muitos pets adotados chegam cansados ou inseguros. Em vez de liberar a casa inteira, ofereca um comodo inicial com agua, comida, caminha, brinquedo e, no caso dos gatos, caixa de areia. A ASPCA orienta que alguns animais precisam de mais tempo para se sentir confortaveis em um novo ambiente.",
+          "Muitos pets adotados chegam cansados ou inseguros. Em vez de liberar a casa inteira, ofereca um cômodo inicial com água, comida, caminha, brinquedo e, no caso dos gatos, caixa de areia. A ASPCA orienta que alguns animais precisam de mais tempo para se sentir confortáveis em um novo ambiente.",
       },
       {
         heading: "Rotina vale mais que entusiasmo",
         body:
-          "Nos primeiros dias, mantenha horarios previsiveis. Falar baixo, evitar broncas e reduzir novidades ajuda o pet a associar a casa a seguranca. Se houver outros animais, faca apresentacoes graduais e supervisionadas.",
+          "Nos primeiros dias, mantenha horários previsíveis. Falar baixo, evitar broncas e reduzir novidades ajuda o pet a associar a casa a segurança. Se houver outros animais, faca apresentações graduais e supervisionadas.",
       },
       {
         heading: "Quando procurar ajuda",
         body:
-          "Procure veterinario ou profissional de comportamento se houver apatia persistente, agressividade intensa, falta de apetite, vomitos, diarreia, fuga recorrente ou medo extremo.",
+          "Procure veterinário ou profissional de comportamento se houver apatia persistente, agressividade intensa, falta de apetite, vomitos, diarreia, fuga recorrente ou medo extremo.",
       },
     ],
     sources: [
@@ -51,16 +51,16 @@ export const BLOG_ARTICLES = [
   },
   {
     id: "vacinacao-caes-gatos",
-    title: "Vacinacao de caes e gatos: o que e essencial saber",
+    title: "Vacinação de cães e gatos: o que e essencial saber",
     category: "saude",
     readTime: "7 min",
     featured: true,
     summary:
-      "Vacinas reduzem risco de doencas graves, mas o protocolo ideal depende de especie, idade, historico e exposicao. A antirrabica tambem tem relevancia publica.",
+      "Vacinas reduzem risco de doenças graves, mas o protocolo ideal depende de espécie, idade, histórico e exposição. A antirrábica tambem tem relevancia pública.",
     keyTakeaways: [
-      "Vacina nao e igual para todo pet: estilo de vida importa.",
+      "Vacina não e igual para todo pet: estilo de vida importa.",
       "Filhotes, adultos e idosos precisam de planos diferentes.",
-      "A antirrabica deve ser mantida em dia conforme regra local e orientacao veterinaria.",
+      "A antirrábica deve ser mantida em dia conforme regra local e orientação veterinaria.",
     ],
     sections: [
       {
@@ -69,14 +69,14 @@ export const BLOG_ARTICLES = [
           "Guias veterinarios como os da AAHA diferenciam vacinas essenciais e vacinas indicadas conforme risco. Um animal que frequenta banho e tosa, hotel, rua ou ambientes com muitos pets pode ter necessidades diferentes de um animal estritamente indoor.",
       },
       {
-        heading: "Nao copie o protocolo de outro animal",
+        heading: "Não copie o protocolo de outro animal",
         body:
-          "Idade, estado de saude, historico vacinal, gravidez, uso de medicamentos e exposicao ambiental alteram a decisao. Por isso, o calendario deve ser definido com veterinario.",
+          "Idade, estado de saúde, histórico vacinal, gravidez, uso de medicamentos e exposição ambiental alteram a decisão. Por isso, o calendário deve ser definido com veterinário.",
       },
       {
         heading: "Sinais de alerta",
         body:
-          "Apos vacinas, reacoes leves podem acontecer. Procure atendimento se houver inchaco facial, dificuldade para respirar, vomitos repetidos, fraqueza intensa ou piora rapida.",
+          "Após vacinas, reacoes leves podem acontecer. Procure atendimento se houver inchaco facial, dificuldade para respirar, vomitos repetidos, fraqueza intensa ou piora rapida.",
       },
     ],
     sources: [
@@ -85,39 +85,39 @@ export const BLOG_ARTICLES = [
         url: "https://www.aaha.org/resources/pet-vaccination/",
       },
       {
-        label: "SMS Salvador - Vacina antirrabica",
+        label: "SMS Salvador - Vacina antirrábica",
         url: "https://saude.salvador.ba.gov.br/vacina-antirrabica-para-caes-e-gatos/",
       },
     ],
   },
   {
     id: "alimentacao-segura",
-    title: "Alimentacao segura: como escolher comida sem cair em modismos",
+    title: "Alimentação segura: como escolher comida sem cair em modismos",
     category: "nutricao",
     readTime: "7 min",
     featured: true,
     summary:
-      "Boa alimentacao combina qualidade, adequacao ao pet e acompanhamento. Rotulo bonito nao substitui avaliacao nutricional.",
+      "Boa alimentação combina qualidade, adequacao ao pet e acompanhamento. Rotulo bonito não substitui avaliação nutricional.",
     keyTakeaways: [
-      "Escolha alimento adequado para especie, idade e condicao corporal.",
+      "Escolha alimento adequado para espécie, idade e condição corporal.",
       "Mudancas de dieta devem ser graduais.",
-      "Dietas caseiras ou cruas exigem orientacao veterinaria especializada.",
+      "Dietas caseiras ou cruas exigem orientação veterinaria especializada.",
     ],
     sections: [
       {
         heading: "Avaliacao nutricional faz parte da consulta",
         body:
-          "As diretrizes da WSAVA e da AAHA reforcam que nutricao deve ser avaliada de forma rotineira, considerando peso, condicao corporal, historico alimentar, petiscos e ambiente.",
+          "As diretrizes da WSAVA e da AAHA reforcam que nutrição deve ser avaliada de forma rotineira, considerando peso, condição corporal, histórico alimentar, petiscos e ambiente.",
       },
       {
         heading: "Troca de alimento precisa de transicao",
         body:
-          "Mudancas bruscas podem causar desconforto gastrointestinal. Quando nao ha emergencia medica, faca transicao gradual e observe fezes, apetite, coceira, vomitos e energia.",
+          "Mudancas bruscas podem causar desconforto gastrointestinal. Quando não ha emergencia medica, faca transicao gradual e observe fezes, apetite, coceira, vomitos e energia.",
       },
       {
         heading: "Cuidado com receitas sem formulacao",
         body:
-          "Comida caseira pode ser uma opcao em casos especificos, mas precisa de formulacao completa. Deficiencias nutricionais podem aparecer lentamente e prejudicar saude.",
+          "Comida caseira pode ser uma opção em casos especificos, mas precisa de formulacao completa. Deficiencias nutricionais podem aparecer lentamente e prejudicar saúde.",
       },
     ],
     sources: [
@@ -133,12 +133,12 @@ export const BLOG_ARTICLES = [
   },
   {
     id: "ansiedade-separacao",
-    title: "Ansiedade por separacao: sinais, prevencao e quando pedir ajuda",
+    title: "Ansiedade por separacao: sinais, prevenção e quando pedir ajuda",
     category: "comportamento",
     readTime: "8 min",
     featured: false,
     summary:
-      "Ansiedade por separacao nao e birra. Pode envolver sofrimento real e precisa de manejo cuidadoso, sem punicao.",
+      "Ansiedade por separacao não e birra. Pode envolver sofrimento real e precisa de manejo cuidadoso, sem punicao.",
     keyTakeaways: [
       "Destruicao, vocalizacao e xixi fora do lugar podem ter causa emocional ou medica.",
       "Treinos de ausencia devem ser graduais.",
@@ -158,7 +158,7 @@ export const BLOG_ARTICLES = [
       {
         heading: "Casos graves precisam de equipe",
         body:
-          "Se o pet se machuca, tenta fugir, baba, treme ou entra em panico, procure veterinario, comportamentalista qualificado ou especialista em comportamento veterinario.",
+          "Se o pet se machuca, tenta fugir, baba, treme ou entra em panico, procure veterinário, comportamentalista qualificado ou especialista em comportamento veterinário.",
       },
     ],
     sources: [
@@ -174,20 +174,20 @@ export const BLOG_ARTICLES = [
   },
   {
     id: "higiene-saude-oral",
-    title: "Higiene e saude oral: por que boca tambem e saude",
+    title: "Higiene e saúde oral: por que boca tambem e saúde",
     category: "higiene",
     readTime: "5 min",
     featured: false,
     summary:
-      "Dentes, gengiva e mau halito merecem atencao. Saude oral ruim pode causar dor, perda dentaria e queda de qualidade de vida.",
+      "Dentes, gengiva e mau halito merecem atenção. Saúde oral ruim pode causar dor, perda dentaria e queda de qualidade de vida.",
     keyTakeaways: [
       "Acostume o pet ao toque na boca aos poucos.",
       "Use produtos veterinarios, nunca pasta dental humana.",
-      "Mau halito forte, sangramento ou dor exigem veterinario.",
+      "Mau halito forte, sangramento ou dor exigem veterinário.",
     ],
     sections: [
       {
-        heading: "Comece com adaptacao",
+        heading: "Comece com adaptação",
         body:
           "Antes de escovar, treine o pet a aceitar toque no focinho, labios e dentes. Recompense calma. A escovacao so funciona se for segura para animal e tutor.",
       },
@@ -199,7 +199,7 @@ export const BLOG_ARTICLES = [
       {
         heading: "Limpeza profissional",
         body:
-          "Tartaro, dor, mobilidade dentaria e gengiva inflamada precisam de avaliacao veterinaria. Procedimentos dentarios devem ser feitos com seguranca e orientacao profissional.",
+          "Tartaro, dor, mobilidade dentaria e gengiva inflamada precisam de avaliação veterinaria. Procedimentos dentarios devem ser feitos com segurança e orientação profissional.",
       },
     ],
     sources: [
@@ -215,16 +215,16 @@ export const BLOG_ARTICLES = [
   },
   {
     id: "socializacao-segura",
-    title: "Socializacao sem pressa: apresentando pessoas, caes e gatos",
+    title: "Socializacao sem pressa: apresentando pessoas, cães e gatos",
     category: "comportamento",
     readTime: "6 min",
     featured: false,
     summary:
-      "Socializacao nao e jogar o pet em qualquer ambiente. O objetivo e criar experiencias positivas e controladas.",
+      "Socializacao não e jogar o pet em qualquer ambiente. O objetivo e criar experiencias positivas e controladas.",
     keyTakeaways: [
       "Apresentacoes devem ser graduais e supervisionadas.",
       "Respeite sinais de medo, fuga e desconforto.",
-      "Evite parques e aglomeracoes logo apos a adocao.",
+      "Evite parques e aglomeracoes logo após a adoção.",
     ],
     sections: [
       {
@@ -233,7 +233,7 @@ export const BLOG_ARTICLES = [
           "Rabo baixo, corpo rigido, rosnado, orelhas para tras, tentativa de fuga e bocejos repetidos podem indicar estresse. Interrompa antes de escalar.",
       },
       {
-        heading: "Use distancia a favor",
+        heading: "Use distância a favor",
         body:
           "Nem todo encontro precisa ser contato direto. Muitas vezes, ver outro animal de longe e receber recompensa e um passo melhor que forcar aproximacao.",
       },
@@ -256,32 +256,32 @@ export const BLOG_ARTICLES = [
   },
   {
     id: "castracao-responsavel",
-    title: "Castracao responsavel: beneficios, limites e decisao veterinaria",
+    title: "Castração responsável: beneficios, limites e decisão veterinaria",
     category: "saude",
     readTime: "6 min",
     featured: false,
     summary:
-      "Castracao ajuda no controle populacional e pode trazer beneficios de saude, mas idade e momento devem ser avaliados individualmente.",
+      "Castração ajuda no controle populacional e pode trazer beneficios de saúde, mas idade e momento devem ser avaliados individualmente.",
     keyTakeaways: [
-      "Nao existe uma unica idade ideal para todos os animais.",
-      "Converse sobre riscos, beneficios, porte, especie e historico.",
-      "Programas publicos podem exigir vacina antirrabica atualizada.",
+      "Não existe uma única idade ideal para todos os animais.",
+      "Converse sobre riscos, beneficios, porte, espécie e histórico.",
+      "Programas publicos podem exigir vacina antirrábica atualizada.",
     ],
     sections: [
       {
-        heading: "Controle populacional e saude",
+        heading: "Controle populacional e saúde",
         body:
-          "Castracao reduz nascimento indesejado e pode prevenir problemas reprodutivos. A decisao deve considerar especie, porte, idade, doencas previas e contexto do tutor.",
+          "Castração reduz nascimento indesejado e pode prevenir problemas reprodutivos. A decisão deve considerar espécie, porte, idade, doenças previas e contexto do tutor.",
       },
       {
         heading: "Programas publicos tem regras",
         body:
-          "Servicos publicos costumam exigir documentos e vacina antirrabica recente. Em Salvador, a informacao oficial de castracao cita RG, cartao SUS e cartao de vacina antirrabica.",
+          "Serviços públicos costumam exigir documentos e vacina antirrábica recente. Em Salvador, a informação oficial de castração cita RG, cartão SUS e cartão de vacina antirrábica.",
       },
       {
         heading: "Recuperacao exige cuidado",
         body:
-          "Apos cirurgia, siga orientacao sobre colar, repouso, limpeza, medicacao e retorno. Nao medique por conta propria.",
+          "Após cirurgia, siga orientação sobre colar, repouso, limpeza, medicação e retorno. Não medique por conta propria.",
       },
     ],
     sources: [
@@ -290,7 +290,7 @@ export const BLOG_ARTICLES = [
         url: "https://ebusiness.avma.org/files/productdownloads/spay_neuter_brochure.pdf",
       },
       {
-        label: "SMS Salvador - Castracao gratuita",
+        label: "SMS Salvador - Castração gratuita",
         url: "https://saude.salvador.ba.gov.br/populacao-pode-agendar-castracao-gratuita-de-caes-e-gatos/",
       },
     ],
@@ -304,15 +304,15 @@ export const BLOG_ARTICLES = [
     summary:
       "Enriquecimento e oferecer oportunidades seguras para cheirar, explorar, brincar, descansar e resolver pequenos desafios.",
     keyTakeaways: [
-      "Nao precisa ser caro: rotina e criatividade ajudam muito.",
+      "Não precisa ser caro: rotina e criatividade ajudam muito.",
       "Cães precisam cheirar e se movimentar; gatos precisam escalar e arranhar.",
       "Seguranca vem antes de brinquedo bonito.",
     ],
     sections: [
       {
-        heading: "Para caes",
+        heading: "Para cães",
         body:
-          "Passeios com cheiros, brinquedos recheaveis, treino curto, busca controlada e descanso ajudam a reduzir tedio. Ajuste intensidade a idade e saude.",
+          "Passeios com cheiros, brinquedos recheaveis, treino curto, busca controlada e descanso ajudam a reduzir tedio. Ajuste intensidade a idade e saúde.",
       },
       {
         heading: "Para gatos",
@@ -322,7 +322,7 @@ export const BLOG_ARTICLES = [
       {
         heading: "Evite excesso",
         body:
-          "Pet tambem precisa dormir. Se o animal fica mais irritado, ofegante ou obsessivo, reduza estimulos e procure orientacao.",
+          "Pet tambem precisa dormir. Se o animal fica mais irritado, ofegante ou obsessivo, reduza estímulos e procure orientação.",
       },
     ],
     sources: [
@@ -338,7 +338,7 @@ export const BLOG_ARTICLES = [
   },
   {
     id: "saude-preventiva",
-    title: "Saude preventiva: consultas antes do problema aparecer",
+    title: "Saúde preventiva: consultas antes do problema aparecer",
     category: "saude",
     readTime: "5 min",
     featured: false,
@@ -346,24 +346,24 @@ export const BLOG_ARTICLES = [
       "Prevenir e acompanhar peso, boca, pele, vacinas, parasitas, comportamento e mudancas sutis antes que virem urgencia.",
     keyTakeaways: [
       "Frequencia de consulta deve ser individual.",
-      "Filhotes, idosos e pets com doencas precisam de mais acompanhamento.",
+      "Filhotes, idosos e pets com doenças precisam de mais acompanhamento.",
       "Mudancas pequenas de rotina podem sinalizar problema.",
     ],
     sections: [
       {
-        heading: "Consulta nao e so vacina",
+        heading: "Consulta não e so vacina",
         body:
-          "A avaliacao preventiva inclui peso, condicao corporal, boca, pele, ouvidos, comportamento, dieta, parasitas e historico. AAHA/AVMA destacam a importancia de cuidado preventivo individualizado.",
+          "A avaliação preventiva inclui peso, condição corporal, boca, pele, ouvidos, comportamento, dieta, parasitas e histórico. AAHA/AVMA destacam a importancia de cuidado preventivo individualizado.",
       },
       {
         heading: "Observe sinais discretos",
         body:
-          "Beber mais agua, perder peso, se esconder, mancar, dormir demais, coceira intensa ou mudar apetite sao motivos para investigar.",
+          "Beber mais água, perder peso, se esconder, mancar, dormir demais, coceira intensa ou mudar apetite sao motivos para investigar.",
       },
       {
-        heading: "Leve informacoes",
+        heading: "Leve informações",
         body:
-          "Fotos, videos, lista de alimentos, medicamentos, vacinas e datas ajudam o veterinario a entender o quadro real.",
+          "Fotos, videos, lista de alimentos, medicamentos, vacinas e datas ajudam o veterinário a entender o quadro real.",
       },
     ],
     sources: [
@@ -379,7 +379,7 @@ export const BLOG_ARTICLES = [
   },
   {
     id: "seguranca-casa",
-    title: "Casa segura para caes e gatos: checklist antes de adotar",
+    title: "Casa segura para cães e gatos: checklist antes de adotar",
     category: "bem-estar",
     readTime: "5 min",
     featured: false,
@@ -388,23 +388,23 @@ export const BLOG_ARTICLES = [
     keyTakeaways: [
       "Gatos precisam de telas e rotas seguras.",
       "Produtos toxicos, fios e lixo devem ficar fora de alcance.",
-      "Defina espaco de descanso longe de excesso de movimento.",
+      "Defina espaço de descanso longe de excesso de movimento.",
     ],
     sections: [
       {
         heading: "Controle acesso",
         body:
-          "Portas, janelas, sacadas, portoes e frestas sao pontos criticos. Gatos devem viver em ambiente telado e caes recem-adotados precisam de supervisao em saidas.",
+          "Portas, janelas, sacadas, portoes e frestas sao pontos críticos. Gatos devem viver em ambiente telado e cães recem-adotados precisam de supervisao em saidas.",
       },
       {
-        heading: "Retire riscos previsiveis",
+        heading: "Retire riscos previsíveis",
         body:
           "Guarde produtos de limpeza, medicamentos, plantas toxicas, objetos cortantes, fios soltos e alimentos perigosos. Se houver criancas, combine regras de interacao.",
       },
       {
         heading: "Monte uma base segura",
         body:
-          "Cama, agua, comida, brinquedos, banheiro e local de descanso devem ficar acessiveis. Para gatos, a caixa de areia precisa estar em local tranquilo.",
+          "Cama, água, comida, brinquedos, banheiro e local de descanso devem ficar acessiveis. Para gatos, a caixa de areia precisa estar em local tranquilo.",
       },
     ],
     sources: [

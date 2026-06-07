@@ -27,7 +27,7 @@ const markerStyles = {
     className: "bg-amber-400 text-slate-950 ring-amber-100/50",
   },
   origin: {
-    label: "Voce",
+    label: "Você",
     icon: Navigation,
     className: "bg-white text-slate-950 ring-white/60",
   },

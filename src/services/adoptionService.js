@@ -3,7 +3,7 @@ import { isSupabaseConfigured, supabase } from "./supabaseClient";
 
 export function buildAdoptionMessage({ pet, request }) {
   const lines = [
-    `Ola! Tenho interesse em adotar o pet ${pet.name}.`,
+    `Olá! Tenho interesse em adotar o pet ${pet.name}.`,
     "",
     `Pet: ${pet.name}`,
     pet.city ? `Cidade do pet: ${pet.city}` : "",
@@ -11,9 +11,9 @@ export function buildAdoptionMessage({ pet, request }) {
     `Nome: ${request.adopter_name}`,
     `Telefone: ${request.adopter_phone}`,
     `Bairro: ${request.adopter_neighborhood}`,
-    `Minha casa esta preparada: ${request.home_prepared}`,
+    `Minha casa está preparada: ${request.home_prepared}`,
     `Preciso de dicas da ONG: ${request.needs_guidance}`,
-    `Ja tive ou tenho outros animais: ${request.has_or_had_pets}`,
+    `Já tive ou tenho outros animais: ${request.has_or_had_pets}`,
   ];
 
   return lines.filter(Boolean).join("\n");

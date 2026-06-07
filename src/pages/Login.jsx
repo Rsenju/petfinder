@@ -60,7 +60,7 @@ export default function Login() {
     try {
       await loginGoogle();
     } catch (error) {
-      setLoginError(error.message || "Nao foi possivel entrar com Google.");
+      setLoginError(error.message || "Não foi possível entrar com Google.");
       setIsGoogleLoading(false);
     }
   };
@@ -188,7 +188,7 @@ export default function Login() {
           </form>
 
           <p className="mt-6 text-center text-sm text-slate-400">
-            Ainda nao tem cadastro?{" "}
+            Ainda não tem cadastro?{" "}
             <Link to="/register" className="font-medium text-blue-300 hover:text-blue-200">
               Criar conta
             </Link>

@@ -392,7 +392,7 @@ function AdoptionFormLocal({ pet }) {
     setSubmitError("");
     const labels = {
       sim: "Sim",
-      nao: "Nao",
+      nao: "Não",
       parcialmente: "Parcialmente",
     };
     const request = {
@@ -417,7 +417,7 @@ function AdoptionFormLocal({ pet }) {
       window.open(buildWhatsAppUrl(pet.ong.whatsapp, saved.message), "_blank", "noopener,noreferrer");
       setSubmitted(true);
     } catch (error) {
-      setSubmitError(error.message || "Nao foi possivel enviar o pedido agora.");
+      setSubmitError(error.message || "Não foi possível enviar o pedido agora.");
     }
   };
 
@@ -429,7 +429,7 @@ function AdoptionFormLocal({ pet }) {
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <h2 id="adoption-form-title" className="text-sm font-semibold text-white sm:text-base">
-            Formulario de pre-adocao
+            Formulário de pré-adoção
           </h2>
           <p className="mt-1 text-xs text-slate-400">
             Envie seus dados principais para a ONG continuar pelo WhatsApp.
@@ -476,19 +476,19 @@ function AdoptionFormLocal({ pet }) {
                 <select {...register("casaPreparada")} className="adoption-field">
                   <option value="sim">Sim</option>
                   <option value="parcialmente">Parcialmente</option>
-                  <option value="nao">Ainda nao</option>
+                  <option value="nao">Ainda não</option>
                 </select>
               </AdoptionInput>
               <AdoptionInput label="Precisa de dicas da ONG?" error={errors.precisaDicas?.message}>
                 <select {...register("precisaDicas")} className="adoption-field">
-                  <option value="nao">Nao</option>
+                  <option value="nao">Não</option>
                   <option value="sim">Sim</option>
                 </select>
               </AdoptionInput>
-              <AdoptionInput label="Ja possui ou ja teve animais?" error={errors.experienciaPets?.message}>
+              <AdoptionInput label="Já possui ou já teve animais?" error={errors.experienciaPets?.message}>
                 <select {...register("experienciaPets")} className="adoption-field">
                   <option value="sim">Sim</option>
-                  <option value="nao">Nao</option>
+                  <option value="nao">Não</option>
                 </select>
               </AdoptionInput>
             </div>
@@ -547,7 +547,7 @@ function ReportPet({ pet }) {
       setForm({ reason: "wrong_image", description: "", reporter_contact: "" });
       setStatus({ type: "success", message: "Denuncia enviada para analise." });
     } catch (error) {
-      setStatus({ type: "error", message: error.message || "Nao foi possivel enviar a denuncia." });
+      setStatus({ type: "error", message: error.message || "Não foi possível enviar a denuncia." });
     } finally {
       setIsSubmitting(false);
     }
@@ -575,7 +575,7 @@ function ReportPet({ pet }) {
           </select>
         </label>
         <label className="block text-[11px] font-medium text-slate-500">
-          Descricao
+          Descrição
           <textarea
             value={form.description}
             onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
@@ -611,27 +611,27 @@ function ReportPet({ pet }) {
 
 function AdvancedPetProfile({ pet }) {
   const healthItems = [
-    ["Carteira de vacinacao", pet.vaccinationRecord || (pet.vacinado ? "Vacinas essenciais em dia." : "Carteira em atualizacao pela ONG.")],
-    ["Historico veterinario", pet.veterinaryHistory || "Avaliacao veterinaria basica realizada pela ONG."],
-    ["Necessidades especiais", pet.specialNeeds || "Nao possui necessidades especiais informadas."],
-    ["Medicacoes", pet.medications || "Nao usa medicacao continua."],
-    ["Microchip", pet.microchip ? "Possui microchip." : "Microchip nao informado."],
-    ["Peso", pet.weight || "Peso nao informado."],
+    ["Carteira de vacinação", pet.vaccinationRecord || (pet.vacinado ? "Vacinas essenciais em dia." : "Carteira em atualizacao pela ONG.")],
+    ["Histórico veterinário", pet.veterinaryHistory || "Avaliacao veterinaria básica realizada pela ONG."],
+    ["Necessidades especiais", pet.specialNeeds || "Não possui necessidades especiais informadas."],
+    ["Medicacoes", pet.medications || "Não usa medicação continua."],
+    ["Microchip", pet.microchip ? "Possui microchip." : "Microchip não informado."],
+    ["Peso", pet.weight || "Peso não informado."],
   ];
 
   const behaviorItems = [
     ["Nivel de energia", pet.energyLevel || "medio"],
     ["Perfil comportamental", pet.behaviorProfile || pet.personality || "Perfil em observacao pela ONG."],
     ["Adaptacao", pet.adaptationNeeds || "Adaptacao gradual recomendada nos primeiros dias."],
-    ["Convivencia com criancas", pet.childrenCompatibility || "nao testado"],
-    ["Convivencia com gatos", pet.catsCompatibility || "nao testado"],
-    ["Convivencia com caes", pet.dogsCompatibility || "nao testado"],
+    ["Convivencia com criancas", pet.childrenCompatibility || "não testado"],
+    ["Convivencia com gatos", pet.catsCompatibility || "não testado"],
+    ["Convivencia com cães", pet.dogsCompatibility || "não testado"],
   ];
 
   const careItems = [
-    ["Rotina", pet.routine || "Rotina detalhada nao informada."],
-    ["Alimentacao", pet.feeding || "Alimentacao orientada pela ONG no contato inicial."],
-    ["Observacoes da ONG", pet.ongNotes || "A ONG acompanha a adaptacao e orienta a familia adotante."],
+    ["Rotina", pet.routine || "Rotina detalhada não informada."],
+    ["Alimentacao", pet.feeding || "Alimentação orientada pela ONG no contato inicial."],
+    ["Observações da ONG", pet.ongNotes || "A ONG acompanha a adaptação e orienta a família adotante."],
   ];
 
   return (
@@ -640,7 +640,7 @@ function AdvancedPetProfile({ pet }) {
         <div>
           <h2 className="text-sm font-semibold text-white sm:text-base">Perfil avancado</h2>
           <p className="mt-1 text-xs text-slate-400">
-            Informacoes complementares para uma adocao mais consciente.
+            Informações complementares para uma adoção mais consciente.
           </p>
         </div>
         <span className="rounded-full bg-blue-500/15 px-2.5 py-1 text-[11px] font-medium text-blue-200 ring-1 ring-blue-500/20">
@@ -649,7 +649,7 @@ function AdvancedPetProfile({ pet }) {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <AdvancedProfileCard title="Saude" items={healthItems} />
+        <AdvancedProfileCard title="Saúde" items={healthItems} />
         <AdvancedProfileCard title="Comportamento" items={behaviorItems} />
         <AdvancedProfileCard title="Rotina e cuidados" items={careItems} />
       </div>
@@ -1155,13 +1155,13 @@ export default function PetDetailPage() {
                       </h3>
                       <div className="flex flex-wrap gap-1.5">
                         <span className={cn(badgeClass, "bg-slate-700 text-slate-300 ring-1 ring-slate-600")}>
-                          Criancas: {pet.childrenCompatibility || "nao testado"}
+                          Criancas: {pet.childrenCompatibility || "não testado"}
                         </span>
                         <span className={cn(badgeClass, "bg-slate-700 text-slate-300 ring-1 ring-slate-600")}>
-                          Gatos: {pet.catsCompatibility || "nao testado"}
+                          Gatos: {pet.catsCompatibility || "não testado"}
                         </span>
                         <span className={cn(badgeClass, "bg-slate-700 text-slate-300 ring-1 ring-slate-600")}>
-                          Caes: {pet.dogsCompatibility || "nao testado"}
+                          Cães: {pet.dogsCompatibility || "não testado"}
                         </span>
                       </div>
                     </div>
@@ -1365,5 +1365,4 @@ export default function PetDetailPage() {
     </div>
   );
 }
-
 

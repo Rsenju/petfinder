@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Building2, ChevronDown, MapPin, Navigation, Phone, ShieldCheck, Users } from "lucide-react";
-import RegionalMap from "../components/features/RegionalMap";
+import GoogleMap from "../components/features/GoogleMap";
 import { LOCATION_OPTIONS, withDistance } from "../data/geoData";
 import { listOngs } from "../services/ongService";
 
@@ -43,7 +43,7 @@ export default function Ongs() {
         const data = await listOngs();
         if (isMounted) setOngs(data);
       } catch (loadError) {
-        if (isMounted) setError(loadError.message || "Nao foi possivel carregar as ONGs.");
+        if (isMounted) setError(loadError.message || "Não foi possível carregar as ONGs.");
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -75,7 +75,7 @@ export default function Ongs() {
             onChange={(event) => setOriginId(event.target.value)}
             className="w-full appearance-none rounded-xl border border-slate-700 bg-slate-800 py-2.5 pl-10 pr-10 text-sm text-white outline-none focus:border-blue-400"
           >
-            <option value="">Calcular distancia de...</option>
+            <option value="">Calcular distância de...</option>
             {LOCATION_OPTIONS.map((item) => (
               <option key={item.id} value={item.id}>{item.label}</option>
             ))}
@@ -84,10 +84,10 @@ export default function Ongs() {
         </label>
       </div>
 
-      <RegionalMap
+      <GoogleMap
         className="mt-8"
-        title="Mapa de ONGs parceiras"
-        description="Organizacoes verificadas por cidade e bairro de atuacao."
+        title="Google Maps - ONGs parceiras"
+        description="Organizações verificadas por cidade e bairro de atuação."
         markers={mapMarkers}
         origin={origin}
       />

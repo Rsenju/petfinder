@@ -11,6 +11,6 @@ export const registerSchema = z.object({
   password: z.string().min(8, "Senha deve ter no minimo 8 caracteres"),
   confirmPassword: z.string().min(1, "Confirme sua senha"),
 }).refine((data) => data.password === data.confirmPassword, {
-  message: "Senhas nao conferem",
+  message: "Senhas não conferem",
   path: ["confirmPassword"],
 });

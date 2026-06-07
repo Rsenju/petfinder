@@ -46,7 +46,7 @@ export default function Blog() {
               <BookOpen className="h-4 w-4" />
               Blog educativo
             </p>
-            <h1 className="mt-2 text-3xl font-bold text-white">Guias para adocao e cuidado responsavel</h1>
+            <h1 className="mt-2 text-3xl font-bold text-white">Guias para adoção e cuidado responsável</h1>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">
               Conteudo pratico para tutores e adotantes, baseado em fontes veterinarias e organizacoes de bem-estar animal.
             </p>
@@ -82,8 +82,8 @@ export default function Blog() {
           <div className="flex gap-3">
             <Stethoscope className="mt-0.5 h-5 w-5 shrink-0" />
             <p>
-              O blog nao substitui consulta veterinaria. Em caso de dor, apatia, vomitos, diarreia, feridas,
-              falta de apetite, falta de ar ou mudanca brusca de comportamento, procure atendimento profissional.
+              O blog não substitui consulta veterinária. Em caso de dor, apatia, vômitos, diarreia, feridas,
+              falta de apetite, falta de ar ou mudança brusca de comportamento, procure atendimento profissional.
             </p>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function Blog() {
         <div className="mb-4 flex items-center justify-between gap-3">
           <div>
             <h2 className="text-xl font-semibold text-white">Destaques</h2>
-            <p className="mt-1 text-sm text-slate-400">Leituras recomendadas para comecar.</p>
+            <p className="mt-1 text-sm text-slate-400">Leituras recomendadas para começar.</p>
           </div>
         </div>
         <div className="grid gap-4 md:grid-cols-3">

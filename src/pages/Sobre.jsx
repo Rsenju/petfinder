@@ -1,5 +1,5 @@
 export default function Sobre() {
-  return <SimplePage title="Sobre o PetFinder" text="Produto para aproximar ONGs e adotantes em um fluxo claro de adocao responsavel." />;
+  return <SimplePage title="Sobre o PetFinder" text="Produto para aproximar ONGs e adotantes em um fluxo claro de adoção responsável." />;
 }
 
 function SimplePage({ title, text }) {

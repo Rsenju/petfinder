@@ -42,8 +42,8 @@ const emptyPet = {
   vaccinated: true,
   castrated: false,
   childrenCompatibility: "boa",
-  catsCompatibility: "nao testado",
-  dogsCompatibility: "nao testado",
+  catsCompatibility: "não testado",
+  dogsCompatibility: "não testado",
   energyLevel: "medio",
   vaccinationRecord: "",
   veterinaryHistory: "",
@@ -59,7 +59,7 @@ const emptyPet = {
 };
 
 const statusLabels = {
-  available: "Disponivel",
+  available: "Disponível",
   in_process: "Em processo",
   adopted: "Adotado",
 };
@@ -102,7 +102,7 @@ export function OngDashboard() {
           setRequests(adoptionRequests);
         }
       } catch (loadError) {
-        if (isMounted) setError(loadError.message || "Nao foi possivel carregar o painel.");
+        if (isMounted) setError(loadError.message || "Não foi possível carregar o painel.");
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -142,7 +142,7 @@ export function OngDashboard() {
     setError("");
 
     if (!petForm.name || !petForm.city || !petForm.description) {
-      showMessage("Preencha nome, cidade e descricao do pet.");
+      showMessage("Preencha nome, cidade e descrição do pet.");
       return;
     }
 
@@ -214,7 +214,7 @@ export function OngDashboard() {
       setEditingPetId(null);
       showMessage(editingPetId ? "Pet atualizado com sucesso." : "Pet cadastrado com sucesso.");
     } catch (submitError) {
-      setError(submitError.message || "Nao foi possivel salvar o pet.");
+      setError(submitError.message || "Não foi possível salvar o pet.");
     }
   };
 
@@ -241,8 +241,8 @@ export function OngDashboard() {
       vaccinated: Boolean(pet.vaccinated),
       castrated: Boolean(pet.castrated),
       childrenCompatibility: pet.childrenCompatibility || "boa",
-      catsCompatibility: pet.catsCompatibility || "nao testado",
-      dogsCompatibility: pet.dogsCompatibility || "nao testado",
+      catsCompatibility: pet.catsCompatibility || "não testado",
+      dogsCompatibility: pet.dogsCompatibility || "não testado",
       energyLevel: pet.energyLevel || "medio",
       vaccinationRecord: pet.vaccinationRecord || "",
       veterinaryHistory: pet.veterinaryHistory || "",
@@ -260,7 +260,7 @@ export function OngDashboard() {
   };
 
   const handleDeletePet = async (id) => {
-    const confirmed = window.confirm("Remover este pet? Esta acao nao pode ser desfeita.");
+    const confirmed = window.confirm("Remover este pet? Esta acao não pode ser desfeita.");
     if (!confirmed) return;
     await deletePet(id);
     setPets((current) => current.filter((pet) => pet.id !== id));
@@ -318,7 +318,7 @@ export function OngDashboard() {
             <h2 className="font-semibold">Pedidos recebidos</h2>
           </div>
           {requests.length === 0 ? (
-            <p className="p-8 text-center text-slate-400">Nenhum pedido de adocao recebido ainda.</p>
+            <p className="p-8 text-center text-slate-400">Nenhum pedido de adoção recebido ainda.</p>
           ) : (
             <div className="divide-y divide-slate-700">
               {requests.map((request) => (
@@ -353,7 +353,7 @@ export function OngDashboard() {
         <div className="rounded-xl border border-slate-700 bg-slate-800 p-6">
           <h2 className="text-lg font-semibold">Proximas acoes</h2>
           <p className="mt-2 text-slate-400">
-            Mantenha WhatsApp, cidade e bairro atualizados para receber pedidos de adocao corretamente.
+            Mantenha WhatsApp, cidade e bairro atualizados para receber pedidos de adoção corretamente.
           </p>
         </div>
       </div>
@@ -372,6 +372,7 @@ export function OngDashboard() {
             const Icon = item.icon;
             return (
               <button
+                type="button"
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm transition ${
@@ -385,6 +386,7 @@ export function OngDashboard() {
           })}
         </nav>
         <button
+          type="button"
           onClick={logout}
           className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-300 hover:bg-slate-800"
         >
@@ -456,7 +458,7 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
         image: validations[0]?.previewUrl || current.image,
       }));
     } catch (fileError) {
-      setImageError(fileError.message || "Nao foi possivel validar as imagens.");
+      setImageError(fileError.message || "Não foi possível validar as imagens.");
       event.target.value = "";
     }
   };
@@ -479,7 +481,7 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
           <Select label="Status" value={form.status} onChange={(value) => update("status", value)} options={Object.entries(statusLabels)} />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Input label="Raca" value={form.breed} onChange={(value) => update("breed", value)} />
+          <Input label="Raça" value={form.breed} onChange={(value) => update("breed", value)} />
           <Input label="Idade" value={form.age} onChange={(value) => update("age", value)} placeholder="2 anos" />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -489,32 +491,32 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
         <div className="grid gap-3 sm:grid-cols-2">
           <Input label="Personalidade" value={form.personality} onChange={(value) => update("personality", value)} placeholder="carinhoso e tranquilo" />
           <Select
-            label="Status de saude"
+            label="Status de saúde"
             value={form.healthStatus}
             onChange={(value) => update("healthStatus", value)}
             options={(HEALTH_OPTIONS_BY_SPECIES[form.species] || []).map((value) => [value, value])}
           />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Select label="Vacinacao" value={String(form.vaccinated)} onChange={(value) => update("vaccinated", value === "true")} options={[["true", "Vacinado"], ["false", "Nao vacinado"]]} />
-          <Select label="Castracao" value={String(form.castrated)} onChange={(value) => update("castrated", value === "true")} options={[["true", "Castrado"], ["false", "Nao castrado"]]} />
+          <Select label="Vacinação" value={String(form.vaccinated)} onChange={(value) => update("vaccinated", value === "true")} options={[["true", "Vacinado"], ["false", "Não vacinado"]]} />
+          <Select label="Castracao" value={String(form.castrated)} onChange={(value) => update("castrated", value === "true")} options={[["true", "Castrado"], ["false", "Não castrado"]]} />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <Select label="Criancas" value={form.childrenCompatibility} onChange={(value) => update("childrenCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
           <Select label="Gatos" value={form.catsCompatibility} onChange={(value) => update("catsCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Select label="Caes" value={form.dogsCompatibility} onChange={(value) => update("dogsCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
+          <Select label="Cães" value={form.dogsCompatibility} onChange={(value) => update("dogsCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
           <Select label="Nivel de energia" value={form.energyLevel} onChange={(value) => update("energyLevel", value)} options={ENERGY_LEVELS.map((item) => [item.value, item.label])} />
         </div>
 
-        <Fieldset title="Saude avancada">
+        <Fieldset title="Saúde avancada">
           <div className="grid gap-3 sm:grid-cols-2">
             <Input label="Peso" value={form.weight} onChange={(value) => update("weight", value)} placeholder="14 kg" />
-            <Select label="Microchip" value={String(form.microchip)} onChange={(value) => update("microchip", value === "true")} options={[["false", "Nao possui"], ["true", "Possui microchip"]]} />
+            <Select label="Microchip" value={String(form.microchip)} onChange={(value) => update("microchip", value === "true")} options={[["false", "Não possui"], ["true", "Possui microchip"]]} />
           </div>
-          <TextArea label="Carteira de vacinacao" value={form.vaccinationRecord} onChange={(value) => update("vaccinationRecord", value)} />
-          <TextArea label="Historico veterinario" value={form.veterinaryHistory} onChange={(value) => update("veterinaryHistory", value)} />
+          <TextArea label="Carteira de vacinação" value={form.vaccinationRecord} onChange={(value) => update("vaccinationRecord", value)} />
+          <TextArea label="Histórico veterinário" value={form.veterinaryHistory} onChange={(value) => update("veterinaryHistory", value)} />
           <TextArea label="Necessidades especiais" value={form.specialNeeds} onChange={(value) => update("specialNeeds", value)} />
           <TextArea label="Medicacoes" value={form.medications} onChange={(value) => update("medications", value)} />
         </Fieldset>
@@ -524,7 +526,7 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
           <TextArea label="Adaptacao recomendada" value={form.adaptationNeeds} onChange={(value) => update("adaptationNeeds", value)} />
           <TextArea label="Rotina" value={form.routine} onChange={(value) => update("routine", value)} />
           <TextArea label="Alimentacao" value={form.feeding} onChange={(value) => update("feeding", value)} />
-          <TextArea label="Observacoes da ONG" value={form.ongNotes} onChange={(value) => update("ongNotes", value)} />
+          <TextArea label="Observações da ONG" value={form.ongNotes} onChange={(value) => update("ongNotes", value)} />
         </Fieldset>
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -588,12 +590,12 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
           label="URL da foto (opcional)"
           value={form.imageFiles?.length ? "" : form.image}
           onChange={(value) => update("image", value)}
-          placeholder="Use se ainda nao tiver upload local"
+          placeholder="Use se ainda não tiver upload local"
         />
-        <TextArea label="Descricao" value={form.description} onChange={(value) => update("description", value)} required minHeight="min-h-28" />
+        <TextArea label="Descrição" value={form.description} onChange={(value) => update("description", value)} required minHeight="min-h-28" />
       </div>
       <div className="mt-4 flex gap-2">
-        <button className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold hover:bg-blue-700">
+        <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold hover:bg-blue-700">
           <Save className="h-4 w-4" />
           {editing ? "Salvar" : "Cadastrar"}
         </button>
@@ -637,7 +639,7 @@ function PetsTable({ pets, statusFilter, onStatusFilterChange, onEdit, onDelete,
             <img src={pet.image || pet.image_url} alt={pet.name} className="h-20 w-20 rounded-lg object-cover object-center" />
             <div>
               <h3 className="font-semibold">{pet.name}</h3>
-              <p className="text-sm text-slate-400">{pet.city} - {pet.age || "idade nao informada"}</p>
+              <p className="text-sm text-slate-400">{pet.city} - {pet.age || "idade não informada"}</p>
               <select
                 value={pet.status}
                 onChange={(event) => onStatusChange(pet, event.target.value)}
@@ -649,10 +651,10 @@ function PetsTable({ pets, statusFilter, onStatusFilterChange, onEdit, onDelete,
               </select>
             </div>
             <div className="flex gap-2">
-              <button onClick={() => onEdit(pet)} className="rounded-lg border border-slate-600 p-2 text-slate-200 hover:bg-slate-700" aria-label="Editar pet">
+              <button type="button" onClick={() => onEdit(pet)} className="rounded-lg border border-slate-600 p-2 text-slate-200 hover:bg-slate-700" aria-label="Editar pet">
                 <Edit3 className="h-4 w-4" />
               </button>
-              <button onClick={() => onDelete(pet.id)} className="rounded-lg border border-red-500/30 p-2 text-red-300 hover:bg-red-500/10" aria-label="Remover pet">
+              <button type="button" onClick={() => onDelete(pet.id)} className="rounded-lg border border-red-500/30 p-2 text-red-300 hover:bg-red-500/10" aria-label="Remover pet">
                 <Trash2 className="h-4 w-4" />
               </button>
             </div>
@@ -676,14 +678,14 @@ function OngSettings({ form, setForm, onSubmit }) {
         <Input label="Bairro" value={form.neighborhood || ""} onChange={(value) => update("neighborhood", value)} />
       </div>
       <label className="mt-3 block text-sm text-slate-300">
-        Descricao
+        Descrição
         <textarea
           value={form.description || ""}
           onChange={(event) => update("description", event.target.value)}
           className="mt-1 min-h-28 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white outline-none focus:border-blue-400"
         />
       </label>
-      <button className="mt-4 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold hover:bg-blue-700">
+      <button type="submit" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold hover:bg-blue-700">
         <Save className="h-4 w-4" />
         Salvar dados
       </button>

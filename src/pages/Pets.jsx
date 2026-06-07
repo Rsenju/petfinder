@@ -16,7 +16,7 @@ import { allPets, CITIES, SPECIES, SIZES, AGES, SEXES } from '../data/mockData';
 import { LOCATION_OPTIONS, NEIGHBORHOOD_COORDINATES, withDistance } from '../data/geoData';
 import { listPets } from '../services/petService';
 import PetCard from '../components/features/PetCard';
-import RegionalMap from '../components/features/RegionalMap';
+import GoogleMap from '../components/features/GoogleMap';
 import SkeletonCard from '../components/ui/SkeletonCard';
 import ScrollReveal from '../components/ui/ScrollReveal';
 
@@ -358,7 +358,7 @@ export default function Pets() {
               onChange={(e) => updateFilter('origin', e.target.value)}
               className="w-full appearance-none rounded-xl border border-gray-200 bg-white py-2.5 pl-10 pr-10 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
             >
-              <option value="">Calcular distancia de...</option>
+              <option value="">Calcular distância de...</option>
               {LOCATION_OPTIONS.map((item) => (
                 <option key={item.id} value={item.id}>{item.label}</option>
               ))}
@@ -372,17 +372,17 @@ export default function Pets() {
             disabled={!origin}
             className="appearance-none rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
           >
-            <option value="">Qualquer distancia</option>
-            <option value="5">Ate 5 km</option>
-            <option value="10">Ate 10 km</option>
-            <option value="20">Ate 20 km</option>
-            <option value="50">Ate 50 km</option>
+            <option value="">Qualquer distância</option>
+            <option value="5">Até 5 km</option>
+            <option value="10">Até 10 km</option>
+            <option value="20">Até 20 km</option>
+            <option value="50">Até 50 km</option>
           </select>
         </div>
 
-        <RegionalMap
-          title="Mapa de pets disponiveis"
-          description="Pontos aproximados por bairro para encontrar adocoes proximas."
+        <GoogleMap
+          title="Google Maps - pets disponíveis"
+          description="Pontos aproximados por bairro para encontrar adoções próximas."
           markers={mapMarkers}
           origin={origin}
         />

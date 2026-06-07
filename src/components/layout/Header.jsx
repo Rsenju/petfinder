@@ -8,6 +8,7 @@ const publicLinks = [
   ["Pets", "/pets"],
   ["ONGs", "/ongs"],
   ["Serviços", "/servicos"],
+  ["Blog", "/blog"],
 ];
 
 export default function Header() {

@@ -50,7 +50,7 @@ export default function AdminDashboard() {
       ]);
       setData({ ongs, pets, requests, profiles, reports });
     } catch (loadError) {
-      setError(loadError.message || "Nao foi possivel carregar o admin.");
+      setError(loadError.message || "Não foi possível carregar o admin.");
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +69,7 @@ export default function AdminDashboard() {
     { label: "ONGs pendentes", value: pendingOngs.length, icon: ShieldCheck },
     { label: "Pets cadastrados", value: data.pets.length, icon: PawPrint },
     { label: "Denuncias abertas", value: openReports.length, icon: Flag },
-    { label: "Pedidos de adocao", value: data.requests.length, icon: Users },
+    { label: "Pedidos de adoção", value: data.requests.length, icon: Users },
     { label: "Perfis sem ONG", value: pendingProfiles.length, icon: Users },
   ];
 
@@ -90,7 +90,7 @@ export default function AdminDashboard() {
   };
 
   const handleDeletePet = async (pet) => {
-    const confirmed = window.confirm(`Remover o pet ${pet.name}? Esta acao nao pode ser desfeita.`);
+    const confirmed = window.confirm(`Remover o pet ${pet.name}? Esta acao não pode ser desfeita.`);
     if (!confirmed) return;
     await deletePet(pet.id);
     showMessage("Pet removido pela moderacao.");
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
         </section>
 
         <section className="rounded-xl border border-slate-700 bg-slate-800">
-          <SectionHeader title="Usuarios e permissoes" description="Perfis autenticados e vinculos com ONGs." />
+          <SectionHeader title="Usuarios e permissões" description="Perfis autenticados e vinculos com ONGs." />
           {data.profiles.length === 0 ? (
             <p className="p-6 text-sm text-slate-400">Nenhum perfil encontrado.</p>
           ) : (

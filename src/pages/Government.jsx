@@ -59,7 +59,7 @@ export default function Government() {
             </p>
             <h1 className="mt-2 text-3xl font-bold text-white">Governo e cuidados oficiais</h1>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">
-              Informacoes oficiais e links uteis para vacinacao, castracao, zoonoses,
+              Informações oficiais e links úteis para vacinação, castração, zoonoses,
               viagens com pets e documentos. Confirme sempre no canal oficial antes
               de se deslocar.
             </p>
@@ -84,8 +84,8 @@ export default function Government() {
             <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" />
             <p>
               Esta pagina e um guia informativo. Regras, horarios e pontos de atendimento
-              podem mudar. Para saude animal, viagens ou documentos, valide com veterinario
-              e orgao oficial responsavel.
+              podem mudar. Para saúde animal, viagens ou documentos, valide com veterinário
+              e órgão oficial responsável.
             </p>
           </div>
         </div>
@@ -95,8 +95,8 @@ export default function Government() {
         <div className="space-y-5">
           <SectionTitle
             icon={Syringe}
-            title="Servicos publicos por cidade"
-            description="Vacina, castracao, zoonoses e canais municipais nas regioes prioritarias."
+            title="Serviços públicos por cidade"
+            description="Vacina, castração, zoonoses e canais municipais nas regioes prioritarias."
           />
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -153,7 +153,7 @@ export default function Government() {
             <SectionTitle
               icon={FileText}
               title="Guias oficiais"
-              description="Regras nacionais e orientacoes para documentos, viagens e vacinas."
+              description="Regras nacionais e orientações para documentos, viagens e vacinas."
               compact
             />
             <div className="mt-4 space-y-3">

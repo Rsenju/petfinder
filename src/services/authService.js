@@ -26,7 +26,7 @@ export async function loginWithCredentials(credentials) {
       email: credentials.email,
       password: credentials.password,
     });
-    if (error) throw new Error(error.message || "Nao foi possivel entrar.");
+    if (error) throw new Error(error.message || "Não foi possível entrar.");
     return getCurrentUser();
   }
 
@@ -80,7 +80,7 @@ export async function logoutUser() {
 
 export async function updateCurrentUser(data) {
   const current = await getCurrentUser();
-  if (!current) throw new Error("Usuario nao autenticado");
+  if (!current) throw new Error("Usuário não autenticado");
 
   let next = { ...current, ...data };
   if (current.ongId && data.ong) {
@@ -104,7 +104,7 @@ export async function registerOngAccount(data) {
         },
       },
     });
-    if (error) throw new Error(error.message || "Nao foi possivel criar a conta.");
+    if (error) throw new Error(error.message || "Não foi possível criar a conta.");
 
     const userId = signUpData.user?.id;
     if (userId) {
@@ -168,7 +168,7 @@ export async function loginWithGoogle() {
       redirectTo: `${window.location.origin}/auth/callback`,
     },
   });
-  if (error) throw new Error(error.message || "Nao foi possivel iniciar login com Google.");
+  if (error) throw new Error(error.message || "Não foi possível iniciar login com Google.");
 }
 
 export function onAuthStateChange(callback) {

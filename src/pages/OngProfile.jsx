@@ -15,6 +15,7 @@ import {
 import PetCard from "../components/features/PetCard";
 import { getOngById } from "../services/ongService";
 import { listPets } from "../services/petService";
+import { buildWhatsAppUrl } from "../services/adoptionService";
 
 const statusLabel = {
   available: "Disponiveis",
@@ -38,12 +39,12 @@ export default function OngProfile() {
       setError("");
       try {
         const [ongData, petsData] = await Promise.all([getOngById(id), listPets()]);
-        if (!ongData) throw new Error("ONG nao encontrada.");
+        if (!ongData) throw new Error("ONG não encontrada.");
         if (!isMounted) return;
         setOng(ongData);
         setPets(petsData.filter((pet) => pet.ong_id === ongData.id || pet.ong === ongData.name));
       } catch (loadError) {
-        if (isMounted) setError(loadError.message || "Nao foi possivel carregar a ONG.");
+        if (isMounted) setError(loadError.message || "Não foi possível carregar a ONG.");
       } finally {
         if (isMounted) setIsLoading(false);
       }
@@ -85,7 +86,7 @@ export default function OngProfile() {
         <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-rose-500/20 text-rose-300">
           <Building2 className="h-6 w-6" />
         </div>
-        <h1 className="text-2xl font-bold text-white">Nao foi possivel abrir esta ONG</h1>
+        <h1 className="text-2xl font-bold text-white">Não foi possível abrir esta ONG</h1>
         <p className="mt-2 text-sm text-slate-400">{error || "Tente voltar para a lista de ONGs."}</p>
         <Link to="/ongs" className="mt-5 inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
           <ArrowLeft className="h-4 w-4" />
@@ -130,8 +131,8 @@ export default function OngProfile() {
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <InfoItem icon={MapPin} label="Endereco" value={ong.address || `${ong.city} - ${ong.neighborhood}`} />
             <InfoItem icon={HeartHandshake} label="Area atendida" value={ong.serviceArea || ong.city} />
-            <InfoItem icon={Building2} label="Responsavel" value={ong.responsible || ong.name} />
-            <InfoItem icon={Calendar} label="Atuando desde" value={ong.foundedAt || "Nao informado"} />
+            <InfoItem icon={Building2} label="Responsável" value={ong.responsible || ong.name} />
+            <InfoItem icon={Calendar} label="Atuando desde" value={ong.foundedAt || "Não informado"} />
           </div>
         </div>
 
@@ -139,12 +140,12 @@ export default function OngProfile() {
           <h2 className="text-xl font-semibold text-white">Contato</h2>
           <div className="mt-4 space-y-3 text-sm text-slate-300">
             <ContactLine icon={Phone} value={ong.whatsapp} />
-            <ContactLine icon={Mail} value={ong.email} />
-            <ContactLine icon={Instagram} value={ong.instagram || "Instagram nao informado"} />
+            <ContactLine icon={Mail} value={ong.email} href={ong.email ? `mailto:${ong.email}` : ""} />
+            <ContactLine icon={Instagram} value={ong.instagram || "Instagram não informado"} href={getInstagramUrl(ong.instagram)} />
           </div>
 
           <a
-            href={`https://wa.me/${String(ong.whatsapp || "").replace(/\D/g, "")}`}
+            href={buildWhatsAppUrl(ong.whatsapp, `Olá! Gostaria de falar com a ${ong.name} pelo PetFinder.`)}
             target="_blank"
             rel="noreferrer"
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
@@ -215,13 +216,39 @@ function InfoItem({ icon: Icon, label, value }) {
   );
 }
 
-function ContactLine({ icon: Icon, value }) {
+function ContactLine({ icon: Icon, value, href = "" }) {
+  const content = (
+    <>
+      <Icon className="h-4 w-4 text-slate-500" />
+      <span className="min-w-0 break-words">{value}</span>
+    </>
+  );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target={href.startsWith("http") ? "_blank" : undefined}
+        rel={href.startsWith("http") ? "noreferrer" : undefined}
+        className="flex items-center gap-2 hover:text-white"
+      >
+        {content}
+      </a>
+    );
+  }
+
   return (
     <p className="flex items-center gap-2">
-      <Icon className="h-4 w-4 text-slate-500" />
-      <span>{value}</span>
+      {content}
     </p>
   );
+}
+
+function getInstagramUrl(instagram) {
+  if (!instagram) return "";
+  if (/^https?:\/\//i.test(instagram)) return instagram;
+  if (instagram.startsWith("@")) return `https://www.instagram.com/${instagram.slice(1)}`;
+  return "";
 }
 
 function Stat({ value, label }) {

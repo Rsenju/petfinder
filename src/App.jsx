@@ -22,6 +22,7 @@ const Gatos = lazy(() => import("./pages/Gatos"));
 const Servicos = lazy(() => import("./pages/Servicos"));
 const CadastroOng = lazy(() => import("./pages/CadastroOng"));
 const Sobre = lazy(() => import("./pages/Sobre"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 function App() {
   return (
@@ -63,6 +64,7 @@ function App() {
               <Route path="/blog" element={<Blog />} />
               <Route path="/governo" element={<Government />} />
               <Route path="/petshops" element={<PetShops />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
         </Suspense>
