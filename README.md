@@ -19,6 +19,8 @@ O app funciona em dois modos:
 - Mapa regional para pets, ONGs e pet shops, com filtros por cidade, bairro e distancia aproximada.
 - Perfil avancado do pet com saude, carteira de vacinacao, historico veterinario, microchip, peso, comportamento, rotina, alimentacao e observacoes da ONG.
 - Catalogo de parceiros/pet shops com servicos, fonte publica, WhatsApp, Instagram, localizacao e fallback local.
+- Hub de utilidade publica com vacinacao, castracao, zoonoses, documentos, microchip e viagens com fontes oficiais.
+- Blog educativo com 10 artigos sobre higiene, vacinacao, alimentacao, ansiedade, adaptacao, adocao responsavel, socializacao, castracao, enriquecimento ambiental e saude preventiva.
 - Painel admin com visao de ONGs, pets, pedidos e perfis.
 - Configuracao pronta para Vercel SPA com `vercel.json`.
 
