@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ChevronDown, Instagram, MapPin, MessageCircle, Navigation, Scissors, ShieldCheck, Store } from "lucide-react";
-import RegionalMap from "../components/features/RegionalMap";
+import GoogleMap from "../components/features/GoogleMap";
 import { CITIES } from "../data/mockData";
 import { LOCATION_OPTIONS, withDistance } from "../data/geoData";
 import { listPartners } from "../services/partnerService";
@@ -122,9 +122,9 @@ export default function Servicos() {
         </div>
       </div>
 
-      <RegionalMap
+      <GoogleMap
         className="mt-8"
-        title="Mapa de serviços locais"
+        title="Google Maps - serviços locais"
         description="Pet shops e clínicas parceiras nas regiões prioritárias."
         markers={mapMarkers}
         origin={origin}

@@ -4,6 +4,35 @@ import { isSupabaseConfigured, supabase } from "./supabaseClient";
 
 const MOCK_PETS_SEED_VERSION = "2026-06-07-advanced-pet-profile";
 
+const PET_ID_ALIASES = {
+  pet_thor_salvador: "pet_salvador_thor",
+  pet_mel_salvador: "pet_salvador_mel",
+  pet_apolo_salvador: "pet_salvador_apolo",
+  pet_luna_salvador: "pet_salvador_luna",
+  pet_nina_salvador: "pet_salvador_nina",
+  pet_chico_salvador: "pet_salvador_chico",
+  pet_max_lauro: "pet_lauro_max",
+  pet_amora_lauro: "pet_lauro_amora",
+  pet_bento_lauro: "pet_lauro_bento",
+  pet_mia_lauro: "pet_lauro_mia",
+  pet_tom_lauro: "pet_lauro_tom",
+  pet_simba_lauro: "pet_lauro_simba",
+  pet_bob_feira: "pet_feira_bob",
+  pet_pandora_feira: "pet_feira_pandora",
+  pet_zeca_feira: "pet_feira_zeca",
+  pet_frida_feira: "pet_feira_frida",
+  pet_theo_feira: "pet_feira_theo",
+  pet_pipoca_feira: "pet_feira_pipoca",
+};
+
+const slugify = (value = "") =>
+  String(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
 const findOngForPet = (pet) =>
   mockOngs.find((ong) => ong.name === pet.ong) || mockOngs[0];
 
@@ -103,18 +132,23 @@ export function seedPets() {
 
 export async function listPets(filters = {}) {
   if (isSupabaseConfigured) {
-    let query = supabase
-      .from("pets")
-      .select("*, ongs(*)")
-      .order("created_at", { ascending: false });
+    try {
+      let query = supabase
+        .from("pets")
+        .select("*, ongs(*)")
+        .order("created_at", { ascending: false });
 
-    if (filters.ongId) query = query.eq("ong_id", filters.ongId);
-    if (filters.status) query = query.eq("status", filters.status);
+      if (filters.ongId) query = query.eq("ong_id", filters.ongId);
+      if (filters.status) query = query.eq("status", filters.status);
 
-    const { data, error } = await query;
-    if (error) throw new Error(error.message);
-    const normalized = (data || []).map(normalizePet);
-    return normalized.length ? filterPets(normalized, filters) : filterPets(seedPets(), filters);
+      const { data, error } = await query;
+      if (error) throw new Error(error.message);
+      const normalized = (data || []).map(normalizePet);
+      return normalized.length ? filterPets(normalized, filters) : filterPets(seedPets(), filters);
+    } catch (error) {
+      if (filters.strict) throw error;
+      return filterPets(seedPets(), filters);
+    }
   }
 
   return filterPets(seedPets(), filters);
@@ -139,8 +173,39 @@ function filterPets(pets, filters = {}) {
 }
 
 export async function getPetById(id) {
-  const pets = await listPets();
-  return pets.find((pet) => pet.id === id) || null;
+  const pets = await listPets({ includeInactive: true });
+  const foundPet = findPetByUrlId(pets, id);
+  if (foundPet) return foundPet;
+
+  return findPetByUrlId(seedPets(), id);
+}
+
+function findPetByUrlId(pets, id) {
+  const rawId = String(id || "");
+  const aliasId = PET_ID_ALIASES[rawId];
+  const normalizedId = slugify(rawId);
+  const normalizedUnderscoreId = normalizedId.replace(/-/g, "_");
+
+  return (
+    pets.find((pet) => pet.id === rawId || pet.id === aliasId) ||
+    pets.find((pet) => {
+      const candidates = [
+        pet.id,
+        aliasId,
+        pet.name,
+        `${pet.name}-${pet.city}`,
+        `${pet.city}-${pet.name}`,
+        `${pet.name}-${pet.ongData?.city || ""}`,
+        `${pet.ongData?.city || ""}-${pet.name}`,
+      ].filter(Boolean);
+
+      return candidates.some((candidate) => {
+        const slug = slugify(candidate);
+        return slug === normalizedId || slug.replace(/-/g, "_") === normalizedUnderscoreId;
+      });
+    }) ||
+    null
+  );
 }
 
 export async function savePet(petData) {
