@@ -33,7 +33,29 @@ function loadGoogleMaps() {
 }
 
 function getGoogleMapsUrl(marker) {
-  return `https://www.google.com/maps/search/?api=1&query=${marker.coordinates.lat},${marker.coordinates.lng}`;
+  const query = marker.address
+    ? `${marker.name}, ${marker.address}`
+    : `${marker.name}, ${[marker.neighborhood, marker.city].filter(Boolean).join(", ")}`;
+
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+}
+
+function getMapQuery(marker) {
+  if (!marker) return "-12.9777,-38.5016";
+  if (marker.address) return `${marker.name}, ${marker.address}`;
+  if (marker.name && marker.city) {
+    return `${marker.name}, ${[marker.neighborhood, marker.city].filter(Boolean).join(", ")}`;
+  }
+  return `${marker.coordinates.lat},${marker.coordinates.lng}`;
+}
+
+function escapeHtml(value = "") {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 export default function GoogleMap({
@@ -43,6 +65,7 @@ export default function GoogleMap({
   origin = null,
   className = "",
   showLegend = true,
+  showMarkerList = true,
 }) {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -74,7 +97,7 @@ export default function GoogleMap({
 
   const selectedMarker = preparedMarkers.find((marker) => marker.id === selectedId) || preparedMarkers[0];
   const center = selectedMarker?.coordinates || preparedMarkers[0]?.coordinates || { lat: -12.9777, lng: -38.5016 };
-  const embedSrc = `https://www.google.com/maps?q=${encodeURIComponent(`${center.lat},${center.lng}`)}&z=12&output=embed`;
+  const embedSrc = `https://www.google.com/maps?q=${encodeURIComponent(getMapQuery(selectedMarker))}&z=15&output=embed`;
 
   useEffect(() => {
     if (!GOOGLE_MAPS_API_KEY || !mapRef.current || preparedMarkers.length === 0) return undefined;
@@ -108,8 +131,18 @@ export default function GoogleMap({
 
           googleMarker.addListener("click", () => {
             setSelectedId(marker.id);
+            const details = [
+              marker.address,
+              [marker.neighborhood, marker.city].filter(Boolean).join(", "),
+              marker.openingHours,
+              marker.description,
+            ].filter(Boolean);
             infoWindowRef.current.setContent(
-              `<strong>${marker.name}</strong><br>${[marker.neighborhood, marker.city].filter(Boolean).join(", ")}`,
+              `<div style="max-width: 240px; font-family: Arial, sans-serif;">
+                <strong>${escapeHtml(marker.name)}</strong>
+                ${details.map((item) => `<br>${escapeHtml(item)}`).join("")}
+                <br><a href="${getGoogleMapsUrl(marker)}" target="_blank" rel="noreferrer">Abrir no Google Maps</a>
+              </div>`,
             );
             infoWindowRef.current.open({ anchor: googleMarker, map });
           });
@@ -182,6 +215,15 @@ export default function GoogleMap({
                 <MapPin className="h-4 w-4 text-slate-500" />
                 {[selectedMarker.neighborhood, selectedMarker.city].filter(Boolean).join(", ")}
               </p>
+              {selectedMarker.address && (
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">{selectedMarker.address}</p>
+              )}
+              {selectedMarker.openingHours && (
+                <p className="mt-2 text-xs text-slate-400">{selectedMarker.openingHours}</p>
+              )}
+              {selectedMarker.description && (
+                <p className="mt-2 text-sm text-slate-300">{selectedMarker.description}</p>
+              )}
               {typeof selectedMarker.distanceKm === "number" && (
                 <p className="mt-3 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200">
                   {selectedMarker.distanceKm.toFixed(1)} km da origem selecionada
@@ -207,7 +249,7 @@ export default function GoogleMap({
                 </a>
               </div>
 
-              {preparedMarkers.length > 1 && (
+              {showMarkerList && preparedMarkers.length > 1 && (
                 <div className="mt-5 space-y-2">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">Pontos no mapa</p>
                   <div className="max-h-48 space-y-2 overflow-auto pr-1">

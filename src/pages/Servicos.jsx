@@ -72,6 +72,8 @@ export default function Servicos() {
       ...shop,
       type: "petshop",
       description: shop.services.map(labelService).join(", "),
+      openingHours: shop.openingHours,
+      address: shop.address,
     })),
     [visibleShops],
   );
@@ -128,6 +130,7 @@ export default function Servicos() {
         description="Pet shops e clínicas parceiras nas regiões prioritárias."
         markers={mapMarkers}
         origin={origin}
+        showLegend={false}
       />
 
       {error && (

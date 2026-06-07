@@ -386,6 +386,7 @@ export default function Pets() {
           markers={mapMarkers}
           origin={origin}
           showLegend={false}
+          showMarkerList={false}
         />
       </section>
 
