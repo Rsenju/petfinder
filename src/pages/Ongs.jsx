@@ -90,6 +90,7 @@ export default function Ongs() {
         description="Organizações verificadas por cidade e bairro de atuação."
         markers={mapMarkers}
         origin={origin}
+        showLegend={false}
       />
 
       {isLoading ? (

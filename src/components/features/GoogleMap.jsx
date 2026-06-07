@@ -42,6 +42,7 @@ export default function GoogleMap({
   markers = [],
   origin = null,
   className = "",
+  showLegend = true,
 }) {
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -140,16 +141,18 @@ export default function GoogleMap({
           <p className="mt-1 text-sm text-slate-400">{description}</p>
           {mapError && <p className="mt-2 text-xs text-amber-200">{mapError} Usando visualizacao incorporada.</p>}
         </div>
-        <div className="flex flex-wrap gap-2 text-xs text-slate-300">
-          {Object.entries(markerConfig)
-            .filter(([type]) => type !== "origin")
-            .map(([type, config]) => (
-              <span key={type} className="inline-flex items-center gap-1 rounded-full bg-slate-800 px-2.5 py-1">
-                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: config.pin }} />
-                {config.label}
-              </span>
-            ))}
-        </div>
+        {showLegend && (
+          <div className="flex flex-wrap gap-2 text-xs text-slate-300">
+            {Object.entries(markerConfig)
+              .filter(([type]) => type !== "origin")
+              .map(([type, config]) => (
+                <span key={type} className="inline-flex items-center gap-1 rounded-full bg-slate-800 px-2.5 py-1">
+                  <span className="h-2 w-2 rounded-full" style={{ backgroundColor: config.pin }} />
+                  {config.label}
+                </span>
+              ))}
+          </div>
+        )}
       </div>
 
       <div className="grid min-h-[380px] lg:grid-cols-[1fr_320px]">

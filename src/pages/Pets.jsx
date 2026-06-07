@@ -385,6 +385,7 @@ export default function Pets() {
           description="Pontos aproximados por bairro para encontrar adoções próximas."
           markers={mapMarkers}
           origin={origin}
+          showLegend={false}
         />
       </section>
 
