@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Building2, ChevronDown, MapPin, Navigation, Phone, ShieldCheck, Users } from "lucide-react";
+import { ArrowRight, Building2, ChevronDown, Mail, MapPin, Navigation, Phone, ShieldCheck, Users } from "lucide-react";
 import GoogleMap from "../components/features/GoogleMap";
 import { LOCATION_OPTIONS, withDistance } from "../data/geoData";
 import { listOngs } from "../services/ongService";
@@ -108,6 +108,10 @@ export default function Ongs() {
         <div className="mt-8 rounded-2xl border border-rose-500/30 bg-rose-500/15 p-4 text-sm text-rose-100">
           {error}
         </div>
+      ) : visibleOngs.length === 0 ? (
+        <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-800 p-5 text-sm text-slate-300">
+          Nenhuma ONG disponível no momento. Tente novamente em instantes.
+        </div>
       ) : (
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {visibleOngs.map((ong) => (
@@ -140,6 +144,15 @@ export default function Ongs() {
                   )}
                 </p>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-300">{ong.description}</p>
+                <p className="mt-3 flex items-start gap-2 text-sm leading-relaxed text-slate-400">
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-slate-500" />
+                  {ong.address || `${ong.neighborhood}, ${ong.city} - BA`}
+                </p>
+                {ong.serviceArea && (
+                  <p className="mt-2 text-xs leading-relaxed text-slate-400">
+                    Área de atuação: {ong.serviceArea}
+                  </p>
+                )}
                 <div className="mt-4 flex flex-wrap gap-2 text-xs text-slate-300">
                   <span className="inline-flex items-center gap-1 rounded-full bg-slate-700 px-2.5 py-1">
                     <Users className="h-3.5 w-3.5" />
@@ -148,6 +161,10 @@ export default function Ongs() {
                   <span className="inline-flex items-center gap-1 rounded-full bg-slate-700 px-2.5 py-1">
                     <Phone className="h-3.5 w-3.5" />
                     WhatsApp
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-slate-700 px-2.5 py-1">
+                    <Mail className="h-3.5 w-3.5" />
+                    E-mail
                   </span>
                 </div>
                 <span className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-blue-300 transition group-hover:text-blue-200">

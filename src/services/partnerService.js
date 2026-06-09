@@ -1,5 +1,5 @@
 import { PET_SHOPS } from "../data/geoData";
-import { isSupabaseConfigured, supabase } from "./supabaseClient";
+import { isSupabaseConfigured, supabase, withSupabaseTimeout } from "./supabaseClient";
 
 const isSupabasePartnersEnabled = import.meta.env.VITE_ENABLE_SUPABASE_PARTNERS === "true";
 
@@ -25,12 +25,18 @@ export async function listPartners(filters = {}) {
   let partners = PET_SHOPS.map(normalizePartner);
 
   if (isSupabaseConfigured && isSupabasePartnersEnabled) {
-    const { data, error } = await supabase
-      .from("partners")
-      .select("*")
-      .order("city", { ascending: true });
-    if (!error && data?.length) {
-      partners = data.map(normalizePartner).filter((partner) => partner.status === "active");
+    try {
+      const { data, error } = await withSupabaseTimeout(
+        supabase
+          .from("partners")
+          .select("*")
+          .order("city", { ascending: true }),
+      );
+      if (!error && data?.length) {
+        partners = data.map(normalizePartner).filter((partner) => partner.status === "active");
+      }
+    } catch {
+      partners = PET_SHOPS.map(normalizePartner);
     }
   }
 

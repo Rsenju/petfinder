@@ -1,6 +1,6 @@
 import { ongs as mockOngs } from "../data/mockData";
 import { createId, readStorage, STORAGE_KEYS, writeStorage } from "./storage";
-import { isSupabaseConfigured, supabase } from "./supabaseClient";
+import { isSupabaseConfigured, supabase, withSupabaseTimeout } from "./supabaseClient";
 
 const MOCK_ONGS_SEED_VERSION = "2026-06-07-moderated-ong-profiles";
 
@@ -55,17 +55,28 @@ export function seedOngs() {
 
 export async function listOngs(options = {}) {
   if (isSupabaseConfigured) {
-    const { data, error } = await supabase
-      .from("ongs")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) throw new Error(error.message);
-    const normalized = (data || []).map(normalizeOng);
-    return options.includeInactive
-      ? normalized
-      : normalized.filter((ong) => ong.approvalStatus === ONG_APPROVAL_STATUS.approved);
+    try {
+      const { data, error } = await withSupabaseTimeout(
+        supabase
+          .from("ongs")
+          .select("*")
+          .order("created_at", { ascending: false }),
+      );
+      if (error) throw new Error(error.message);
+      const normalized = (data || []).map(normalizeOng);
+      const visible = options.includeInactive
+        ? normalized
+        : normalized.filter((ong) => ong.approvalStatus === ONG_APPROVAL_STATUS.approved);
+      return visible.length ? visible : filterOngs(seedOngs(), options);
+    } catch (error) {
+      if (options.strict) throw error;
+      return filterOngs(seedOngs(), options);
+    }
   }
-  const ongs = seedOngs();
+  return filterOngs(seedOngs(), options);
+}
+
+function filterOngs(ongs, options = {}) {
   return options.includeInactive
     ? ongs
     : ongs.filter((ong) => ong.approvalStatus === ONG_APPROVAL_STATUS.approved);

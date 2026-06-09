@@ -1,6 +1,6 @@
 import { allPets as mockPets, ongs as mockOngs } from "../data/mockData";
 import { createId, readStorage, STORAGE_KEYS, writeStorage } from "./storage";
-import { isSupabaseConfigured, supabase } from "./supabaseClient";
+import { isSupabaseConfigured, supabase, withSupabaseTimeout } from "./supabaseClient";
 
 const MOCK_PETS_SEED_VERSION = "2026-06-07-advanced-pet-profile";
 
@@ -141,7 +141,7 @@ export async function listPets(filters = {}) {
       if (filters.ongId) query = query.eq("ong_id", filters.ongId);
       if (filters.status) query = query.eq("status", filters.status);
 
-      const { data, error } = await query;
+      const { data, error } = await withSupabaseTimeout(query);
       if (error) throw new Error(error.message);
       const normalized = (data || []).map(normalizePet);
       return normalized.length ? filterPets(normalized, filters) : filterPets(seedPets(), filters);

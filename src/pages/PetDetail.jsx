@@ -141,13 +141,11 @@ const mapPetToDetail = (pet) => ({
 });
 
 const fetchPetById = async (id) => {
-  await new Promise((resolve) => setTimeout(resolve, 400));
   const pet = await getPetById(id);
   return pet ? mapPetToDetail(pet) : null;
 };
 
 const fetchSimilarPets = async (pet) => {
-  await new Promise((resolve) => setTimeout(resolve, 400));
   const pets = await listPets({ includeInactive: true });
   const base = pet.sourcePet || {};
 

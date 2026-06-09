@@ -15,6 +15,15 @@ export const supabase = isSupabaseConfigured
     })
   : null;
 
+export function withSupabaseTimeout(promise, timeoutMs = 1800) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      globalThis.setTimeout(() => reject(new Error("Tempo limite ao consultar Supabase")), timeoutMs);
+    }),
+  ]);
+}
+
 export async function supabaseRequest(path, options = {}) {
   if (!isSupabaseConfigured) {
     throw new Error("Supabase não configurado");
