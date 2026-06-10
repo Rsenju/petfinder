@@ -139,6 +139,11 @@ const withCurrentOption = (options, value) => {
   return [...options, [value, value]];
 };
 
+const formGridClass = "grid gap-4 md:grid-cols-2";
+const fieldLabelClass = "block min-w-0 text-sm font-medium leading-5 text-slate-300";
+const controlClass =
+  "mt-1.5 h-11 w-full min-w-0 rounded-lg border border-slate-700 bg-slate-900 px-3 text-sm leading-5 text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20";
+
 const healthOptionLabel = (value) => {
   const labels = {
     saudavel: "Saudável",
@@ -359,7 +364,7 @@ export function OngDashboard() {
   };
 
   const handleDeletePet = async (id) => {
-    const confirmed = window.confirm("Remover este pet? Esta acao não pode ser desfeita.");
+    const confirmed = window.confirm("Remover este pet? Esta ação não pode ser desfeita.");
     if (!confirmed) return;
     await deletePet(id);
     setPets((current) => current.filter((pet) => pet.id !== id));
@@ -536,7 +541,7 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
     }
 
     if (files.length > 5) {
-      setImageError("Envie no maximo 5 imagens por pet.");
+      setImageError("Envie no máximo 5 imagens por pet.");
       event.target.value = "";
       return;
     }
@@ -573,21 +578,21 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
         <Plus className="h-5 w-5 text-blue-300" />
         {editing ? "Editar pet" : "Cadastrar pet"}
       </h2>
-      <div className="grid gap-3">
+      <div className="grid gap-4">
         <Input label="Nome" value={form.name} onChange={(value) => update("name", value)} required />
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className={formGridClass}>
           <Select label="Espécie" value={form.species} onChange={(value) => update("species", value)} options={[["dog", "Cachorro"], ["cat", "Gato"]]} />
           <Select label="Status" value={form.status} onChange={(value) => update("status", value)} options={Object.entries(statusLabels)} />
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className={formGridClass}>
           <Input label="Raça" value={form.breed} onChange={(value) => update("breed", value)} />
           <Input label="Idade" value={form.age} onChange={(value) => update("age", value)} placeholder="2 anos" />
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className={formGridClass}>
           <Select label="Porte" value={form.size} onChange={(value) => update("size", value)} options={[["pequeno", "Pequeno"], ["medio", "Médio"], ["grande", "Grande"]]} />
           <Select label="Sexo" value={form.sex} onChange={(value) => update("sex", value)} options={[["macho", "Macho"], ["femea", "Fêmea"]]} />
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className={formGridClass}>
           <Input label="Personalidade" value={form.personality} onChange={(value) => update("personality", value)} placeholder="carinhoso e tranquilo" />
           <Select
             label="Status de saúde"
@@ -596,25 +601,25 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
             options={(HEALTH_OPTIONS_BY_SPECIES[form.species] || []).map((value) => [value, healthOptionLabel(value)])}
           />
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className={formGridClass}>
           <Select label="Vacinação" value={String(form.vaccinated)} onChange={(value) => update("vaccinated", value === "true")} options={[["true", "Vacinado"], ["false", "Não vacinado"]]} />
           <Select label="Castração" value={String(form.castrated)} onChange={(value) => update("castrated", value === "true")} options={[["true", "Castrado"], ["false", "Não castrado"]]} />
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className={formGridClass}>
           <Select label="Crianças" value={form.childrenCompatibility} onChange={(value) => update("childrenCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
           <Select label="Gatos" value={form.catsCompatibility} onChange={(value) => update("catsCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className={formGridClass}>
           <Select label="Cães" value={form.dogsCompatibility} onChange={(value) => update("dogsCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
           <Select label="Nível de energia" value={form.energyLevel} onChange={(value) => update("energyLevel", value)} options={ENERGY_LEVELS.map((item) => [item.value, item.label])} />
         </div>
 
         <Fieldset title="Saúde avançada">
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className={formGridClass}>
             <Input label="Peso" value={form.weight} onChange={(value) => update("weight", value)} placeholder="14 kg" />
             <Select label="Microchip" value={String(form.microchip)} onChange={(value) => update("microchip", value === "true")} options={[["false", "Não possui"], ["true", "Possui microchip"]]} />
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className={formGridClass}>
             <Select label="Carteira de vacinação" value={form.vaccinationRecord} onChange={(value) => update("vaccinationRecord", value)} options={withCurrentOption(ADVANCED_HEALTH_OPTIONS.vaccinationRecord, form.vaccinationRecord)} />
             <Select label="Histórico veterinário" value={form.veterinaryHistory} onChange={(value) => update("veterinaryHistory", value)} options={withCurrentOption(ADVANCED_HEALTH_OPTIONS.veterinaryHistory, form.veterinaryHistory)} />
             <Select label="Necessidades especiais" value={form.specialNeeds} onChange={(value) => update("specialNeeds", value)} options={withCurrentOption(ADVANCED_HEALTH_OPTIONS.specialNeeds, form.specialNeeds)} />
@@ -623,7 +628,7 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
         </Fieldset>
 
         <Fieldset title="Comportamento e rotina">
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className={formGridClass}>
             <Select label="Perfil comportamental" value={form.behaviorProfile} onChange={(value) => update("behaviorProfile", value)} options={withCurrentOption(BEHAVIOR_ROUTINE_OPTIONS.behaviorProfile, form.behaviorProfile)} />
             <Select label="Adaptação recomendada" value={form.adaptationNeeds} onChange={(value) => update("adaptationNeeds", value)} options={withCurrentOption(BEHAVIOR_ROUTINE_OPTIONS.adaptationNeeds, form.adaptationNeeds)} />
             <Select label="Rotina" value={form.routine} onChange={(value) => update("routine", value)} options={withCurrentOption(BEHAVIOR_ROUTINE_OPTIONS.routine, form.routine)} />
@@ -632,7 +637,7 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
           <TextArea label="Observações da ONG" value={form.ongNotes} onChange={(value) => update("ongNotes", value)} minHeight="min-h-16" />
         </Fieldset>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className={formGridClass}>
           <Input label="Cidade" value={form.city} onChange={(value) => update("city", value)} required />
           <Input label="Bairro" value={form.neighborhood} onChange={(value) => update("neighborhood", value)} />
         </div>
@@ -773,19 +778,19 @@ function OngSettings({ form, setForm, onSubmit }) {
   return (
     <form onSubmit={onSubmit} className="max-w-2xl rounded-xl border border-slate-700 bg-slate-800 p-5">
       <h2 className="mb-4 font-semibold">Dados da ONG</h2>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className={formGridClass}>
         <Input label="Nome da ONG" value={form.name || ""} onChange={(value) => update("name", value)} required />
         <Input label="Email" value={form.email || ""} onChange={(value) => update("email", value)} />
         <Input label="WhatsApp" value={form.whatsapp || ""} onChange={(value) => update("whatsapp", value)} required />
         <Input label="Cidade" value={form.city || ""} onChange={(value) => update("city", value)} required />
         <Input label="Bairro" value={form.neighborhood || ""} onChange={(value) => update("neighborhood", value)} />
       </div>
-      <label className="mt-3 block text-sm text-slate-300">
-        Descrição
+      <label className={`${fieldLabelClass} mt-4`}>
+        <span className="block whitespace-nowrap">Descrição</span>
         <textarea
           value={form.description || ""}
           onChange={(event) => update("description", event.target.value)}
-          className="mt-1 min-h-28 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white outline-none focus:border-blue-400"
+          className={`${controlClass} min-h-28 resize-y py-2.5`}
         />
       </label>
       <button type="submit" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold hover:bg-blue-700">
@@ -798,14 +803,14 @@ function OngSettings({ form, setForm, onSubmit }) {
 
 function Input({ label, value, onChange, required, placeholder }) {
   return (
-    <label className="text-sm text-slate-300">
-      {label}
+    <label className={fieldLabelClass}>
+      <span className="block whitespace-nowrap">{label}</span>
       <input
         value={value || ""}
         onChange={(event) => onChange(event.target.value)}
         required={required}
         placeholder={placeholder}
-        className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white outline-none focus:border-blue-400"
+        className={controlClass}
       />
     </label>
   );
@@ -813,13 +818,13 @@ function Input({ label, value, onChange, required, placeholder }) {
 
 function TextArea({ label, value, onChange, required, minHeight = "min-h-20" }) {
   return (
-    <label className="text-sm text-slate-300">
-      {label}
+    <label className={fieldLabelClass}>
+      <span className="block whitespace-nowrap">{label}</span>
       <textarea
         value={value || ""}
         onChange={(event) => onChange(event.target.value)}
         required={required}
-        className={`mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white outline-none focus:border-blue-400 ${minHeight}`}
+        className={`${controlClass} ${minHeight} resize-y py-2.5`}
       />
     </label>
   );
@@ -827,8 +832,8 @@ function TextArea({ label, value, onChange, required, minHeight = "min-h-20" }) 
 
 function Fieldset({ title, children }) {
   return (
-    <fieldset className="grid gap-3 rounded-lg border border-slate-700 bg-slate-900/40 p-3">
-      <legend className="px-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+    <fieldset className="grid gap-4 rounded-xl border border-slate-700 bg-slate-900/40 p-4">
+      <legend className="px-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
         {title}
       </legend>
       {children}
@@ -838,12 +843,12 @@ function Fieldset({ title, children }) {
 
 function Select({ label, value, onChange, options }) {
   return (
-    <label className="text-sm text-slate-300">
-      {label}
+    <label className={fieldLabelClass}>
+      <span className="block whitespace-nowrap">{label}</span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-white outline-none focus:border-blue-400"
+        className={`${controlClass} truncate pr-9`}
       >
         {options.map(([optionValue, optionLabel]) => (
           <option key={optionValue} value={optionValue}>{optionLabel}</option>
@@ -852,3 +857,4 @@ function Select({ label, value, onChange, options }) {
     </label>
   );
 }
+

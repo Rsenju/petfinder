@@ -2,6 +2,8 @@
 -- Use this in Supabase SQL Editor when Auth users already exist,
 -- but the app shows: "Could not find the table 'public.profiles'".
 
+create schema if not exists app_private;
+
 create table if not exists public.ongs (
   id text primary key,
   owner_user_id uuid references auth.users(id) on delete set null,
@@ -132,6 +134,62 @@ begin
   end if;
 end $$;
 
+create or replace function app_private.is_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid()
+      and role = 'admin'
+  );
+$$;
+
+create or replace function app_private.owns_ong(target_ong_id text)
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.profiles
+    join public.ongs on ongs.id = profiles.ong_id
+    where profiles.id = auth.uid()
+      and profiles.role = 'ong'
+      and profiles.ong_id = target_ong_id
+      and ongs.owner_user_id = auth.uid()
+  );
+$$;
+
+create or replace function app_private.can_set_profile_ong(
+  profile_id uuid,
+  profile_role text,
+  profile_ong_id text
+)
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+  select profile_id = auth.uid()
+    and (
+      (profile_role = 'adopter' and profile_ong_id is null)
+      or (
+        profile_role = 'ong'
+        and profile_ong_id is not null
+        and exists (
+          select 1
+          from public.ongs
+          where ongs.id = profile_ong_id
+            and ongs.owner_user_id = auth.uid()
+        )
+      )
+    );
+$$;
+
 alter table public.ongs enable row level security;
 alter table public.profiles enable row level security;
 alter table public.adoption_requests enable row level security;
@@ -150,6 +208,7 @@ drop policy if exists "Public can read approved ongs" on public.ongs;
 drop policy if exists "Authenticated users can read profiles" on public.profiles;
 drop policy if exists "Users can create own profile" on public.profiles;
 drop policy if exists "Users can update own profile" on public.profiles;
+drop policy if exists "Admins can update profiles" on public.profiles;
 drop policy if exists "Public can create adoption requests" on public.adoption_requests;
 drop policy if exists "Authenticated users can read adoption requests" on public.adoption_requests;
 drop policy if exists "Authenticated users can update adoption requests" on public.adoption_requests;
@@ -163,22 +222,21 @@ using (approval_status = 'approved');
 
 create policy "Authenticated users can read profiles"
 on public.profiles for select to authenticated
-using (true);
+using (id = auth.uid() or app_private.is_admin());
 
 create policy "Users can create own profile"
 on public.profiles for insert to authenticated
-with check (id = auth.uid());
+with check (app_private.can_set_profile_ong(id, role, ong_id));
 
 create policy "Users can update own profile"
 on public.profiles for update to authenticated
-using (id = auth.uid() or exists (
-  select 1 from public.profiles p
-  where p.id = auth.uid() and p.role = 'admin'
-))
-with check (id = auth.uid() or exists (
-  select 1 from public.profiles p
-  where p.id = auth.uid() and p.role = 'admin'
-));
+using (id = auth.uid())
+with check (app_private.can_set_profile_ong(id, role, ong_id));
+
+create policy "Admins can update profiles"
+on public.profiles for update to authenticated
+using (app_private.is_admin())
+with check (app_private.is_admin());
 
 create policy "Public can create adoption requests"
 on public.adoption_requests for insert
@@ -186,12 +244,12 @@ with check (true);
 
 create policy "Authenticated users can read adoption requests"
 on public.adoption_requests for select to authenticated
-using (true);
+using (app_private.is_admin() or app_private.owns_ong(ong_id));
 
 create policy "Authenticated users can update adoption requests"
 on public.adoption_requests for update to authenticated
-using (true)
-with check (true);
+using (app_private.is_admin() or app_private.owns_ong(ong_id))
+with check (app_private.is_admin() or app_private.owns_ong(ong_id));
 
 create policy "Public can create reports"
 on public.reports for insert
@@ -199,12 +257,12 @@ with check (true);
 
 create policy "Authenticated users can read reports"
 on public.reports for select to authenticated
-using (true);
+using (app_private.is_admin());
 
 create policy "Authenticated users can update reports"
 on public.reports for update to authenticated
-using (true)
-with check (true);
+using (app_private.is_admin())
+with check (app_private.is_admin());
 
 insert into public.ongs (
   id,

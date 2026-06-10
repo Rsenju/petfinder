@@ -162,11 +162,40 @@ security definer
 set search_path = public
 as $$
   select exists (
-    select 1 from public.profiles
-    where id = auth.uid()
-      and role = 'ong'
-      and ong_id = target_ong_id
+    select 1
+    from public.profiles
+    join public.ongs on ongs.id = profiles.ong_id
+    where profiles.id = auth.uid()
+      and profiles.role = 'ong'
+      and profiles.ong_id = target_ong_id
+      and ongs.owner_user_id = auth.uid()
   );
+$$;
+
+create or replace function app_private.can_set_profile_ong(
+  profile_id uuid,
+  profile_role text,
+  profile_ong_id text
+)
+returns boolean
+language sql
+security definer
+set search_path = public
+as $$
+  select profile_id = auth.uid()
+    and (
+      (profile_role = 'adopter' and profile_ong_id is null)
+      or (
+        profile_role = 'ong'
+        and profile_ong_id is not null
+        and exists (
+          select 1
+          from public.ongs
+          where ongs.id = profile_ong_id
+            and ongs.owner_user_id = auth.uid()
+        )
+      )
+    );
 $$;
 
 alter table public.ongs enable row level security;
@@ -240,12 +269,12 @@ using (app_private.is_admin());
 
 create policy "Users can create own profile"
 on public.profiles for insert to authenticated
-with check (id = auth.uid() and role in ('adopter', 'ong'));
+with check (app_private.can_set_profile_ong(id, role, ong_id));
 
 create policy "Users can update own profile"
 on public.profiles for update to authenticated
 using (id = auth.uid())
-with check (id = auth.uid() and role in ('adopter', 'ong'));
+with check (app_private.can_set_profile_ong(id, role, ong_id));
 
 create policy "Admins can update profiles"
 on public.profiles for update to authenticated

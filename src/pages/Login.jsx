@@ -40,12 +40,7 @@ export default function Login() {
     setLoginError("");
 
     try {
-      const result = await login(data);
-      if (!result.success) {
-        throw new Error(result.error);
-      }
-
-      const user = result.user;
+      const user = await login(data);
       navigate(user?.role === "admin" || user?.tipo === "admin" ? "/admin" : "/dashboard");
     } catch (error) {
       setLoginError(error.message || "Erro ao fazer login. Tente novamente.");
