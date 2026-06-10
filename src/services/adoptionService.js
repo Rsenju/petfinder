@@ -1,5 +1,10 @@
 import { createId, readStorage, STORAGE_KEYS, writeStorage } from "./storage";
-import { isSupabaseConfigured, supabase } from "./supabaseClient";
+import { isSupabaseConfigured, supabase, withSupabaseTimeout } from "./supabaseClient";
+
+const isMissingAdoptionRequestsTableError = (error) =>
+  error?.code === "PGRST205" ||
+  (/adoption_requests/i.test(error?.message || "") &&
+    /schema cache|could not find|not find the table|does not exist/i.test(error.message));
 
 export function buildAdoptionMessage({ pet, request }) {
   const lines = [
@@ -53,14 +58,26 @@ export function buildWhatsAppUrl(phone, message) {
 
 export async function listAdoptionRequests(filters = {}) {
   if (isSupabaseConfigured) {
-    let query = supabase
-      .from("adoption_requests")
-      .select("*, pets(name, city), ongs(name)")
-      .order("created_at", { ascending: false });
-    if (filters.ongId) query = query.eq("ong_id", filters.ongId);
-    const { data, error } = await query;
-    if (error) throw new Error(error.message);
-    return data || [];
+    try {
+      let query = supabase
+        .from("adoption_requests")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (filters.ongId) query = query.eq("ong_id", filters.ongId);
+      const { data, error } = await withSupabaseTimeout(query);
+      if (isMissingAdoptionRequestsTableError(error)) {
+        const current = readStorage(STORAGE_KEYS.adoptionRequests, []);
+        return filters.ongId ? current.filter((item) => item.ong_id === filters.ongId) : current;
+      }
+      if (error) throw new Error(error.message);
+      return data || [];
+    } catch (error) {
+      if (!isMissingAdoptionRequestsTableError(error) && error.message !== "Tempo limite ao consultar Supabase") {
+        throw error;
+      }
+      const current = readStorage(STORAGE_KEYS.adoptionRequests, []);
+      return filters.ongId ? current.filter((item) => item.ong_id === filters.ongId) : current;
+    }
   }
 
   const current = readStorage(STORAGE_KEYS.adoptionRequests, []);

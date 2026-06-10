@@ -1,5 +1,5 @@
 import { createId, readStorage, STORAGE_KEYS, writeStorage } from "./storage";
-import { isSupabaseConfigured, supabase } from "./supabaseClient";
+import { isSupabaseConfigured, supabase, withSupabaseTimeout } from "./supabaseClient";
 
 export const REPORT_REASONS = [
   { value: "wrong_image", label: "Imagem incorreta" },
@@ -22,6 +22,11 @@ const normalizeReport = (report) => ({
   pets: report.pets || null,
   ongs: report.ongs || null,
 });
+
+const isMissingReportsTableError = (error) =>
+  error?.code === "PGRST205" ||
+  (/reports/i.test(error?.message || "") &&
+    /schema cache|could not find|not find the table|does not exist/i.test(error.message));
 
 export async function createReport({ pet, report }) {
   const payload = {
@@ -53,12 +58,22 @@ export async function createReport({ pet, report }) {
 
 export async function listReports() {
   if (isSupabaseConfigured) {
-    const { data, error } = await supabase
-      .from("reports")
-      .select("*, pets(name), ongs(name)")
-      .order("created_at", { ascending: false });
-    if (error) throw new Error(error.message);
-    return (data || []).map(normalizeReport);
+    try {
+      const { data, error } = await withSupabaseTimeout(
+        supabase
+          .from("reports")
+          .select("*")
+          .order("created_at", { ascending: false }),
+      );
+      if (isMissingReportsTableError(error)) return readStorage(STORAGE_KEYS.reports, []).map(normalizeReport);
+      if (error) throw new Error(error.message);
+      return (data || []).map(normalizeReport);
+    } catch (error) {
+      if (!isMissingReportsTableError(error) && error.message !== "Tempo limite ao consultar Supabase") {
+        throw error;
+      }
+      return readStorage(STORAGE_KEYS.reports, []).map(normalizeReport);
+    }
   }
 
   return readStorage(STORAGE_KEYS.reports, []).map(normalizeReport);
@@ -66,14 +81,19 @@ export async function listReports() {
 
 export async function updateReportStatus(id, status) {
   if (isSupabaseConfigured) {
-    const { data, error } = await supabase
-      .from("reports")
-      .update({ status })
-      .eq("id", id)
-      .select("*, pets(name), ongs(name)")
-      .single();
-    if (error) throw new Error(error.message);
-    return normalizeReport(data);
+    try {
+      const { data, error } = await withSupabaseTimeout(
+        supabase
+          .from("reports")
+          .update({ status })
+          .eq("id", id)
+          .select("*")
+          .single(),
+      );
+      if (!error) return normalizeReport(data);
+    } catch {
+      // Fall back to local data below.
+    }
   }
 
   const reports = readStorage(STORAGE_KEYS.reports, []);

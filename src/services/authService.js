@@ -20,6 +20,29 @@ const demoUsers = [
   },
 ];
 
+const findDemoUserByEmail = (email = "") =>
+  demoUsers.find((user) => user.email.toLowerCase() === email.toLowerCase()) || null;
+
+const isMissingProfilesTableError = (error) =>
+  error?.code === "PGRST205" ||
+  /profiles/i.test(error?.message || "") && /schema cache|could not find|not find the table|does not exist/i.test(error.message);
+
+async function mapDemoSupabaseUser(authUser) {
+  const demoUser = findDemoUserByEmail(authUser.email);
+  if (!demoUser) return null;
+
+  const ong = demoUser.ongId ? await getOngById(demoUser.ongId) : null;
+  return {
+    id: authUser.id,
+    name: demoUser.name,
+    email: authUser.email,
+    role: demoUser.role,
+    tipo: demoUser.role,
+    ongId: demoUser.ongId,
+    ong,
+  };
+}
+
 export async function loginWithCredentials(credentials) {
   if (isSupabaseConfigured) {
     const { error } = await supabase.auth.signInWithPassword({
@@ -174,7 +197,12 @@ export async function loginWithGoogle() {
 export function onAuthStateChange(callback) {
   if (!isSupabaseConfigured) return { unsubscribe: () => {} };
   const { data } = supabase.auth.onAuthStateChange(async (_event, session) => {
-    callback(session?.user ? await ensureProfileForUser(session.user) : null);
+    try {
+      callback(session?.user ? await ensureProfileForUser(session.user) : null);
+    } catch (error) {
+      console.warn("Não foi possível carregar o perfil do usuário.", error);
+      callback(session?.user ? await mapDemoSupabaseUser(session.user) : null);
+    }
   });
   return data.subscription;
 }
@@ -193,6 +221,15 @@ export async function listProfiles() {
     .from("profiles")
     .select("*, ong:ongs(*)")
     .order("created_at", { ascending: false });
+  if (isMissingProfilesTableError(error)) {
+    return demoUsers.map((user) => ({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      ong_id: user.ongId || null,
+    }));
+  }
   if (error) throw new Error(error.message);
   return data || [];
 }
@@ -204,6 +241,11 @@ async function ensureProfileForUser(authUser) {
     .eq("id", authUser.id)
     .maybeSingle();
 
+  if (isMissingProfilesTableError(error)) {
+    const demoProfile = await mapDemoSupabaseUser(authUser);
+    if (demoProfile) return demoProfile;
+    throw new Error("A tabela public.profiles não existe no Supabase. Rode o supabase-schema.sql antes de usar login real.");
+  }
   if (error) throw new Error(error.message);
   if (existing) return mapProfile(existing, authUser);
 
@@ -218,6 +260,11 @@ async function ensureProfileForUser(authUser) {
     .insert(profile)
     .select("*, ong:ongs(*)")
     .single();
+  if (isMissingProfilesTableError(createError)) {
+    const demoProfile = await mapDemoSupabaseUser(authUser);
+    if (demoProfile) return demoProfile;
+    throw new Error("A tabela public.profiles não existe no Supabase. Rode o supabase-schema.sql antes de usar login real.");
+  }
   if (createError) throw new Error(createError.message);
   return mapProfile(created, authUser);
 }
