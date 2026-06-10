@@ -632,10 +632,10 @@ export const allPets = [
 export const featuredPets = allPets.filter((item) => item.status === "available").slice(0, 3);
 export const CITIES = ["Salvador", "Lauro de Freitas", "Feira de Santana"];
 export const SPECIES = [{ value: "dog", label: "Cachorro" }, { value: "cat", label: "Gato" }];
-export const SIZES = [{ value: "pequeno", label: "Pequeno" }, { value: "medio", label: "Medio" }, { value: "grande", label: "Grande" }];
+export const SIZES = [{ value: "pequeno", label: "Pequeno" }, { value: "medio", label: "Médio" }, { value: "grande", label: "Grande" }];
 export const AGES = [{ value: "filhote", label: "Filhote" }, { value: "adulto", label: "Adulto" }, { value: "idoso", label: "Idoso" }];
-export const SEXES = [{ value: "macho", label: "Macho" }, { value: "femea", label: "Femea" }];
-export const ENERGY_LEVELS = [{ value: "baixo", label: "Baixo" }, { value: "medio", label: "Medio" }, { value: "alto", label: "Alto" }];
+export const SEXES = [{ value: "macho", label: "Macho" }, { value: "femea", label: "Fêmea" }];
+export const ENERGY_LEVELS = [{ value: "baixo", label: "Baixo" }, { value: "medio", label: "Médio" }, { value: "alto", label: "Alto" }];
 export const COMPATIBILITY_OPTIONS = [
   { value: "boa", label: "Boa" },
   { value: "seletiva", label: "Seletiva" },

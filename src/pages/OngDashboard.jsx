@@ -65,11 +65,110 @@ const statusLabels = {
 };
 
 const menuItems = [
-  { id: "overview", label: "Visao Geral", icon: LayoutDashboard },
+  { id: "overview", label: "Visão geral", icon: LayoutDashboard },
   { id: "pets", label: "Meus Pets", icon: PawPrint },
-  { id: "adoptions", label: "Adocoes", icon: Users },
-  { id: "settings", label: "Configuracoes", icon: Settings },
+  { id: "adoptions", label: "Adoções", icon: Users },
+  { id: "settings", label: "Configurações", icon: Settings },
 ];
+
+const ADVANCED_HEALTH_OPTIONS = {
+  vaccinationRecord: [
+    ["", "Selecionar situação"],
+    ["Vacinas essenciais em dia.", "Vacinas essenciais em dia"],
+    ["Vacinação em atualização pela ONG.", "Vacinação em atualização"],
+    ["Primeira dose aplicada; reforço pendente.", "Primeira dose aplicada"],
+    ["Sem registro confirmado no momento.", "Sem registro confirmado"],
+  ],
+  veterinaryHistory: [
+    ["", "Selecionar histórico"],
+    ["Avaliação veterinária recente sem alterações importantes.", "Avaliação recente sem alterações"],
+    ["Avaliado pela ONG e liberado para adoção responsável.", "Liberado para adoção"],
+    ["Acompanhamento preventivo recomendado.", "Acompanhamento preventivo"],
+    ["Retorno veterinário indicado após adaptação.", "Retorno após adaptação"],
+  ],
+  specialNeeds: [
+    ["", "Selecionar necessidade"],
+    ["Não possui necessidades especiais conhecidas.", "Sem necessidade especial"],
+    ["Precisa de ambiente calmo e rotina previsível.", "Ambiente calmo"],
+    ["Precisa de adaptação gradual no novo lar.", "Adaptação gradual"],
+    ["Precisa de acompanhamento simples por idade.", "Acompanhamento por idade"],
+  ],
+  medications: [
+    ["", "Selecionar medicação"],
+    ["Não usa medicação contínua.", "Não usa medicação contínua"],
+    ["Sem medicação fixa no momento.", "Sem medicação fixa"],
+    ["Uso pontual conforme orientação veterinária.", "Uso pontual orientado"],
+    ["Manter retorno indicado pela ONG.", "Retorno indicado pela ONG"],
+  ],
+};
+
+const BEHAVIOR_ROUTINE_OPTIONS = {
+  behaviorProfile: [
+    ["", "Selecionar perfil"],
+    ["Dócil e sociável.", "Dócil e sociável"],
+    ["Calmo e observador.", "Calmo e observador"],
+    ["Brincalhão e ativo.", "Brincalhão e ativo"],
+    ["Tímido no início, mas ganha confiança com paciência.", "Tímido no início"],
+    ["Carinhoso e apegado à rotina.", "Carinhoso e rotineiro"],
+  ],
+  adaptationNeeds: [
+    ["", "Selecionar adaptação"],
+    ["Adaptação tranquila, sem necessidade especial.", "Adaptação tranquila"],
+    ["Adaptação gradual ao novo lar nos primeiros dias.", "Adaptação gradual"],
+    ["Precisa de apresentação cuidadosa a outros animais.", "Apresentação cuidadosa"],
+    ["Precisa de família paciente e ambiente previsível.", "Família paciente"],
+  ],
+  routine: [
+    ["", "Selecionar rotina"],
+    ["Rotina simples com alimentação, descanso e interação diária.", "Rotina simples"],
+    ["Precisa de passeios curtos e rotina estável.", "Passeios curtos"],
+    ["Vai bem em apartamento com enriquecimento ambiental.", "Apartamento com enriquecimento"],
+    ["Precisa de espaço seguro e supervisão inicial.", "Espaço seguro"],
+  ],
+  feeding: [
+    ["", "Selecionar alimentação"],
+    ["Ração seca de boa qualidade, conforme porte e idade.", "Ração seca adequada"],
+    ["Alimentação orientada pela ONG no contato inicial.", "Orientação da ONG"],
+    ["Pode precisar de transição alimentar gradual.", "Transição gradual"],
+    ["Sensibilidade alimentar leve; evitar trocas bruscas.", "Evitar trocas bruscas"],
+  ],
+};
+
+const withCurrentOption = (options, value) => {
+  if (!value || options.some(([optionValue]) => optionValue === value)) return options;
+  return [...options, [value, value]];
+};
+
+const healthOptionLabel = (value) => {
+  const labels = {
+    saudavel: "Saudável",
+    vermifugado: "Vermifugado",
+    vacinado: "Vacinado",
+    castrado: "Castrado",
+    "em tratamento contra doenca do carrapato": "Em tratamento contra doença do carrapato",
+    "histórico de sarna tratada": "Histórico de sarna tratada",
+    "pele sensivel": "Pele sensível",
+    "dermatite leve": "Dermatite leve",
+    "alergia alimentar": "Alergia alimentar",
+    "ansiedade por abandono": "Ansiedade por abandono",
+    "muito assustado no inicio": "Muito assustado no início",
+    "precisa ganhar peso": "Precisa ganhar peso",
+    "otite leve": "Otite leve",
+    "precisa de adaptação com outros cães": "Precisa de adaptação com outros cães",
+    idoso: "Idoso",
+    "baixa visão": "Baixa visão",
+    "FIV positivo": "FIV positivo",
+    "FELV positivo": "FELV positivo",
+    "histórico de esporotricose tratada": "Histórico de esporotricose tratada",
+    "sensibilidade alimentar": "Sensibilidade alimentar",
+    "muito timido": "Muito tímido",
+    "problema respiratorio leve": "Problema respiratório leve",
+    "infeccao ocular tratada": "Infecção ocular tratada",
+    "precisa de ambiente calmo": "Precisa de ambiente calmo",
+  };
+
+  return labels[value] || value;
+};
 
 export function OngDashboard() {
   const { user, logout, updateUser } = useAuth();
@@ -351,7 +450,7 @@ export function OngDashboard() {
           ))}
         </div>
         <div className="rounded-xl border border-slate-700 bg-slate-800 p-6">
-          <h2 className="text-lg font-semibold">Proximas acoes</h2>
+          <h2 className="text-lg font-semibold">Próximas ações</h2>
           <p className="mt-2 text-slate-400">
             Mantenha WhatsApp, cidade e bairro atualizados para receber pedidos de adoção corretamente.
           </p>
@@ -477,7 +576,7 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
       <div className="grid gap-3">
         <Input label="Nome" value={form.name} onChange={(value) => update("name", value)} required />
         <div className="grid gap-3 sm:grid-cols-2">
-          <Select label="Especie" value={form.species} onChange={(value) => update("species", value)} options={[["dog", "Cachorro"], ["cat", "Gato"]]} />
+          <Select label="Espécie" value={form.species} onChange={(value) => update("species", value)} options={[["dog", "Cachorro"], ["cat", "Gato"]]} />
           <Select label="Status" value={form.status} onChange={(value) => update("status", value)} options={Object.entries(statusLabels)} />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -485,8 +584,8 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
           <Input label="Idade" value={form.age} onChange={(value) => update("age", value)} placeholder="2 anos" />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Select label="Porte" value={form.size} onChange={(value) => update("size", value)} options={[["pequeno", "Pequeno"], ["medio", "Medio"], ["grande", "Grande"]]} />
-          <Select label="Sexo" value={form.sex} onChange={(value) => update("sex", value)} options={[["macho", "Macho"], ["femea", "Femea"]]} />
+          <Select label="Porte" value={form.size} onChange={(value) => update("size", value)} options={[["pequeno", "Pequeno"], ["medio", "Médio"], ["grande", "Grande"]]} />
+          <Select label="Sexo" value={form.sex} onChange={(value) => update("sex", value)} options={[["macho", "Macho"], ["femea", "Fêmea"]]} />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <Input label="Personalidade" value={form.personality} onChange={(value) => update("personality", value)} placeholder="carinhoso e tranquilo" />
@@ -494,39 +593,43 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
             label="Status de saúde"
             value={form.healthStatus}
             onChange={(value) => update("healthStatus", value)}
-            options={(HEALTH_OPTIONS_BY_SPECIES[form.species] || []).map((value) => [value, value])}
+            options={(HEALTH_OPTIONS_BY_SPECIES[form.species] || []).map((value) => [value, healthOptionLabel(value)])}
           />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <Select label="Vacinação" value={String(form.vaccinated)} onChange={(value) => update("vaccinated", value === "true")} options={[["true", "Vacinado"], ["false", "Não vacinado"]]} />
-          <Select label="Castracao" value={String(form.castrated)} onChange={(value) => update("castrated", value === "true")} options={[["true", "Castrado"], ["false", "Não castrado"]]} />
+          <Select label="Castração" value={String(form.castrated)} onChange={(value) => update("castrated", value === "true")} options={[["true", "Castrado"], ["false", "Não castrado"]]} />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Select label="Criancas" value={form.childrenCompatibility} onChange={(value) => update("childrenCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
+          <Select label="Crianças" value={form.childrenCompatibility} onChange={(value) => update("childrenCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
           <Select label="Gatos" value={form.catsCompatibility} onChange={(value) => update("catsCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <Select label="Cães" value={form.dogsCompatibility} onChange={(value) => update("dogsCompatibility", value)} options={COMPATIBILITY_OPTIONS.map((item) => [item.value, item.label])} />
-          <Select label="Nivel de energia" value={form.energyLevel} onChange={(value) => update("energyLevel", value)} options={ENERGY_LEVELS.map((item) => [item.value, item.label])} />
+          <Select label="Nível de energia" value={form.energyLevel} onChange={(value) => update("energyLevel", value)} options={ENERGY_LEVELS.map((item) => [item.value, item.label])} />
         </div>
 
-        <Fieldset title="Saúde avancada">
+        <Fieldset title="Saúde avançada">
           <div className="grid gap-3 sm:grid-cols-2">
             <Input label="Peso" value={form.weight} onChange={(value) => update("weight", value)} placeholder="14 kg" />
             <Select label="Microchip" value={String(form.microchip)} onChange={(value) => update("microchip", value === "true")} options={[["false", "Não possui"], ["true", "Possui microchip"]]} />
           </div>
-          <TextArea label="Carteira de vacinação" value={form.vaccinationRecord} onChange={(value) => update("vaccinationRecord", value)} />
-          <TextArea label="Histórico veterinário" value={form.veterinaryHistory} onChange={(value) => update("veterinaryHistory", value)} />
-          <TextArea label="Necessidades especiais" value={form.specialNeeds} onChange={(value) => update("specialNeeds", value)} />
-          <TextArea label="Medicacoes" value={form.medications} onChange={(value) => update("medications", value)} />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Select label="Carteira de vacinação" value={form.vaccinationRecord} onChange={(value) => update("vaccinationRecord", value)} options={withCurrentOption(ADVANCED_HEALTH_OPTIONS.vaccinationRecord, form.vaccinationRecord)} />
+            <Select label="Histórico veterinário" value={form.veterinaryHistory} onChange={(value) => update("veterinaryHistory", value)} options={withCurrentOption(ADVANCED_HEALTH_OPTIONS.veterinaryHistory, form.veterinaryHistory)} />
+            <Select label="Necessidades especiais" value={form.specialNeeds} onChange={(value) => update("specialNeeds", value)} options={withCurrentOption(ADVANCED_HEALTH_OPTIONS.specialNeeds, form.specialNeeds)} />
+            <Select label="Medicações" value={form.medications} onChange={(value) => update("medications", value)} options={withCurrentOption(ADVANCED_HEALTH_OPTIONS.medications, form.medications)} />
+          </div>
         </Fieldset>
 
         <Fieldset title="Comportamento e rotina">
-          <TextArea label="Perfil comportamental" value={form.behaviorProfile} onChange={(value) => update("behaviorProfile", value)} />
-          <TextArea label="Adaptacao recomendada" value={form.adaptationNeeds} onChange={(value) => update("adaptationNeeds", value)} />
-          <TextArea label="Rotina" value={form.routine} onChange={(value) => update("routine", value)} />
-          <TextArea label="Alimentacao" value={form.feeding} onChange={(value) => update("feeding", value)} />
-          <TextArea label="Observações da ONG" value={form.ongNotes} onChange={(value) => update("ongNotes", value)} />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Select label="Perfil comportamental" value={form.behaviorProfile} onChange={(value) => update("behaviorProfile", value)} options={withCurrentOption(BEHAVIOR_ROUTINE_OPTIONS.behaviorProfile, form.behaviorProfile)} />
+            <Select label="Adaptação recomendada" value={form.adaptationNeeds} onChange={(value) => update("adaptationNeeds", value)} options={withCurrentOption(BEHAVIOR_ROUTINE_OPTIONS.adaptationNeeds, form.adaptationNeeds)} />
+            <Select label="Rotina" value={form.routine} onChange={(value) => update("routine", value)} options={withCurrentOption(BEHAVIOR_ROUTINE_OPTIONS.routine, form.routine)} />
+            <Select label="Alimentação" value={form.feeding} onChange={(value) => update("feeding", value)} options={withCurrentOption(BEHAVIOR_ROUTINE_OPTIONS.feeding, form.feeding)} />
+          </div>
+          <TextArea label="Observações da ONG" value={form.ongNotes} onChange={(value) => update("ongNotes", value)} minHeight="min-h-16" />
         </Fieldset>
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -538,7 +641,7 @@ function PetForm({ form, setForm, onSubmit, editing, onCancel }) {
             <div>
               <p className="text-sm font-medium text-slate-200">Fotos do pet</p>
               <p className="mt-1 text-xs text-slate-400">
-                Use fotos horizontais em JPG, PNG ou WEBP. A primeira imagem sera a capa.
+                Use fotos horizontais em JPG, PNG ou WEBP. A primeira imagem será a capa.
               </p>
             </div>
             {previews.length > 0 && (

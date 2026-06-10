@@ -17,6 +17,7 @@ create table if not exists public.ongs (
   instagram text,
   approval_status text not null default 'approved',
   is_verified boolean not null default true,
+  moderation_note text,
   description text,
   created_at timestamptz not null default now()
 );
@@ -33,6 +34,7 @@ alter table public.ongs add column if not exists founded_at text;
 alter table public.ongs add column if not exists instagram text;
 alter table public.ongs add column if not exists approval_status text not null default 'approved';
 alter table public.ongs add column if not exists is_verified boolean not null default true;
+alter table public.ongs add column if not exists moderation_note text;
 alter table public.ongs add column if not exists description text;
 alter table public.ongs add column if not exists created_at timestamptz not null default now();
 

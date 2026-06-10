@@ -36,6 +36,10 @@ const normalizeOng = (ong) => ({
   createdAt: ong.createdAt || new Date().toISOString(),
 });
 
+const isMissingColumnError = (error, column) =>
+  /schema cache|could not find|not find|column/i.test(error?.message || "") &&
+  new RegExp(column, "i").test(error.message);
+
 export function seedOngs() {
   const current = readStorage(STORAGE_KEYS.ongs, null);
   const currentSeedVersion = readStorage(STORAGE_KEYS.ongsSeedVersion, "");
@@ -134,16 +138,31 @@ export async function updateOngModeration(id, { approvalStatus, moderationNote =
   const verified = approvalStatus === ONG_APPROVAL_STATUS.approved;
 
   if (isSupabaseConfigured) {
-    const { data, error } = await supabase
+    const payload = {
+      approval_status: approvalStatus,
+      is_verified: verified,
+      moderation_note: moderationNote || null,
+    };
+
+    let { data, error } = await supabase
       .from("ongs")
-      .update({
-        approval_status: approvalStatus,
-        is_verified: verified,
-        moderation_note: moderationNote || null,
-      })
+      .update(payload)
       .eq("id", id)
       .select("*")
       .single();
+
+    if (isMissingColumnError(error, "moderation_note")) {
+      const { moderation_note: _unused, ...safePayload } = payload;
+      const retry = await supabase
+        .from("ongs")
+        .update(safePayload)
+        .eq("id", id)
+        .select("*")
+        .single();
+      data = retry.data;
+      error = retry.error;
+    }
+
     if (error) throw new Error(error.message);
     return normalizeOng(data);
   }
