@@ -32,7 +32,7 @@ insert into public.ongs (
   '@patinhasdesalvador',
   'approved',
   true,
-  'ONG de resgate e adocao responsavel atuando em Salvador no resgate de caes e gatos abandonados.'
+  'ONG de resgate e adoção responsável atuando em Salvador no resgate de cães e gatos abandonados.'
 )
 on conflict (id) do update set
   owner_user_id = excluded.owner_user_id,

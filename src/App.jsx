@@ -22,6 +22,8 @@ const Gatos = lazy(() => import("./pages/Gatos"));
 const Servicos = lazy(() => import("./pages/Servicos"));
 const CadastroOng = lazy(() => import("./pages/CadastroOng"));
 const Sobre = lazy(() => import("./pages/Sobre"));
+const Privacy = lazy(() => import("./pages/Privacy"));
+const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 function App() {
@@ -45,6 +47,8 @@ function App() {
               <Route path="/registro" element={<Register />} />
               <Route path="/cadastro-ong" element={<CadastroOng />} />
               <Route path="/sobre" element={<Sobre />} />
+              <Route path="/privacidade" element={<Privacy />} />
+              <Route path="/termos" element={<Terms />} />
               <Route
                 path="/dashboard"
                 element={

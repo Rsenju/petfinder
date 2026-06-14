@@ -61,7 +61,7 @@ export async function loginWithCredentials(credentials) {
   );
 
   if (!user) {
-    throw new Error("Credenciais invalidas. Use uma conta de teste valida.");
+    throw new Error("Credenciais inválidas. Use uma conta de teste válida.");
   }
 
   const ong = user.ongId ? await getOngById(user.ongId) : null;
@@ -251,7 +251,7 @@ async function ensureProfileForUser(authUser) {
 
   const profile = {
     id: authUser.id,
-    name: authUser.user_metadata?.name || authUser.email?.split("@")[0] || "Usuario",
+    name: authUser.user_metadata?.name || authUser.email?.split("@")[0] || "Usuário",
     email: authUser.email,
     role: "adopter",
   };

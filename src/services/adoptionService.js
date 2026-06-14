@@ -36,12 +36,9 @@ export async function createAdoptionRequest({ pet, request }) {
   };
 
   if (isSupabaseConfigured) {
-    const { data, error } = await supabase
-      .from("adoption_requests")
-      .insert(payload)
-      .select("*")
-      .single();
-    if (!error) return data;
+    const { error } = await supabase.from("adoption_requests").insert(payload);
+    if (error) throw new Error(error.message || "Não foi possível salvar o pedido de adoção.");
+    return payload;
   }
 
   const current = readStorage(STORAGE_KEYS.adoptionRequests, []);

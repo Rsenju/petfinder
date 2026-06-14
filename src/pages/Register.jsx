@@ -83,7 +83,7 @@ export default function Register() {
             Crie a conta da organização para gerenciar pets, dados de contato e pedidos de adoção.
           </p>
           <p className="mt-5 rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100">
-            Em producao, a liberacao do painel depende do perfil aprovado no Supabase.
+            Em produção, a liberação do painel depende do perfil aprovado no Supabase.
           </p>
         </aside>
 
@@ -142,7 +142,7 @@ export default function Register() {
           </button>
 
           <p className="text-center text-sm text-slate-400">
-            Ja tem conta?{" "}
+            Já tem conta?{" "}
             <Link to="/login" className="font-medium text-blue-300 hover:text-blue-200">
               Entrar
             </Link>

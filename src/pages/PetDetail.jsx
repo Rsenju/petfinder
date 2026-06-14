@@ -31,6 +31,8 @@ import { getPetById, listPets } from "../services/petService";
 import { createReport, REPORT_REASONS } from "../services/reportService";
 
 const cn = (...inputs) => twMerge(clsx(inputs));
+const ADOPTION_COOLDOWN_MS = 60 * 1000;
+const currentTimestamp = () => Date.now();
 
 const ageLabel = (idade) => {
   if (!idade) return "";
@@ -399,6 +401,14 @@ function AdoptionFormLocal({ pet }) {
 
   const onSubmit = async (values) => {
     setSubmitError("");
+    const cooldownKey = `petfinder:adoption_cooldown:${pet.id}`;
+    const lastSubmission = Number(localStorage.getItem(cooldownKey) || 0);
+
+    if (currentTimestamp() - lastSubmission < ADOPTION_COOLDOWN_MS) {
+      setSubmitError("Aguarde um minuto antes de enviar outro pedido para este pet.");
+      return;
+    }
+
     const labels = {
       sim: "Sim",
       nao: "Não",
@@ -412,6 +422,7 @@ function AdoptionFormLocal({ pet }) {
       needs_guidance: labels[values.precisaDicas],
       has_or_had_pets: labels[values.experienciaPets],
     };
+    const whatsappWindow = window.open("about:blank", "_blank");
 
     try {
       const saved = await createAdoptionRequest({
@@ -423,9 +434,17 @@ function AdoptionFormLocal({ pet }) {
         },
         request,
       });
-      window.open(buildWhatsAppUrl(pet.ong.whatsapp, saved.message), "_blank", "noopener,noreferrer");
+      localStorage.setItem(cooldownKey, String(currentTimestamp()));
+      const whatsappUrl = buildWhatsAppUrl(pet.ong.whatsapp, saved.message);
+      if (whatsappWindow) {
+        whatsappWindow.opener = null;
+        whatsappWindow.location.replace(whatsappUrl);
+      } else {
+        window.location.assign(whatsappUrl);
+      }
       setSubmitted(true);
     } catch (error) {
+      whatsappWindow?.close();
       setSubmitError(error.message || "Não foi possível enviar o pedido agora.");
     }
   };
@@ -441,7 +460,7 @@ function AdoptionFormLocal({ pet }) {
             Formulário de pré-adoção
           </h2>
           <p className="mt-1 text-xs text-slate-400">
-            Envie seus dados principais para a ONG continuar pelo WhatsApp.
+            Seus dados serão salvos para a ONG responsável e enviados a ela pelo WhatsApp.
           </p>
         </div>
       </div>
@@ -510,6 +529,11 @@ function AdoptionFormLocal({ pet }) {
               {isSubmitting ? "Enviando..." : "Enviar e falar no WhatsApp"}
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
+            <p className="text-center text-[11px] leading-relaxed text-slate-500">
+              Ao enviar, você concorda com os nossos{" "}
+              <Link to="/termos" className="font-medium text-blue-300 hover:text-blue-200">Termos de Uso</Link> e confirma que leu a{" "}
+              <Link to="/privacidade" className="font-medium text-blue-300 hover:text-blue-200">Política de Privacidade</Link>.
+            </p>
           </form>
         </FormProvider>
       )}

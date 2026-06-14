@@ -1,7 +1,5 @@
 create schema if not exists app_private;
 
-drop table if exists public.favorites;
-
 create table if not exists public.ongs (
   id text primary key,
   owner_user_id uuid references auth.users(id) on delete set null,
@@ -27,8 +25,20 @@ create table if not exists public.ongs (
 alter table public.ongs add column if not exists approval_status text not null default 'pending';
 alter table public.ongs add column if not exists is_verified boolean not null default false;
 alter table public.ongs add column if not exists moderation_note text;
+alter table public.ongs add column if not exists owner_user_id uuid references auth.users(id) on delete set null;
+alter table public.ongs add column if not exists email text;
+alter table public.ongs add column if not exists whatsapp text;
+alter table public.ongs add column if not exists city text;
+alter table public.ongs add column if not exists neighborhood text;
+alter table public.ongs add column if not exists address text;
 alter table public.ongs add column if not exists latitude numeric;
 alter table public.ongs add column if not exists longitude numeric;
+alter table public.ongs add column if not exists service_area text;
+alter table public.ongs add column if not exists responsible text;
+alter table public.ongs add column if not exists founded_at text;
+alter table public.ongs add column if not exists instagram text;
+alter table public.ongs add column if not exists description text;
+alter table public.ongs add column if not exists created_at timestamptz not null default now();
 
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
@@ -38,6 +48,12 @@ create table if not exists public.profiles (
   ong_id text references public.ongs(id) on delete set null,
   created_at timestamptz not null default now()
 );
+
+alter table public.profiles add column if not exists name text;
+alter table public.profiles add column if not exists email text;
+alter table public.profiles add column if not exists role text not null default 'adopter';
+alter table public.profiles add column if not exists ong_id text references public.ongs(id) on delete set null;
+alter table public.profiles add column if not exists created_at timestamptz not null default now();
 
 create table if not exists public.pets (
   id text primary key,
@@ -83,8 +99,19 @@ create table if not exists public.pets (
 
 alter table public.pets add column if not exists image_gallery text[] not null default '{}';
 alter table public.pets add column if not exists image_metadata jsonb not null default '{}';
+alter table public.pets add column if not exists breed text;
+alter table public.pets add column if not exists age_type text;
 alter table public.pets add column if not exists latitude numeric;
 alter table public.pets add column if not exists longitude numeric;
+alter table public.pets add column if not exists tags text[] not null default '{}';
+alter table public.pets add column if not exists personality text;
+alter table public.pets add column if not exists health_status text;
+alter table public.pets add column if not exists vaccinated boolean not null default false;
+alter table public.pets add column if not exists castrated boolean not null default false;
+alter table public.pets add column if not exists children_compatibility text;
+alter table public.pets add column if not exists cats_compatibility text;
+alter table public.pets add column if not exists dogs_compatibility text;
+alter table public.pets add column if not exists energy_level text;
 alter table public.pets add column if not exists vaccination_record text;
 alter table public.pets add column if not exists veterinary_history text;
 alter table public.pets add column if not exists special_needs text;
@@ -108,8 +135,11 @@ create table if not exists public.adoption_requests (
   needs_guidance text not null,
   has_or_had_pets text not null,
   message text not null,
+  status text not null default 'new',
   created_at timestamptz not null default now()
 );
+
+alter table public.adoption_requests add column if not exists status text not null default 'new';
 
 create table if not exists public.reports (
   id text primary key,
@@ -233,10 +263,15 @@ grant insert, update, delete on public.partners to authenticated;
 
 drop policy if exists "Profiles can read own profile" on public.profiles;
 drop policy if exists "Admins can read profiles" on public.profiles;
+drop policy if exists "Authenticated users can read profiles" on public.profiles;
+drop policy if exists "Users can read all profiles" on public.profiles;
+drop policy if exists "Ongs can read profiles" on public.profiles;
 drop policy if exists "Users can create own profile" on public.profiles;
 drop policy if exists "Users can update own profile" on public.profiles;
 drop policy if exists "Admins can update profiles" on public.profiles;
 drop policy if exists "Public can read ongs" on public.ongs;
+drop policy if exists "Public can read approved ongs" on public.ongs;
+drop policy if exists "Anyone can read ongs" on public.ongs;
 drop policy if exists "Owners can create ongs" on public.ongs;
 drop policy if exists "Owners can update own ong" on public.ongs;
 drop policy if exists "Admins can delete ongs" on public.ongs;
@@ -246,9 +281,15 @@ drop policy if exists "Ongs can update own pets" on public.pets;
 drop policy if exists "Ongs can delete own pets" on public.pets;
 drop policy if exists "Public can create adoption requests" on public.adoption_requests;
 drop policy if exists "Ongs can read own adoption requests" on public.adoption_requests;
+drop policy if exists "Authenticated users can read adoption requests" on public.adoption_requests;
+drop policy if exists "Authenticated users can update adoption requests" on public.adoption_requests;
+drop policy if exists "Ongs can read all adoption requests" on public.adoption_requests;
 drop policy if exists "Public can create reports" on public.reports;
 drop policy if exists "Admins can read reports" on public.reports;
 drop policy if exists "Admins can update reports" on public.reports;
+drop policy if exists "Authenticated users can read reports" on public.reports;
+drop policy if exists "Authenticated users can update reports" on public.reports;
+drop policy if exists "Ongs can read reports" on public.reports;
 drop policy if exists "Public can read active partners" on public.partners;
 drop policy if exists "Admins can manage partners" on public.partners;
 drop policy if exists "Public can read pet images" on storage.objects;

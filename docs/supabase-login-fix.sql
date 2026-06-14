@@ -55,6 +55,33 @@ alter table public.profiles add column if not exists role text not null default 
 alter table public.profiles add column if not exists ong_id text references public.ongs(id) on delete set null;
 alter table public.profiles add column if not exists created_at timestamptz not null default now();
 
+alter table public.pets add column if not exists breed text;
+alter table public.pets add column if not exists age_type text;
+alter table public.pets add column if not exists latitude numeric;
+alter table public.pets add column if not exists longitude numeric;
+alter table public.pets add column if not exists image_gallery text[] not null default '{}';
+alter table public.pets add column if not exists image_metadata jsonb not null default '{}';
+alter table public.pets add column if not exists tags text[] not null default '{}';
+alter table public.pets add column if not exists personality text;
+alter table public.pets add column if not exists health_status text;
+alter table public.pets add column if not exists vaccinated boolean not null default false;
+alter table public.pets add column if not exists castrated boolean not null default false;
+alter table public.pets add column if not exists children_compatibility text;
+alter table public.pets add column if not exists cats_compatibility text;
+alter table public.pets add column if not exists dogs_compatibility text;
+alter table public.pets add column if not exists energy_level text;
+alter table public.pets add column if not exists vaccination_record text;
+alter table public.pets add column if not exists veterinary_history text;
+alter table public.pets add column if not exists special_needs text;
+alter table public.pets add column if not exists medications text;
+alter table public.pets add column if not exists microchip boolean not null default false;
+alter table public.pets add column if not exists weight text;
+alter table public.pets add column if not exists behavior_profile text;
+alter table public.pets add column if not exists adaptation_needs text;
+alter table public.pets add column if not exists routine text;
+alter table public.pets add column if not exists feeding text;
+alter table public.pets add column if not exists ong_notes text;
+
 create table if not exists public.adoption_requests (
   id text primary key,
   pet_id text,
@@ -295,7 +322,7 @@ insert into public.ongs (
   '@patinhasdesalvador',
   'approved',
   true,
-  'ONG de resgate e adocao responsavel atuando em Salvador no resgate de caes e gatos abandonados.'
+  'ONG de resgate e adoção responsável atuando em Salvador no resgate de cães e gatos abandonados.'
 )
 on conflict (id) do update set
   owner_user_id = excluded.owner_user_id,

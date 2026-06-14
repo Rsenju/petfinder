@@ -320,7 +320,7 @@ export default function Pets() {
                     ? 'bg-blue-600 text-white' 
                     : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700'
                 }`}
-                title="Visualizacao em grade"
+                title="Visualização em grade"
               >
                 <Grid3X3 className="w-5 h-5" />
               </button>
@@ -331,7 +331,7 @@ export default function Pets() {
                     ? 'bg-blue-600 text-white' 
                     : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700'
                 }`}
-                title="Visualizacao em lista"
+                title="Visualização em lista"
               >
                 <List className="w-5 h-5" />
               </button>

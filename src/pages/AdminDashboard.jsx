@@ -68,7 +68,7 @@ export default function AdminDashboard() {
     { label: "ONGs cadastradas", value: data.ongs.length, icon: Building2 },
     { label: "ONGs pendentes", value: pendingOngs.length, icon: ShieldCheck },
     { label: "Pets cadastrados", value: data.pets.length, icon: PawPrint },
-    { label: "Denuncias abertas", value: openReports.length, icon: Flag },
+    { label: "Denúncias abertas", value: openReports.length, icon: Flag },
     { label: "Pedidos de adoção", value: data.requests.length, icon: Users },
     { label: "Perfis sem ONG", value: pendingProfiles.length, icon: Users },
   ];
@@ -93,7 +93,7 @@ export default function AdminDashboard() {
     const confirmed = window.confirm(`Remover o pet ${pet.name}? Esta acao não pode ser desfeita.`);
     if (!confirmed) return;
     await deletePet(pet.id);
-    showMessage("Pet removido pela moderacao.");
+    showMessage("Pet removido pela moderação.");
     await load();
   };
 
@@ -108,7 +108,7 @@ export default function AdminDashboard() {
       <div className="mx-auto max-w-7xl space-y-8">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-300">
-            Administracao
+            Administração
           </p>
           <h1 className="mt-2 text-3xl font-bold">Painel PetFinder</h1>
           <p className="mt-2 text-slate-400">
@@ -196,7 +196,7 @@ export default function AdminDashboard() {
         </section>
 
         <section className="rounded-xl border border-slate-700 bg-slate-800">
-          <SectionHeader title="Denuncias" description="Analise problemas reportados por visitantes." />
+          <SectionHeader title="Denúncias" description="Analise problemas reportados por visitantes." />
           {data.reports.length === 0 ? (
             <p className="p-6 text-sm text-slate-400">Nenhuma denuncia registrada ainda.</p>
           ) : (
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
         </section>
 
         <section className="rounded-xl border border-slate-700 bg-slate-800">
-          <SectionHeader title="Usuarios e permissões" description="Perfis autenticados e vinculos com ONGs." />
+          <SectionHeader title="Usuários e permissões" description="Perfis autenticados e vínculos com ONGs." />
           {data.profiles.length === 0 ? (
             <p className="p-6 text-sm text-slate-400">Nenhum perfil encontrado.</p>
           ) : (

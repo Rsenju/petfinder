@@ -224,7 +224,7 @@ export function OngDashboard() {
   const stats = useMemo(
     () => [
       { label: "Pets cadastrados", value: pets.length },
-      { label: "Disponiveis", value: pets.filter((pet) => pet.status === "available").length },
+      { label: "Disponíveis", value: pets.filter((pet) => pet.status === "available").length },
       { label: "Em processo", value: pets.filter((pet) => pet.status === "in_process").length },
       { label: "Adotados", value: pets.filter((pet) => pet.status === "adopted").length },
     ],

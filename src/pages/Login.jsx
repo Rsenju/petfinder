@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
@@ -23,8 +23,14 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const [pendingDestination, setPendingDestination] = useState("");
   const navigate = useNavigate();
-  const { login, loginGoogle } = useAuth();
+  const { isAuthenticated, login, loginGoogle, user } = useAuth();
+
+  useEffect(() => {
+    if (!pendingDestination || !isAuthenticated || !user) return;
+    navigate(pendingDestination, { replace: true });
+  }, [isAuthenticated, navigate, pendingDestination, user]);
 
   const {
     register,
@@ -40,8 +46,12 @@ export default function Login() {
     setLoginError("");
 
     try {
-      const user = await login(data);
-      navigate(user?.role === "admin" || user?.tipo === "admin" ? "/admin" : "/dashboard");
+      const result = await login(data);
+      if (!result.success) throw new Error(result.error);
+      const loggedUser = result.user;
+      setPendingDestination(
+        loggedUser?.role === "admin" || loggedUser?.tipo === "admin" ? "/admin" : "/dashboard",
+      );
     } catch (error) {
       setLoginError(error.message || "Erro ao fazer login. Tente novamente.");
     } finally {

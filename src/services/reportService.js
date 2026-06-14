@@ -42,12 +42,9 @@ export async function createReport({ pet, report }) {
   };
 
   if (isSupabaseConfigured) {
-    const { data, error } = await supabase
-      .from("reports")
-      .insert(payload)
-      .select("*")
-      .single();
-    if (!error) return normalizeReport(data);
+    const { error } = await supabase.from("reports").insert(payload);
+    if (error) throw new Error(error.message || "Não foi possível enviar a denúncia.");
+    return normalizeReport(payload);
   }
 
   const current = readStorage(STORAGE_KEYS.reports, []);

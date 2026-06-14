@@ -18,7 +18,7 @@ import { listPets } from "../services/petService";
 import { buildWhatsAppUrl } from "../services/adoptionService";
 
 const statusLabel = {
-  available: "Disponiveis",
+  available: "Disponíveis",
   in_process: "Em processo",
   adopted: "Adotados",
 };
@@ -129,8 +129,8 @@ export default function OngProfile() {
           <p className="mt-3 leading-relaxed text-slate-300">{ong.description}</p>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <InfoItem icon={MapPin} label="Endereco" value={ong.address || `${ong.city} - ${ong.neighborhood}`} />
-            <InfoItem icon={HeartHandshake} label="Area atendida" value={ong.serviceArea || ong.city} />
+            <InfoItem icon={MapPin} label="Endereço" value={ong.address || `${ong.city} - ${ong.neighborhood}`} />
+            <InfoItem icon={HeartHandshake} label="Área atendida" value={ong.serviceArea || ong.city} />
             <InfoItem icon={Building2} label="Responsável" value={ong.responsible || ong.name} />
             <InfoItem icon={Calendar} label="Atuando desde" value={ong.foundedAt || "Não informado"} />
           </div>
@@ -155,7 +155,7 @@ export default function OngProfile() {
           </a>
 
           <div className="mt-5 grid grid-cols-3 gap-2 text-center">
-            <Stat value={stats.available} label="Disponiveis" />
+            <Stat value={stats.available} label="Disponíveis" />
             <Stat value={stats.inProcess} label="Processo" />
             <Stat value={stats.adopted} label="Adotados" />
           </div>

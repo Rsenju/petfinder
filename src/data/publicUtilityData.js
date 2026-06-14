@@ -1,6 +1,6 @@
 export const PUBLIC_CATEGORIES = [
   ["vacinacao", "Vacinação"],
-  ["castracao", "Castracao"],
+  ["castracao", "Castração"],
   ["zoonoses", "Zoonoses"],
   ["viagem", "Viagens"],
   ["documentos", "Documentos"],

@@ -65,7 +65,7 @@ export default function Ongs() {
           </p>
           <h1 className="mt-2 text-3xl font-bold text-white">ONGs parceiras</h1>
           <p className="mt-2 max-w-2xl text-sm text-slate-400">
-            Conheca as organizacoes verificadas, veja seus contatos e encontre os animais disponiveis em cada uma.
+            Conheça as organizações verificadas, veja seus contatos e encontre os animais disponíveis em cada uma.
           </p>
         </div>
         <label className="relative min-w-0 sm:w-80">

@@ -6,6 +6,8 @@ const footerLinks = [
   ["Serviços", "/servicos"],
   ["Blog", "/blog"],
   ["Utilidade pública", "/governo"],
+  ["Privacidade", "/privacidade"],
+  ["Termos", "/termos"],
 ];
 
 export default function Footer() {
