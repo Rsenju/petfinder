@@ -15,6 +15,7 @@ import {
 import PetCard from "../components/features/PetCard";
 import { getOngById } from "../services/ongService";
 import { listPets } from "../services/petService";
+import OngCover from "../components/features/OngCover";
 import { buildWhatsAppUrl } from "../services/adoptionService";
 
 const statusLabel = {
@@ -105,7 +106,7 @@ export default function OngProfile() {
 
       <section className="mt-6 overflow-hidden rounded-2xl border border-slate-700 bg-slate-800">
         <div className="relative h-72 bg-slate-950">
-          <img src={ong.image} alt={ong.name} className="h-full w-full object-cover object-center" />
+          <OngCover src={ong.image} alt={ong.name} className="h-full w-full object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
             {ong.verified && (

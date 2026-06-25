@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Building2, ChevronDown, Mail, MapPin, Navigation, Phone, ShieldCheck, Users } from "lucide-react";
 import GoogleMap from "../components/features/GoogleMap";
+import OngCover from "../components/features/OngCover";
 import { LOCATION_OPTIONS, withDistance } from "../data/geoData";
 import { listOngs } from "../services/ongService";
 
@@ -120,11 +121,10 @@ export default function Ongs() {
               to={`/ong/${ong.id}`}
               className="group flex h-full flex-col rounded-xl border border-slate-700 bg-slate-800 p-5 transition hover:-translate-y-0.5 hover:border-blue-500/60 hover:bg-slate-800/90 hover:shadow-xl"
             >
-              <img
+              <OngCover
                 src={ong.image}
                 alt={ong.name}
                 className="h-40 w-full rounded-lg object-cover object-center"
-                loading="lazy"
               />
               <div className="flex flex-1 flex-col">
                 <h2 className="mt-4 text-xl font-semibold text-white">{ong.name}</h2>

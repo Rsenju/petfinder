@@ -11,30 +11,39 @@ export const ONG_APPROVAL_STATUS = {
   blocked: "blocked",
 };
 
-const normalizeOng = (ong) => ({
-  id: ong.id,
-  name: ong.name || ong.nome || "ONG Parceira",
-  email: ong.email || "contato@ong.org",
-  whatsapp: ong.whatsapp || ong.phone || "(71) 99999-0000",
-  city: ong.city || "Salvador",
-  neighborhood: ong.neighborhood || ong.bairro || "Centro",
-  address: ong.address || ong.endereco || "",
-  latitude: ong.latitude || ong.lat || null,
-  longitude: ong.longitude || ong.lng || null,
-  serviceArea: ong.serviceArea || ong.service_area || "",
-  responsible: ong.responsible || ong.responsavel || "",
-  foundedAt: ong.foundedAt || ong.founded_at || "",
-  instagram: ong.instagram || "",
-  approvalStatus: ong.approvalStatus || ong.approval_status || ONG_APPROVAL_STATUS.approved,
-  verified: Boolean(ong.verified ?? ong.is_verified ?? (ong.approvalStatus || ong.approval_status) === ONG_APPROVAL_STATUS.approved),
-  moderationNote: ong.moderationNote || ong.moderation_note || "",
-  description: ong.description || "",
-  owner_user_id: ong.owner_user_id || null,
-  image: ong.image || ong.logo || "",
-  petsCount: ong.petsCount || 0,
-  adoptionsCount: ong.adoptionsCount || 0,
-  createdAt: ong.createdAt || new Date().toISOString(),
-});
+const normalizeOng = (ong) => {
+  const fallback = mockOngs.find((item) => item.id === ong.id) || {};
+  const approvalStatus =
+    ong.approvalStatus ||
+    ong.approval_status ||
+    fallback.approvalStatus ||
+    ONG_APPROVAL_STATUS.approved;
+
+  return {
+    id: ong.id,
+    name: ong.name || ong.nome || fallback.name || "ONG Parceira",
+    email: ong.email || fallback.email || "contato@ong.org",
+    whatsapp: ong.whatsapp || ong.phone || fallback.whatsapp || "(71) 99999-0000",
+    city: ong.city || fallback.city || "Salvador",
+    neighborhood: ong.neighborhood || ong.bairro || fallback.neighborhood || "Centro",
+    address: ong.address || ong.endereco || fallback.address || "",
+    latitude: ong.latitude || ong.lat || fallback.latitude || null,
+    longitude: ong.longitude || ong.lng || fallback.longitude || null,
+    serviceArea: ong.serviceArea || ong.service_area || fallback.serviceArea || "",
+    responsible: ong.responsible || ong.responsavel || fallback.responsible || "",
+    foundedAt: ong.foundedAt || ong.founded_at || fallback.foundedAt || "",
+    instagram: ong.instagram || fallback.instagram || "",
+    approvalStatus,
+    verified: Boolean(ong.verified ?? ong.is_verified ?? fallback.verified ?? approvalStatus === ONG_APPROVAL_STATUS.approved),
+    moderationNote: ong.moderationNote || ong.moderation_note || "",
+    description: ong.description || fallback.description || "",
+    owner_user_id: ong.owner_user_id || null,
+    image: ong.image || ong.image_url || ong.logo || fallback.image || "",
+    petsCount: ong.petsCount || fallback.petsCount || 0,
+    adoptionsCount: ong.adoptionsCount || fallback.adoptionsCount || 0,
+    createdAt: ong.createdAt || ong.created_at || fallback.createdAt || new Date().toISOString(),
+  };
+};
 
 const isMissingColumnError = (error, column) =>
   /schema cache|could not find|not find|column/i.test(error?.message || "") &&
@@ -110,6 +119,7 @@ export async function upsertOng(ongData) {
       is_verified: Boolean(ongData.verified ?? ongData.is_verified ?? false),
       moderation_note: ongData.moderationNote || ongData.moderation_note || null,
       description: ongData.description || null,
+      image_url: ongData.image || ongData.image_url || null,
       owner_user_id: ongData.owner_user_id || null,
     };
     const query = ongData.id

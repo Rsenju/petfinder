@@ -19,6 +19,7 @@ create table if not exists public.ongs (
   is_verified boolean not null default false,
   moderation_note text,
   description text,
+  image_url text,
   created_at timestamptz not null default now()
 );
 
@@ -38,6 +39,7 @@ alter table public.ongs add column if not exists responsible text;
 alter table public.ongs add column if not exists founded_at text;
 alter table public.ongs add column if not exists instagram text;
 alter table public.ongs add column if not exists description text;
+alter table public.ongs add column if not exists image_url text;
 alter table public.ongs add column if not exists created_at timestamptz not null default now();
 
 create table if not exists public.profiles (

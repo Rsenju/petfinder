@@ -6,11 +6,11 @@ begin;
 insert into public.ongs (
   id, owner_user_id, name, email, whatsapp, city, neighborhood, address,
   service_area, responsible, founded_at, instagram, approval_status,
-  is_verified, description
+  is_verified, description, image_url
 ) values
-  ('ong_salvador', 'c7e36dec-21e0-4dee-93fd-21d59adce824', 'Patinhas de Salvador', 'contato@patinhasdesalvador.org', '(71) 99991-1201', 'Salvador', 'Rio Vermelho', 'Rua Conselheiro Pedro Luiz, 214 - Rio Vermelho, Salvador - BA', 'Salvador, especialmente Brotas, Barra, Rio Vermelho, Ondina e Itapua', 'Equipe Patinhas de Salvador', '2019', '@patinhasdesalvador', 'approved', true, 'ONG de resgate e adoção responsável atuando em Salvador no resgate de cães e gatos abandonados.'),
-  ('ong_lauro', null, 'Lar Animal Lauro', 'contato@laranimallauro.org', '(71) 99992-2302', 'Lauro de Freitas', 'Vilas do Atlantico', 'Avenida Praia de Itapua, 82 - Vilas do Atlantico, Lauro de Freitas - BA', 'Lauro de Freitas, Itinga, Buraquinho, Portao e Caji', 'Projeto Lar Animal Lauro', '2021', '@laranimallauro', 'approved', true, 'Projeto independente de resgate animal focado em reabilitação e adoção consciente.'),
-  ('ong_feira', null, 'Anjos de 4 Patas Feira', 'contato@anjos4patasfeira.org', '(75) 99993-3403', 'Feira de Santana', 'Santa Monica', 'Rua Tupinambas, 517 - Santa Monica, Feira de Santana - BA', 'Feira de Santana, Tomba, Caseb, SIM, Kalilandia e Mangabeira', 'Anjos de 4 Patas Feira', '2018', '@anjos4patasfeira', 'approved', true, 'ONG parceira especializada em resgate de animais de rua e adoção responsável.')
+  ('ong_salvador', 'c7e36dec-21e0-4dee-93fd-21d59adce824', 'Patinhas de Salvador', 'contato@patinhasdesalvador.org', '(71) 99991-1201', 'Salvador', 'Rio Vermelho', 'Rua Conselheiro Pedro Luiz, 214 - Rio Vermelho, Salvador - BA', 'Salvador, especialmente Brotas, Barra, Rio Vermelho, Ondina e Itapua', 'Equipe Patinhas de Salvador', '2019', '@patinhasdesalvador', 'approved', true, 'ONG de resgate e adoção responsável atuando em Salvador no resgate de cães e gatos abandonados.', 'https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=1200&h=800&auto=format&fit=crop&q=85'),
+  ('ong_lauro', null, 'Lar Animal Lauro', 'contato@laranimallauro.org', '(71) 99992-2302', 'Lauro de Freitas', 'Vilas do Atlantico', 'Avenida Praia de Itapua, 82 - Vilas do Atlantico, Lauro de Freitas - BA', 'Lauro de Freitas, Itinga, Buraquinho, Portao e Caji', 'Projeto Lar Animal Lauro', '2021', '@laranimallauro', 'approved', true, 'Projeto independente de resgate animal focado em reabilitação e adoção consciente.', 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&h=800&auto=format&fit=crop&q=85'),
+  ('ong_feira', null, 'Anjos de 4 Patas Feira', 'contato@anjos4patasfeira.org', '(75) 99993-3403', 'Feira de Santana', 'Santa Monica', 'Rua Tupinambas, 517 - Santa Monica, Feira de Santana - BA', 'Feira de Santana, Tomba, Caseb, SIM, Kalilandia e Mangabeira', 'Anjos de 4 Patas Feira', '2018', '@anjos4patasfeira', 'approved', true, 'ONG parceira especializada em resgate de animais de rua e adoção responsável.', 'https://images.unsplash.com/photo-1444212477490-ca407925329e?w=1200&h=800&auto=format&fit=crop&q=85')
 on conflict (id) do update set
   owner_user_id = coalesce(excluded.owner_user_id, public.ongs.owner_user_id),
   name = excluded.name,
@@ -25,7 +25,8 @@ on conflict (id) do update set
   instagram = excluded.instagram,
   approval_status = excluded.approval_status,
   is_verified = excluded.is_verified,
-  description = excluded.description;
+  description = excluded.description,
+  image_url = excluded.image_url;
 
 insert into public.pets (
   id, ong_id, name, species, breed, gender, size, age, age_type, city,
@@ -101,4 +102,3 @@ group by ong_id
 order by ong_id;
 
 notify pgrst, 'reload schema';
-
